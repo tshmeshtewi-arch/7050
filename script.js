@@ -2,7 +2,7 @@
    ربط لوحة التحكم بالسيرفر الحقيقي (LIVE API INTEGRATION)
 ============================================================ */
 const API_URL = "https://ejhyovem0d.apps.bot-hosting.cloud";
-const CLIENT_ID = "1123042571924886749"; // معرف بوتك من الصورة
+const CLIENT_ID = "1523042577924886749"; // معرف بوتك من الصورة
 const REDIRECT_URI = window.location.origin + window.location.pathname;
 
 let currentGuildId = localStorage.getItem('unibot-selected-guild') || null;
