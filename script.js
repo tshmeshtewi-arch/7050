@@ -6,7 +6,6 @@
 const $  = (s, p = document) => p.querySelector(s);
 const $$ = (s, p = document) => [...p.querySelectorAll(s)];
 
-/* ---------- إعدادات البوت والاتصال بالحياة الحقيقية ---------- */
 const API_URL = "https://ejhyovem0d.apps.bot-hosting.cloud";
 const CLIENT_ID = "1523042577924886749"; 
 const REDIRECT_URI = window.location.origin + window.location.pathname;
@@ -51,19 +50,20 @@ links.forEach(a => a.addEventListener('click', e => {
   goTo(a.dataset.page);
 }));
 
-/* ---------- القائمة الجانبية (Burger & Sidebar - تم إصلاحها بسلاسة) ---------- */
+/* ---------- القائمة المنسدلة (البرغر) الاصلاح النهائي ---------- */
 const burger  = $('#burger');
 const sidebar = $('#sidebar');
 const overlay = $('#overlay');
 
 function setNav(open) {
-  document.body.classList.toggle('nav-open', !!open);
-  if (burger) burger.classList.toggle('open', !!open);
-  if (overlay) overlay.classList.toggle('on', !!open);
+  document.body.classList.toggle('nav-open', open);
+  if (burger) burger.classList.toggle('open', open);
+  if (overlay) overlay.classList.toggle('on', open);
 }
 
 if (burger) {
-  burger.addEventListener('click', () => {
+  burger.addEventListener('click', (e) => {
+    e.stopPropagation();
     const isOpen = document.body.classList.contains('nav-open');
     setNav(!isOpen);
   });
@@ -190,7 +190,7 @@ async function loadUserGuilds() {
   }
 }
 
-/* ---------- جلب بيانات الرومات والرتب الحقيقية للسيرفر ---------- */
+/* ---------- جلب بيانات الرومات والرتب الحقيقية ---------- */
 async function loadGuildRealData(guildId) {
   const session = localStorage.getItem('unibot-session');
   if (!session || !guildId) return;
@@ -203,16 +203,15 @@ async function loadGuildRealData(guildId) {
     const data = await r.json();
 
     const chanHtml = data.channels.map(c => `<option value="${c.id}">${c.name}</option>`).join('');
-    document.querySelectorAll('#globalAlert, [data-k="alerts"], #welcome select, #levels select, #present select, #tickets select, #notify select, #gives select').forEach(sel => {
-      if (sel.options.length > 0) {
+    document.querySelectorAll('select').forEach(sel => {
+      if (sel.id !== 'guildSelect' && sel.id !== 'botLang') {
         sel.innerHTML = chanHtml;
       }
     });
 
     const roleHtml = data.roles.map(r => `<option value="${r.id}">@${r.name}</option>`).join('');
-    document.querySelectorAll('#globalRoles, [data-k="roles"], #joinRole').forEach(sel => {
-      sel.innerHTML = roleHtml;
-    });
+    const joinRole = document.getElementById('joinRole');
+    if (joinRole) joinRole.innerHTML = roleHtml;
 
     toast('✅ تم تحميل بيانات السيرفر بنجاح!');
   } catch (e) {
@@ -220,7 +219,7 @@ async function loadGuildRealData(guildId) {
   }
 }
 
-/* ---------- حفظ الإعدادات في قاعدة بيانات البوت ---------- */
+/* ---------- حفظ الإعدادات ---------- */
 document.querySelectorAll('[data-save]').forEach(btn => {
   btn.addEventListener('click', async () => {
     const session = localStorage.getItem('unibot-session');
@@ -230,9 +229,6 @@ document.querySelectorAll('[data-save]').forEach(btn => {
     }
 
     const activePage = document.querySelector('.page.on')?.id || 'system';
-    const systemMap = { protect: 'protection', tickets: 'tickets' };
-    const targetSystem = systemMap[activePage] || 'system';
-
     const payload = { updatedAt: Date.now() };
     document.querySelectorAll(`#${activePage} input, #${activePage} select, #${activePage} textarea`).forEach((el, idx) => {
       const key = el.id || el.dataset.k || `field_${idx}`;
@@ -240,12 +236,9 @@ document.querySelectorAll('[data-save]').forEach(btn => {
     });
 
     try {
-      const res = await fetch(`${API_URL}/api/settings/${currentGuildId}/${targetSystem}`, {
+      const res = await fetch(`${API_URL}/api/settings/${currentGuildId}/${activePage}`, {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'x-session': session
-        },
+        headers: { 'Content-Type': 'application/json', 'x-session': session },
         body: JSON.stringify(payload)
       });
       const result = await res.json();
@@ -257,44 +250,7 @@ document.querySelectorAll('[data-save]').forEach(btn => {
   });
 });
 
-/* ---------- الساعة والعناصر التفاعلية ---------- */
-const clock = $('#clock');
-if (clock) {
-  setInterval(() => {
-    const d = new Date();
-    clock.textContent = [d.getHours(), d.getMinutes(), d.getSeconds()]
-      .map(n => String(n).padStart(2, '0')).join(':');
-  }, 1000);
-}
-
-/* مفاتيح الأنظمة والحفظ المحلي */
-$$('input[data-store]').forEach(inp => {
-  const key = inp.dataset.store;
-  const saved = localStorage.getItem('unibot-' + key);
-  if (saved !== null) inp.checked = saved === '1';
-  inp.addEventListener('change', () => {
-    localStorage.setItem('unibot-' + key, inp.checked ? '1' : '0');
-    toast(inp.checked ? '✅ تم التشغيل' : '⛔ تم الإيقاف');
-  });
-});
-
-/* معاينة الترحيب والرسائل */
-const wmsg = $('#wmsg'), wptext = $('#wptext'), wpreview = $('#wpreview');
-if (wmsg && wptext) {
-  wmsg.addEventListener('input', () => {
-    wptext.textContent = wmsg.value.replaceAll('{member}', '@عضو').replaceAll('{server}', 'Wolf Pack');
-  });
-}
-
-const wcolor = $('.wcolor');
-if (wcolor && wpreview) {
-  wcolor.addEventListener('input', e => wpreview.style.setProperty('--pc', e.target.value));
-}
-
-/* التشغيل الأولي */
 const savedPage = localStorage.getItem('unibot-page');
 if (savedPage && $('#' + savedPage)) goTo(savedPage);
 
 handleAuthCallback();
-
-console.log('%c🐺 UniBot ALPHA v3.1 — جاهز ومتصل بالبث الحي', 'color:#a855f7;font-size:14px;font-weight:bold');
