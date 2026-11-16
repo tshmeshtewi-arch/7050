@@ -28,6 +28,52 @@ function toast(msg) {
   toastTimer = setTimeout(() => t.classList.remove('show'), 2400);
 }
 
+/* ---------- نظام تبديل اللغات (AR / EN) ---------- */
+let currentLang = localStorage.getItem('unibot-lang') || 'ar';
+function setLanguage(lang) {
+  currentLang = lang;
+  localStorage.setItem('unibot-lang', lang);
+  $$('.lang-btn').forEach(btn => btn.classList.toggle('active', btn.dataset.lang === lang));
+  document.documentElement.setAttribute('dir', lang === 'ar' ? 'rtl' : 'ltr');
+  document.documentElement.setAttribute('lang', lang);
+
+  $$('[data-ar]').forEach(el => {
+    const text = el.getAttribute(`data-${lang}`);
+    if (text) {
+      if (el.tagName === 'INPUT') el.placeholder = text;
+      else el.textContent = text;
+    }
+  });
+}
+
+$$('.lang-btn').forEach(btn => {
+  btn.addEventListener('click', () => setLanguage(btn.dataset.lang));
+});
+setLanguage(currentLang);
+
+/* ---------- البحث السريع في القائمة ---------- */
+const searchInput = $('#search');
+if (searchInput) {
+  searchInput.addEventListener('input', (e) => {
+    const q = e.target.value.toLowerCase().trim();
+    $$('.nav a').forEach(a => {
+      const text = a.textContent.toLowerCase();
+      a.style.display = text.includes(q) ? 'flex' : 'none';
+    });
+  });
+}
+
+/* ---------- الساعة الحية ---------- */
+function updateClock() {
+  const clock = $('#clock');
+  if (clock) {
+    const now = new Date();
+    clock.textContent = now.toTimeString().split(' ')[0];
+  }
+}
+setInterval(updateClock, 1000);
+updateClock();
+
 /* ---------- التنقل بين الأقسام ---------- */
 const links = $$('.nav a');
 const crumb = $('#crumb');
@@ -38,7 +84,8 @@ function goTo(page) {
   const active = links.find(l => l.dataset.page === page);
   if (active && crumb) {
     const sp = active.querySelector('span');
-    crumb.textContent = sp ? sp.textContent : active.textContent.trim();
+    const txt = sp ? sp.getAttribute(`data-${currentLang}`) || sp.textContent : active.textContent.trim();
+    crumb.textContent = txt;
   }
   window.scrollTo({ top: 0, behavior: 'smooth' });
   localStorage.setItem('unibot-page', page);
@@ -64,37 +111,18 @@ function setNav(open) {
 if (burger) {
   burger.addEventListener('click', (e) => {
     e.stopPropagation();
-    const isOpen = document.body.classList.contains('nav-open');
-    setNav(!isOpen);
+    setNav(!document.body.classList.contains('nav-open'));
   });
 }
-
-if (overlay) {
-  overlay.addEventListener('click', () => setNav(false));
-}
+if (overlay) overlay.addEventListener('click', () => setNav(false));
 
 /* ---------- جلب الإحصائيات الحية من البوت ---------- */
 async function loadLiveStats() {
   try {
     const res = await fetch(`${API_URL}/api/stats`);
     const data = await res.json();
-    
     const srvEl = document.querySelector('.stat-card.v .s-num');
     if (srvEl && data.servers !== undefined) srvEl.textContent = data.servers;
-
-    const pingEl = document.querySelector('.stat-card.b .s-num');
-    if (pingEl && data.ping !== undefined) pingEl.innerHTML = `${data.ping}<small>ms</small>`;
-    
-    const pillEl = document.querySelector('.status-pill');
-    if (pillEl) pillEl.innerHTML = `<i class="dot"></i> ${data.ping}ms`;
-
-    const upEl = $('#uptime');
-    if (data.uptime && upEl) {
-      const d = Math.floor(data.uptime / 86400);
-      const h = Math.floor((data.uptime % 86400) / 3600);
-      const m = Math.floor((data.uptime % 3600) / 60);
-      upEl.textContent = `${d}ي ${h}س ${m}د`;
-    }
   } catch (e) {
     console.warn("تعذر جلب إحصائيات البوت الحية");
   }
@@ -102,7 +130,7 @@ async function loadLiveStats() {
 loadLiveStats();
 setInterval(loadLiveStats, 15000);
 
-/* ---------- نظام تسجيل الدخول OAuth2 (المحدث) ---------- */
+/* ---------- تسجيل الدخول OAuth2 ---------- */
 const loginBtn = document.getElementById('discordLoginBtn');
 if (loginBtn) {
   loginBtn.addEventListener('click', () => {
@@ -124,17 +152,14 @@ async function handleAuthCallback() {
         body: JSON.stringify({ code, redirect_uri: REDIRECT_URI })
       });
       const data = await r.json();
-      
       if (r.ok && data.token) {
         localStorage.setItem('unibot-session', data.token);
         toast(`✅ أهلاً بك ${data.user.username}!`);
         loadUserGuilds();
       } else {
-        console.error("Discord Auth Error Details:", data);
-        toast(`❌ فشل تسجيل الدخول: ${data.error || 'خطأ غير معروف'}`);
+        toast(`❌ فشل تسجيل الدخول`);
       }
     } catch (e) {
-      console.error("Network Error:", e);
       toast('❌ خطأ في الاتصال بالبوت');
     }
   } else if (localStorage.getItem('unibot-session')) {
@@ -142,7 +167,7 @@ async function handleAuthCallback() {
   }
 }
 
-/* ---------- جلب سيرفرات المستخدم وإخفاء زر الدخول وإظهار القائمة ---------- */
+/* ---------- جلب سيرفرات المستخدم ---------- */
 async function loadUserGuilds() {
   const session = localStorage.getItem('unibot-session');
   if (!session) return;
@@ -191,7 +216,7 @@ async function loadUserGuilds() {
   }
 }
 
-/* ---------- جلب بيانات الرومات والرتب الحقيقية ---------- */
+/* ---------- جلب بيانات الرومات والرتب الحقيقية وإعدادات السيرفر ---------- */
 async function loadGuildRealData(guildId) {
   const session = localStorage.getItem('unibot-session');
   if (!session || !guildId) return;
@@ -203,16 +228,35 @@ async function loadGuildRealData(guildId) {
     });
     const data = await r.json();
 
+    // تعبئة قنوات النصوص
     const chanHtml = data.channels.map(c => `<option value="${c.id}">${c.name}</option>`).join('');
-    document.querySelectorAll('select').forEach(sel => {
-      if (sel.id !== 'guildSelect' && sel.id !== 'botLang') {
-        sel.innerHTML = chanHtml;
-      }
-    });
+    const welcomeChannel = document.getElementById('welcomeChannel');
+    if (welcomeChannel) welcomeChannel.innerHTML = `<option value="">اختر القناة...</option>` + chanHtml;
 
+    // تعبئة رتب الأعضاء
     const roleHtml = data.roles.map(r => `<option value="${r.id}">@${r.name}</option>`).join('');
     const joinRole = document.getElementById('joinRole');
-    if (joinRole) joinRole.innerHTML = roleHtml;
+    if (joinRole) joinRole.innerHTML = `<option value="">اختر الرتبة...</option>` + roleHtml;
+
+    // استرجاع الإعدادات المحفوظة إن وجدت
+    if (data.settings) {
+      if (data.settings.welcome) {
+        if (welcomeChannel && data.settings.welcome.welcomeChannel) welcomeChannel.value = data.settings.welcome.welcomeChannel;
+        const wmsg = document.getElementById('wmsg');
+        if (wmsg && data.settings.welcome.wmsg) wmsg.value = data.settings.welcome.wmsg;
+        const wToggle = document.getElementById('welcomeToggle');
+        if (wToggle) wToggle.checked = data.settings.welcome.welcomeToggle !== false;
+      }
+      if (data.settings.autorank) {
+        if (joinRole && data.settings.autorank.joinRole) joinRole.value = data.settings.autorank.joinRole;
+        const aToggle = document.getElementById('autorankToggle');
+        if (aToggle) aToggle.checked = data.settings.autorank.autorankToggle !== false;
+      }
+      if (data.settings.settings && data.settings.settings.prefixInput) {
+        const pInput = document.getElementById('prefixInput');
+        if (pInput) pInput.value = data.settings.settings.prefixInput;
+      }
+    }
 
     toast('✅ تم تحميل بيانات السيرفر بنجاح!');
   } catch (e) {
@@ -220,7 +264,7 @@ async function loadGuildRealData(guildId) {
   }
 }
 
-/* ---------- حفظ الإعدادات ---------- */
+/* ---------- حفظ الإعدادات لكل قسم ---------- */
 document.querySelectorAll('[data-save]').forEach(btn => {
   btn.addEventListener('click', async () => {
     const session = localStorage.getItem('unibot-session');
@@ -229,8 +273,9 @@ document.querySelectorAll('[data-save]').forEach(btn => {
       return;
     }
 
-    const activePage = document.querySelector('.page.on')?.id || 'system';
+    const activePage = document.querySelector('.page.on')?.id || 'settings';
     const payload = { updatedAt: Date.now() };
+
     document.querySelectorAll(`#${activePage} input, #${activePage} select, #${activePage} textarea`).forEach((el, idx) => {
       const key = el.id || el.dataset.k || `field_${idx}`;
       payload[key] = el.type === 'checkbox' ? el.checked : el.value;
@@ -243,7 +288,7 @@ document.querySelectorAll('[data-save]').forEach(btn => {
         body: JSON.stringify(payload)
       });
       const result = await res.json();
-      if (result.ok) toast('💾 تم الحفظ في قاعدة بيانات البوت!');
+      if (result.ok) toast('💾 تم الحفظ في قاعدة بيانات البوت بنجاح!');
       else toast('❌ فشل الحفظ');
     } catch {
       toast('❌ خطأ في الاتصال بالبوت');
