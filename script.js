@@ -1,29 +1,94 @@
 /* ============================================================
-   ربط لوحة التحكم بالسيرفر الحقيقي (LIVE API INTEGRATION)
+   UniBot v3.1 — ALPHA CORE & LIVE API INTEGRATION
 ============================================================ */
+'use strict';
+
+const $  = (s, p = document) => p.querySelector(s);
+const $$ = (s, p = document) => [...p.querySelectorAll(s)];
+
+/* ---------- إعدادات البوت والاتصال بالحياة الحقيقية ---------- */
 const API_URL = "https://ejhyovem0d.apps.bot-hosting.cloud";
-const CLIENT_ID = "1523042577924886749"; // معرف بوتك من الصورة
+const CLIENT_ID = "1523042577924886749"; 
 const REDIRECT_URI = window.location.origin + window.location.pathname;
 
 let currentGuildId = localStorage.getItem('unibot-selected-guild') || null;
 
-// 1. جلب الإحصائيات الحية للبوت (البنق، السيرفرات، الأبتايم)
+/* ---------- شاشة التحميل ---------- */
+window.addEventListener('load', () => {
+  setTimeout(() => { const l = $('#loader'); if (l) l.classList.add('done'); }, 1200);
+});
+
+/* ---------- توست الإشعارات ---------- */
+let toastTimer;
+function toast(msg) {
+  const t = $('#toast');
+  if (!t) return;
+  t.textContent = msg;
+  t.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => t.classList.remove('show'), 2400);
+}
+
+/* ---------- التنقل بين الأقسام ---------- */
+const links = $$('.nav a');
+const crumb = $('#crumb');
+
+function goTo(page) {
+  links.forEach(l => l.classList.toggle('active', l.dataset.page === page));
+  $$('.page').forEach(p => p.classList.toggle('on', p.id === page));
+  const active = links.find(l => l.dataset.page === page);
+  if (active && crumb) {
+    const sp = active.querySelector('span');
+    crumb.textContent = sp ? sp.textContent : active.textContent.trim();
+  }
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+  localStorage.setItem('unibot-page', page);
+  if (innerWidth <= 900) setNav(false);
+}
+
+links.forEach(a => a.addEventListener('click', e => {
+  e.preventDefault();
+  goTo(a.dataset.page);
+}));
+
+/* ---------- القائمة الجانبية (Burger & Sidebar - تم إصلاحها بسلاسة) ---------- */
+const burger  = $('#burger');
+const sidebar = $('#sidebar');
+const overlay = $('#overlay');
+
+function setNav(open) {
+  document.body.classList.toggle('nav-open', !!open);
+  if (burger) burger.classList.toggle('open', !!open);
+  if (overlay) overlay.classList.toggle('on', !!open);
+}
+
+if (burger) {
+  burger.addEventListener('click', () => {
+    const isOpen = document.body.classList.contains('nav-open');
+    setNav(!isOpen);
+  });
+}
+
+if (overlay) {
+  overlay.addEventListener('click', () => setNav(false));
+}
+
+/* ---------- جلب الإحصائيات الحية من البوت ---------- */
 async function loadLiveStats() {
   try {
     const res = await fetch(`${API_URL}/api/stats`);
     const data = await res.json();
     
-    // تحديث عدد السيرفرات
     const srvEl = document.querySelector('.stat-card.v .s-num');
     if (srvEl && data.servers !== undefined) srvEl.textContent = data.servers;
 
-    // تحديث البنق في البطاقة والشريط الجانبي
     const pingEl = document.querySelector('.stat-card.b .s-num');
     if (pingEl && data.ping !== undefined) pingEl.innerHTML = `${data.ping}<small>ms</small>`;
+    
     const pillEl = document.querySelector('.status-pill');
     if (pillEl) pillEl.innerHTML = `<i class="dot"></i> ${data.ping}ms`;
 
-    // تحديث مدة التشغيل الحقيقية
+    const upEl = $('#uptime');
     if (data.uptime && upEl) {
       const d = Math.floor(data.uptime / 86400);
       const h = Math.floor((data.uptime % 86400) / 3600);
@@ -31,13 +96,13 @@ async function loadLiveStats() {
       upEl.textContent = `${d}ي ${h}س ${m}د`;
     }
   } catch (e) {
-    console.warn("تعذر جلب إحصائيات البوت:", e);
+    console.warn("تعذر جلب إحصائيات البوت الحية");
   }
 }
 loadLiveStats();
 setInterval(loadLiveStats, 15000);
 
-// 2. نظام تسجيل الدخول OAuth2
+/* ---------- نظام تسجيل الدخول OAuth2 ---------- */
 const loginBtn = document.getElementById('discordLoginBtn');
 if (loginBtn) {
   loginBtn.addEventListener('click', () => {
@@ -46,12 +111,11 @@ if (loginBtn) {
   });
 }
 
-// استقبال الكود بعد العودة من ديسكورد
 async function handleAuthCallback() {
   const params = new URLSearchParams(window.location.search);
   const code = params.get('code');
   if (code) {
-    window.history.replaceState({}, document.title, REDIRECT_URI); // تنظيف الرابط
+    window.history.replaceState({}, document.title, REDIRECT_URI);
     toast('⏳ جاري تسجيل الدخول...');
     try {
       const r = await fetch(`${API_URL}/api/auth/callback`, {
@@ -65,17 +129,17 @@ async function handleAuthCallback() {
         toast(`✅ أهلاً بك ${data.user.username}!`);
         loadUserGuilds();
       } else {
-        toast('❌ فشل تسجيل الدخول، تأكد من رابط Redirect في ديسكورد');
+        toast('❌ فشل تسجيل الدخول');
       }
     } catch (e) {
-      toast('❌ خطأ في الاتصال بسيرفر البوت');
+      toast('❌ خطأ في الاتصال بالبوت');
     }
   } else if (localStorage.getItem('unibot-session')) {
     loadUserGuilds();
   }
 }
 
-// 3. جلب السيرفرات الحقيقية للمستخدم
+/* ---------- جلب سيرفرات المستخدم الحقيقية ---------- */
 async function loadUserGuilds() {
   const session = localStorage.getItem('unibot-session');
   if (!session) return;
@@ -91,7 +155,7 @@ async function loadUserGuilds() {
     const data = await r.json();
     
     if (loginBtn && data.user) {
-      loginBtn.textContent = `👤 ${data.user.username} (تسجيل خروج)`;
+      loginBtn.textContent = `👤 ${data.user.username} (خروج)`;
       loginBtn.onclick = () => {
         localStorage.removeItem('unibot-session');
         location.reload();
@@ -126,39 +190,37 @@ async function loadUserGuilds() {
   }
 }
 
-// 4. تعبئة الرومات والرتب الحقيقية للسيرفر المختار
+/* ---------- جلب بيانات الرومات والرتب الحقيقية للسيرفر ---------- */
 async function loadGuildRealData(guildId) {
   const session = localStorage.getItem('unibot-session');
   if (!session || !guildId) return;
 
-  toast('🔄 جاري جلب بيانات السيرفر...');
+  toast('🔄 جاري تحميل بيانات السيرفر...');
   try {
     const r = await fetch(`${API_URL}/api/guild/${guildId}/data`, {
       headers: { 'x-session': session }
     });
     const data = await r.json();
 
-    // تعبئة جميع قوائم الرومات الحقيقية
     const chanHtml = data.channels.map(c => `<option value="${c.id}">${c.name}</option>`).join('');
     document.querySelectorAll('#globalAlert, [data-k="alerts"], #welcome select, #levels select, #present select, #tickets select, #notify select, #gives select').forEach(sel => {
-      if (sel.options.length > 0 && sel.options[0].text.startsWith('#')) {
+      if (sel.options.length > 0) {
         sel.innerHTML = chanHtml;
       }
     });
 
-    // تعبئة جميع قوائم الرتب الحقيقية
     const roleHtml = data.roles.map(r => `<option value="${r.id}">@${r.name}</option>`).join('');
     document.querySelectorAll('#globalRoles, [data-k="roles"], #joinRole').forEach(sel => {
       sel.innerHTML = roleHtml;
     });
 
-    toast('✅ تم تحميل بيانات السيرفر الحقيقية!');
+    toast('✅ تم تحميل بيانات السيرفر بنجاح!');
   } catch (e) {
     toast('⚠️ تعذر جلب تفاصيل السيرفر');
   }
 }
 
-// 5. ربط أزرار الحفظ بالسيرفر الحقيقي
+/* ---------- حفظ الإعدادات في قاعدة بيانات البوت ---------- */
 document.querySelectorAll('[data-save]').forEach(btn => {
   btn.addEventListener('click', async () => {
     const session = localStorage.getItem('unibot-session');
@@ -167,12 +229,10 @@ document.querySelectorAll('[data-save]').forEach(btn => {
       return;
     }
 
-    // تحديد القسم الحالي
     const activePage = document.querySelector('.page.on')?.id || 'system';
     const systemMap = { protect: 'protection', tickets: 'tickets' };
     const targetSystem = systemMap[activePage] || 'system';
 
-    // تجميع البيانات من الصفحة الحالية
     const payload = { updatedAt: Date.now() };
     document.querySelectorAll(`#${activePage} input, #${activePage} select, #${activePage} textarea`).forEach((el, idx) => {
       const key = el.id || el.dataset.k || `field_${idx}`;
@@ -189,12 +249,52 @@ document.querySelectorAll('[data-save]').forEach(btn => {
         body: JSON.stringify(payload)
       });
       const result = await res.json();
-      if (result.ok) toast('💾 تم الحفظ في قاعدة بيانات البوت بنجاح!');
-      else toast('❌ فشل الحفظ: ' + (result.error || 'خطأ غير معروف'));
+      if (result.ok) toast('💾 تم الحفظ في قاعدة بيانات البوت!');
+      else toast('❌ فشل الحفظ');
     } catch {
-      toast('❌ تعذر الاتصال بالبوت');
+      toast('❌ خطأ في الاتصال بالبوت');
     }
   });
 });
 
+/* ---------- الساعة والعناصر التفاعلية ---------- */
+const clock = $('#clock');
+if (clock) {
+  setInterval(() => {
+    const d = new Date();
+    clock.textContent = [d.getHours(), d.getMinutes(), d.getSeconds()]
+      .map(n => String(n).padStart(2, '0')).join(':');
+  }, 1000);
+}
+
+/* مفاتيح الأنظمة والحفظ المحلي */
+$$('input[data-store]').forEach(inp => {
+  const key = inp.dataset.store;
+  const saved = localStorage.getItem('unibot-' + key);
+  if (saved !== null) inp.checked = saved === '1';
+  inp.addEventListener('change', () => {
+    localStorage.setItem('unibot-' + key, inp.checked ? '1' : '0');
+    toast(inp.checked ? '✅ تم التشغيل' : '⛔ تم الإيقاف');
+  });
+});
+
+/* معاينة الترحيب والرسائل */
+const wmsg = $('#wmsg'), wptext = $('#wptext'), wpreview = $('#wpreview');
+if (wmsg && wptext) {
+  wmsg.addEventListener('input', () => {
+    wptext.textContent = wmsg.value.replaceAll('{member}', '@عضو').replaceAll('{server}', 'Wolf Pack');
+  });
+}
+
+const wcolor = $('.wcolor');
+if (wcolor && wpreview) {
+  wcolor.addEventListener('input', e => wpreview.style.setProperty('--pc', e.target.value));
+}
+
+/* التشغيل الأولي */
+const savedPage = localStorage.getItem('unibot-page');
+if (savedPage && $('#' + savedPage)) goTo(savedPage);
+
 handleAuthCallback();
+
+console.log('%c🐺 UniBot ALPHA v3.1 — جاهز ومتصل بالبث الحي', 'color:#a855f7;font-size:14px;font-weight:bold');
