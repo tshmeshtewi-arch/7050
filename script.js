@@ -102,7 +102,7 @@ async function loadLiveStats() {
 loadLiveStats();
 setInterval(loadLiveStats, 15000);
 
-/* ---------- نظام تسجيل الدخول OAuth2 ---------- */
+/* ---------- نظام تسجيل الدخول OAuth2 (المحدث) ---------- */
 const loginBtn = document.getElementById('discordLoginBtn');
 if (loginBtn) {
   loginBtn.addEventListener('click', () => {
@@ -124,14 +124,17 @@ async function handleAuthCallback() {
         body: JSON.stringify({ code, redirect_uri: REDIRECT_URI })
       });
       const data = await r.json();
-      if (data.token) {
+      
+      if (r.ok && data.token) {
         localStorage.setItem('unibot-session', data.token);
         toast(`✅ أهلاً بك ${data.user.username}!`);
         loadUserGuilds();
       } else {
-        toast('❌ فشل تسجيل الدخول');
+        console.error("Discord Auth Error Details:", data);
+        toast(`❌ فشل تسجيل الدخول: ${data.error || 'خطأ غير معروف'}`);
       }
     } catch (e) {
+      console.error("Network Error:", e);
       toast('❌ خطأ في الاتصال بالبوت');
     }
   } else if (localStorage.getItem('unibot-session')) {
@@ -154,7 +157,6 @@ async function loadUserGuilds() {
     }
     const data = await r.json();
     
-    // إخفاء زر تسجيل الدخول وإظهار اسم المستخدم بدلاً منه أو تدويره لخروج
     if (loginBtn && data.user) {
       loginBtn.innerHTML = `👤 ${data.user.username} (تسجيل خروج)`;
       loginBtn.onclick = () => {
@@ -167,7 +169,7 @@ async function loadUserGuilds() {
     const box = document.getElementById('guildSelectorBox');
     const select = document.getElementById('guildSelect');
     if (box && select && data.guilds) {
-      box.style.display = 'block'; // إظهار قائمة السيرفرات المنسدلة
+      box.style.display = 'block';
       select.innerHTML = data.guilds.length 
         ? `<option value="">اختر السيرفر للتحكم...</option>` + data.guilds.map(g => `<option value="${g.id}">${g.name}</option>`).join('')
         : '<option value="">البوت غير موجود في سيرفراتك</option>';
