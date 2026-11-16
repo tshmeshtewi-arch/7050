@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'self'; img-src 'self' data:; connect-src 'self' https:; base-uri 'none'; form-action 'none'">
+<meta name="referrer" content="no-referrer">
+<meta name="color-scheme" content="dark">
+<title>UniBot | لوحة التحكم</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 48 48'%3E%3Cpath fill='%238b5cf6' d='M6 4l11 9h14l11-9-3 19 5 10-13 13h-6l-3-6-3 6h-6L4 33l5-10z'/%3E%3C/svg%3E">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="app">
+  <aside class="side">
+    <div class="brand">
+      <svg class="wolf" viewBox="0 0 48 48" aria-hidden="true"><path d="M6 4l11 9h14l11-9-3 19 5 10-13 13h-6l-3-6-3 6h-6L4 33l5-10z"/><path class="eye" d="M15 24l6 2-2 3zM33 24l-6 2 2 3z"/></svg>
+      <div><strong>UniBot</strong><span>UniverseBot</span></div>
+    </div>
+    <nav id="nav" aria-label="التنقل">
+      <a href="#overview" data-view="overview">نظرة عامة</a>
+      <a href="#servers" data-view="servers">السيرفرات</a>
+      <a href="#commands" data-view="commands">الأوامر</a>
+      <a href="#games" data-view="games">الألعاب</a>
+      <a href="#tickets" data-view="tickets">التذاكر</a>
+      <a href="#logs" data-view="logs">السجلات</a>
+    </nav>
+    <p class="note" id="mode">وضع تجريبي</p>
+  </aside>
+
+  <main>
+    <header class="top">
+      <h1 id="title">نظرة عامة</h1>
+      <div class="status" id="status" role="status"><i></i><span>جاري الاتصال</span></div>
+    </header>
+
+    <section id="overview" class="view" hidden>
+      <div class="stats">
+        <article class="card c-purple"><span>السيرفرات</span><b id="s-servers">0</b></article>
+        <article class="card c-blue"><span>المستخدمين</span><b id="s-users">0</b></article>
+        <article class="card c-red"><span>التأخير (ms)</span><b id="s-ping">0</b></article>
+        <article class="card c-purple"><span>مدة التشغيل</span><b id="s-uptime">0</b></article>
+      </div>
+      <div class="split">
+        <article class="panel"><h2>سرعة الاستجابة</h2><div id="chart" class="chart"></div></article>
+        <article class="panel"><h2>آخر الأحداث</h2><ul id="recent" class="logs"></ul></article>
+      </div>
+    </section>
+
+    <section id="servers" class="view" hidden>
+      <article class="panel"><h2>السيرفرات المتصلة</h2><ul id="server-list" class="rows"></ul></article>
+    </section>
+
+    <section id="commands" class="view" hidden>
+      <article class="panel">
+        <h2>الأوامر</h2>
+        <label class="search"><span class="sr">بحث</span><input id="search" type="search" maxlength="40" placeholder="ابحث عن أمر" autocomplete="off"></label>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>الأمر</th><th>الوصف</th><th>الاستخدام</th></tr></thead>
+            <tbody id="cmd-body"></tbody>
+          </table>
+        </div>
+      </article>
+    </section>
+
+    <section id="games" class="view" hidden>
+      <article class="panel"><h2>الألعاب</h2><ul id="game-list" class="rows"></ul></article>
+      <article class="panel"><h2>ترتيب اللاعبين</h2><ol id="leaderboard" class="rows"></ol></article>
+    </section>
+
+    <section id="tickets" class="view" hidden>
+      <article class="panel">
+        <h2>التذاكر</h2>
+        <label class="search"><span class="sr">تصفية</span>
+          <select id="ticket-filter"><option value="all">الكل</option><option value="open">مفتوحة</option><option value="closed">مغلقة</option></select>
+        </label>
+        <ul id="ticket-list" class="rows"></ul>
+      </article>
+    </section>
+
+    <section id="logs" class="view" hidden>
+      <article class="panel"><h2>سجل البوت</h2><ul id="log-list" class="logs"></ul></article>
+    </section>
+  </main>
+</div>
+<script src="app.js"></script>
+<script src="games.js"></script>
+<script src="tickets.js"></script>
+</body>
+</html>
