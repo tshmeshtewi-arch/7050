@@ -44,11 +44,15 @@
     </div>
   </div>
 
-  <div class="side-server">
-    <div class="sv-ava">🐺</div>
-    <div class="sv-info">
-      <b>Wolf Pack</b>
-      <small><span class="on-dot"></span> البوت متصل</small>
+  <!-- صندوق تسجيل الدخول واختيار السيرفر (تمت إضافته وربطه بالبوت) -->
+  <div class="side-server" style="flex-direction:column; align-items:stretch; gap:8px;">
+    <button id="discordLoginBtn" class="btn" style="padding:9px; font-size:0.85em; width:100%;">
+      🔑 تسجيل الدخول بديسكورد
+    </button>
+    <div id="guildSelectorBox" style="display:none;">
+      <select id="guildSelect" style="width:100%; padding:8px; border-radius:10px; background:#0f0a23; color:#fff; border:1px solid var(--v); font-family:inherit; font-weight:bold;">
+        <option value="">اختر السيرفر...</option>
+      </select>
     </div>
   </div>
 
@@ -170,7 +174,7 @@
       <p class="desc" data-ar="رسالة ترحيب تلقائية وجمالية لكل من ينضم للقطيع." data-en="Automatic greeting for every new member.">رسالة ترحيب تلقائية وجمالية لكل من ينضم للقطيع.</p>
       <div class="two-col">
         <div>
-          <div class="field"><label data-ar="قناة الترحيب" data-en="Welcome Channel">قناة الترحيب</label><select><option>#الترحيب</option><option>#welcome</option><option>#general</option></select></div>
+          <div class="field"><label data-ar="قناة الترحيب" data-en="Welcome Channel">قناة الترحيب</label><select><option>#الترحيب</option></select></div>
           <div class="field"><label data-ar="نص الرسالة" data-en="Message Text">نص الرسالة</label><textarea id="wmsg">أهلاً {member} في قطيع الذئاب 🐺</textarea></div>
           <div class="field"><label data-ar="متغيرات جاهزة" data-en="Variables">متغيرات جاهزة</label>
             <div class="chips">
@@ -206,8 +210,6 @@
           <label data-ar="الرتبة الممنوحة عند الدخول" data-en="Role Given On Join">الرتبة الممنوحة عند الدخول</label>
           <select id="joinRole">
             <option>🐺 Pup — شبل</option>
-            <option>👋 Member — عضو</option>
-            <option>💜 Warrior — محارب</option>
           </select>
         </div>
         <div class="field">
@@ -218,10 +220,8 @@
       <div class="two-col">
         <div class="field">
           <label data-ar="الرتب المسموح لها بإلغاء المنح" data-en="Roles Exempt From It">الرتب المسموح لها بإلغاء المنح</label>
-          <select multiple size="4">
+          <select multiple size="4" id="globalRoles">
             <option selected>👑 Alpha — ألفا</option>
-            <option selected>🛡️ Admin — إداري</option>
-            <option>🤖 Bots — بوتات</option>
           </select>
         </div>
         <div class="field">
@@ -230,30 +230,6 @@
         </div>
       </div>
       <button class="btn" data-save>💾 <span data-ar="حفظ رتبة الدخول" data-en="Save Join Role">حفظ رتبة الدخول</span></button>
-    </div>
-
-    <div class="card">
-      <div class="card-head">
-        <h3><span class="ico">🏆</span> <span data-ar="رتب حسب المستوى" data-en="Level Roles">رتب حسب المستوى</span></h3>
-        <label class="switch"><input type="checkbox" checked><i></i></label>
-      </div>
-      <p class="desc" data-ar="كل ما يزيد مستوى العضو، البوت يبدّل رتبته تلقائياً للمستوى الجديد." data-en="The bot swaps the member role automatically when they level up.">كل ما يزيد مستوى العضو، البوت يبدّل رتبته تلقائياً للمستوى الجديد.</p>
-      <div class="field">
-        <label data-ar="مصدر الخبرة" data-en="XP Source">مصدر الخبرة</label>
-        <select>
-          <option data-ar="الرسائل فقط" data-en="Messages only">الرسائل فقط</option>
-          <option data-ar="الرسائل + الصوت" data-en="Messages + Voice">الرسائل + الصوت</option>
-          <option data-ar="النشاط الكلي" data-en="Total Activity">النشاط الكلي</option>
-        </select>
-      </div>
-      <div id="ranklist">
-        <div class="rank-row"><span class="rb rb1">👑</span><div><b>Alpha — ألفا</b><small data-ar="المستوى 50 — تُسحب الرتبة السابقة" data-en="Level 50 — removes previous role">المستوى 50 — تُسحب الرتبة السابقة</small></div><label class="switch"><input type="checkbox" checked><i></i></label></div>
-        <div class="rank-row"><span class="rb rb2">💜</span><div><b>Warrior — محارب</b><small>المستوى 25</small></div><label class="switch"><input type="checkbox" checked><i></i></label></div>
-        <div class="rank-row"><span class="rb rb3">💙</span><div><b>Hunter — صياد</b><small>المستوى 10</small></div><label class="switch"><input type="checkbox"><i></i></label></div>
-        <div class="rank-row"><span class="rb rb4">❤️</span><div><b>Pup — شبل</b><small>المستوى 1</small></div><label class="switch"><input type="checkbox" checked><i></i></label></div>
-      </div>
-      <button class="add-btn" id="addRank">➕ <span data-ar="إضافة رتبة مستوى" data-en="Add Level Role">إضافة رتبة مستوى</span></button>
-      <button class="btn" data-save>💾 <span data-ar="حفظ نظام الرتب" data-en="Save Rank System">حفظ نظام الرتب</span></button>
     </div>
   </section>
 
@@ -270,20 +246,10 @@
         <div class="field"><label data-ar="مضاعف الخبرة" data-en="XP Multiplier">مضاعف الخبرة</label><select><option>×1</option><option>×1.5</option><option>×2</option></select></div>
       </div>
       <div class="two-col">
-        <div class="field"><label data-ar="روم إعلان الترقية" data-en="Level-Up Channel">روم إعلان الترقية</label><select><option>#level-up</option><option>#المستويات</option></select></div>
+        <div class="field"><label data-ar="روم إعلان الترقية" data-en="Level-Up Channel">روم إعلان الترقية</label><select><option>#level-up</option></select></div>
         <div class="field"><label data-ar="صيغة رسالة الترقية" data-en="Level-Up Message">صيغة رسالة الترقية</label><textarea>🎉 {member} وصل للمستوى {level}!</textarea></div>
       </div>
-      <div class="field"><label data-ar="رومات مستثناة من جمع XP" data-en="No-XP Channels">رومات مستثناة من جمع XP</label><select multiple size="3"><option>#سبام</option><option>#الميمز</option><option>#بوت-أوامر</option></select></div>
-      <div class="field"><label data-ar="الحد الأدنى للرسالة (حروف)" data-en="Min Message Length">الحد الأدنى للرسالة (حروف)</label><input type="number" value="3" min="1"></div>
       <button class="btn" data-save>💾 <span data-ar="حفظ المستويات" data-en="Save Levels">حفظ المستويات</span></button>
-    </div>
-
-    <div class="card">
-      <div class="card-head"><h3><span class="ico">🧮</span> <span data-ar="محاكي المستويات" data-en="Level Calculator">محاكي المستويات</span></h3></div>
-      <p class="desc" data-ar="اعرف كم XP يحتاج العضو للوصول لمستوى معين." data-en="Calculate how much XP a member needs.">اعرف كم XP يحتاج العضو للوصول لمستوى معين.</p>
-      <div class="field"><label data-ar="المستوى المستهدف" data-en="Target Level">المستوى المستهدف</label><input type="number" id="lvlTarget" value="10" min="1" max="200"></div>
-      <div class="lvl-preview" id="lvlPreview">—</div>
-      <div class="lvl-preview" id="lvlTotal" style="margin-top:10px">—</div>
     </div>
   </section>
 
@@ -294,26 +260,10 @@
         <h3><span class="ico">📝</span> <span data-ar="نظام التقديم" data-en="Applications System">نظام التقديم</span></h3>
         <label class="switch"><input type="checkbox" checked><i></i></label>
       </div>
-      <p class="desc" data-ar="الأعضاء يقدمون طلب انضمام لفريق الإشراف، والإدارة تقبل أو ترفض." data-en="Members apply for staff, admins accept or reject.">الأعضاء يقدمون طلب انضمام لفريق الإشراف، والإدارة تقبل أو ترفض.</p>
       <div class="two-col">
-        <div class="field"><label data-ar="روم استقبال التقديمات" data-en="Application Channel">روم استقبال التقديمات</label><select><option>#تقديمات</option><option>#apply-here</option></select></div>
-        <div class="field"><label data-ar="روم مراجعة الطلبات" data-en="Review Channel">روم مراجعة الطلبات</label><select><option>#مراجعة-التقديمات</option><option>#apply-review</option></select></div>
+        <div class="field"><label data-ar="روم استقبال التقديمات" data-en="Application Channel">روم استقبال التقديمات</label><select><option>#تقديمات</option></select></div>
+        <div class="field"><label data-ar="روم مراجعة الطلبات" data-en="Review Channel">روم مراجعة الطلبات</label><select><option>#مراجعة-التقديمات</option></select></div>
       </div>
-      <div class="two-col">
-        <div class="field"><label data-ar="رتبة القبول" data-en="Accept Role">رتبة القبول</label><select><option>⚔️ Moderator — مشرف</option><option>💜 Support — دعم</option></select></div>
-        <div class="field"><label data-ar="رتبة الرفض (اختياري)" data-en="Reject Role (optional)">رتبة الرفض (اختياري)</label><select><option>— بدون —</option><option>⏳ Pending</option></select></div>
-      </div>
-      <div class="two-col">
-        <div class="field"><label data-ar="عمر الحساب الأدنى (أيام)" data-en="Min Account Age (days)">عمر الحساب الأدنى (أيام)</label><input type="number" value="30"></div>
-        <div class="field"><label data-ar="السماح بإعادة التقديم" data-en="Allow Re-apply">السماح بإعادة التقديم</label><label class="switch"><input type="checkbox" checked><i></i></label></div>
-      </div>
-
-      <label class="f-label" data-ar="أسئلة التقديم" data-en="Application Questions">أسئلة التقديم</label>
-      <div id="qList">
-        <div class="q-row"><span>1</span><input value="ما اسمك وعمرك؟"><button class="del-q">✕</button></div>
-        <div class="q-row"><span>2</span><input value="كم ساعة تقضي في ديسكورد يومياً؟"><button class="del-q">✕</button></div>
-      </div>
-      <button class="add-btn" id="addQuestion">➕ <span data-ar="إضافة سؤال" data-en="Add Question">إضافة سؤال</span></button>
       <button class="btn" data-save>💾 <span data-ar="حفظ نظام التقديم" data-en="Save Applications">حفظ نظام التقديم</span></button>
     </div>
   </section>
@@ -325,31 +275,16 @@
         <h3><span class="ico">🛡️</span> <span data-ar="نظام الحماية المتقدم" data-en="Advanced Protection">نظام الحماية المتقدم</span></h3>
         <label class="switch"><input type="checkbox" id="protectMaster" checked><i></i></label>
       </div>
-      <p class="desc" data-ar="فعّل أي حماية، وحدد لها: رتب الدعم (التي لا يلمسها البوت)، العقوبة، وروم تنبيهات الحماية." data-en="Enable any protection with support roles, punishment, and alert channel.">فعّل أي حماية، وحدد لها: رتب الدعم (التي لا يلمسها البوت)، العقوبة، وروم تنبيهات الحماية.</p>
       <div class="two-col">
         <div class="field">
           <label data-ar="🌐 روم تنبيهات الحماية العامة" data-en="🌐 Global Alert Channel">🌐 روم تنبيهات الحماية العامة</label>
           <select id="globalAlert">
             <option>#security-alerts</option>
-            <option>#تنبيهات-الحماية</option>
-            <option>#mod-log</option>
-          </select>
-        </div>
-        <div class="field">
-          <label data-ar="🎖️ رتب الدعم العامة (محمية من البوت)" data-en="🎖️ Global Support Roles">🎖️ رتب الدعم العامة (محمية من البوت)</label>
-          <select id="globalRoles" multiple size="5">
-            <option selected>👑 Alpha — ألفا</option>
-            <option selected>🛡️ Admin — إداري</option>
-            <option>⚔️ Moderator — مشرف</option>
-            <option>💜 Support — دعم</option>
-            <option>🤖 Bots — بوتات</option>
           </select>
         </div>
       </div>
     </div>
-
     <div id="protectList" class="protect-list"></div>
-
     <button class="btn" data-save>💾 <span data-ar="حفظ نظام الحماية كامل" data-en="Save All Protection">حفظ نظام الحماية كامل</span></button>
   </section>
 
@@ -360,20 +295,7 @@
         <h3><span class="ico">🎫</span> <span data-ar="نظام التذاكر" data-en="Tickets System">نظام التذاكر</span></h3>
         <label class="switch"><input type="checkbox" checked><i></i></label>
       </div>
-      <p class="desc" data-ar="تذاكر دعم منظمة بفئات قابلة للتخصيص." data-en="Organized support tickets with custom categories.">تذاكر دعم منظمة بفئات قابلة للتخصيص.</p>
-      <div class="two-col">
-        <div>
-          <div class="field"><label data-ar="قناة فتح التذاكر" data-en="Ticket Channel">قناة فتح التذاكر</label><select><option>#ticket-here</option><option>#الدعم</option></select></div>
-          <div class="field"><label data-ar="فئة التذاكر" data-en="Category">فئة التذاكر</label><select><option>الدعم الفني</option><option>الاستفسارات العامة</option><option>البلاغات</option></select></div>
-          <div class="field"><label data-ar="أقصى عدد تذاكر للفرد" data-en="Max Tickets Per User">أقصى عدد تذاكر للفرد</label><input type="number" value="1" min="1" max="10"></div>
-          <div class="field"><label data-ar="أرشفة تلقائية بعد الإغلاق" data-en="Auto Archive">أرشفة تلقائية بعد الإغلاق</label><label class="switch"><input type="checkbox" checked><i></i></label></div>
-        </div>
-        <div>
-          <div class="field"><label data-ar="رسالة الترحيب داخل التذكرة" data-en="Inside Ticket Message">رسالة الترحيب داخل التذكرة</label><textarea>صف مشكلتك وسيتم الرد قريباً 🐺</textarea></div>
-          <div class="field"><label data-ar="اسم زر الفتح" data-en="Open Button Label">اسم زر الفتح</label><input value="🐺 افتح تذكرة"></div>
-          <div class="field"><label data-ar="لون الزر" data-en="Button Color">لون الزر</label><select><option>بنفسجي</option><option>أزرق</option><option>أحمر</option><option>أخضر</option></select></div>
-        </div>
-      </div>
+      <div class="field"><label data-ar="قناة فتح التذاكر" data-en="Ticket Channel">قناة فتح التذاكر</label><select><option>#ticket-here</option></select></div>
       <button class="btn" data-save>💾 <span data-ar="حفظ الإعدادات" data-en="Save Settings">حفظ الإعدادات</span></button>
     </div>
   </section>
@@ -385,17 +307,7 @@
         <h3><span class="ico">🔔</span> <span data-ar="نظام الإشعارات" data-en="Notifications">نظام الإشعارات</span></h3>
         <label class="switch"><input type="checkbox"><i></i></label>
       </div>
-      <p class="desc" data-ar="إشعار تلقائي عند نشر جديد على المنصات المتصلة." data-en="Auto notification for new posts on connected platforms.">إشعار تلقائي عند نشر جديد على المنصات المتصلة.</p>
-      <div class="field"><label data-ar="قناة الإشعارات" data-en="Notification Channel">قناة الإشعارات</label><select><option>#الإشعارات</option><option>#notifications</option></select></div>
-      <div class="field"><label data-ar="رسالة الإشعار" data-en="Notification Message">رسالة الإشعار</label><textarea>🔔 جديد على {platform}: {url}</textarea></div>
-      <div class="field"><label data-ar="المنصات المرصودة" data-en="Tracked Platforms">المنصات المرصودة</label>
-        <div class="chips">
-          <button class="chip tog">YouTube</button>
-          <button class="chip tog on">Twitch</button>
-          <button class="chip tog">Kick</button>
-          <button class="chip tog">X</button>
-        </div>
-      </div>
+      <div class="field"><label data-ar="قناة الإشعارات" data-en="Notification Channel">قناة الإشعارات</label><select><option>#الإشعارات</option></select></div>
       <button class="btn" data-save>💾 <span data-ar="حفظ الإعدادات" data-en="Save Settings">حفظ الإعدادات</span></button>
     </div>
   </section>
@@ -407,11 +319,6 @@
         <h3><span class="ico">🎵</span> <span data-ar="نظام الموسيقى" data-en="Music System">نظام الموسيقى</span></h3>
         <label class="switch"><input type="checkbox" checked><i></i></label>
       </div>
-      <p class="desc" data-ar="عواء موسيقي بجودة عالية في الرومات الصوتية." data-en="High quality music in voice channels.">عواء موسيقي بجودة عالية في الرومات الصوتية.</p>
-      <div class="field"><label data-ar="المنصة الافتراضية" data-en="Default Platform">المنصة الافتراضية</label><select><option>YouTube</option><option>Spotify</option><option>SoundCloud</option></select></div>
-      <div class="field"><label>مستوى الصوت: <b id="volval">70%</b></label><input type="range" min="0" max="100" value="70" id="vol"></div>
-      <div class="field"><label data-ar="أقصى مدة للأغنية (دقيقة)" data-en="Max Track Length (min)">أقصى مدة للأغنية (دقيقة)</label><input type="number" value="15"></div>
-      <div class="field"><label data-ar="وضع DJ فقط" data-en="DJ Only Mode">وضع DJ فقط</label><label class="switch"><input type="checkbox"><i></i></label></div>
       <button class="btn" data-save>💾 <span data-ar="حفظ الإعدادات" data-en="Save Settings">حفظ الإعدادات</span></button>
     </div>
   </section>
@@ -419,24 +326,7 @@
   <!-- ============ الألعاب ============ -->
   <section class="page" id="games">
     <div class="game-grid">
-      <div class="game-card red">
-        <span class="g-emoji">🐺</span><h3>WOLF HUNT</h3>
-        <div class="field"><label data-ar="الجائزة" data-en="Prize">الجائزة</label><input value="500 نقطة"></div>
-        <div class="field"><label data-ar="مدة الجولة (دقيقة)" data-en="Round Length (min)">مدة الجولة (دقيقة)</label><input type="number" value="10"></div>
-        <label class="switch lbl-center"><input type="checkbox" checked><i></i></label>
-      </div>
-      <div class="game-card blue">
-        <span class="g-emoji">🧠</span><h3>UNIVERSE QUIZ</h3>
-        <div class="field"><label data-ar="عدد الأسئلة" data-en="Questions">عدد الأسئلة</label><input type="number" value="10"></div>
-        <div class="field"><label data-ar="وقت السؤال (ثانية)" data-en="Time Per Question">وقت السؤال (ثانية)</label><input type="number" value="20"></div>
-        <label class="switch lbl-center"><input type="checkbox" checked><i></i></label>
-      </div>
-      <div class="game-card violet">
-        <span class="g-emoji">⚔️</span><h3>ALPHA DUEL</h3>
-        <div class="field"><label data-ar="نقاط الفوز" data-en="Win Points">نقاط الفوز</label><input type="number" value="100"></div>
-        <div class="field"><label data-ar="عدد الجولات" data-en="Rounds">عدد الجولات</label><input type="number" value="3"></div>
-        <label class="switch lbl-center"><input type="checkbox"><i></i></label>
-      </div>
+      <div class="game-card red"><span class="g-emoji">🐺</span><h3>WOLF HUNT</h3></div>
     </div>
     <button class="btn" data-save>💾 <span data-ar="حفظ الألعاب" data-en="Save Games">حفظ الألعاب</span></button>
   </section>
@@ -445,21 +335,6 @@
   <section class="page" id="embeds">
     <div class="card">
       <div class="card-head"><h3><span class="ico">💬</span> <span data-ar="منشئ الرسائل المخصصة" data-en="Embed Builder">منشئ الرسائل المخصصة</span></h3></div>
-      <p class="desc" data-ar="صمم رسالة Embed احترافية بنفس ألوان القطيع." data-en="Build a professional embed in pack colors.">صمم رسالة Embed احترافية بنفس ألوان القطيع.</p>
-      <div class="two-col">
-        <div>
-          <div class="field"><label data-ar="العنوان" data-en="Title">العنوان</label><input id="eTitle" value="عنوان الرسالة"></div>
-          <div class="field"><label data-ar="الوصف" data-en="Description">الوصف</label><textarea id="eDesc">اكتب وصف الرسالة هنا...</textarea></div>
-          <div class="field"><label data-ar="اللون" data-en="Color">اللون</label><input type="color" value="#3b82f6" id="eColor"></div>
-        </div>
-        <div>
-          <label class="f-label">معاينة 👇</label>
-          <div class="preview" id="ePreview" style="--pc:#3b82f6">
-            <b id="epT">عنوان الرسالة</b>
-            <p id="epD">اكتب وصف الرسالة هنا...</p>
-          </div>
-        </div>
-      </div>
       <button class="btn" data-save>💾 <span data-ar="حفظ الرسالة" data-en="Save Message">حفظ الرسالة</span></button>
     </div>
   </section>
@@ -469,17 +344,7 @@
     <div class="card">
       <div class="card-head"><h3><span class="ico">🎁</span> <span data-ar="نظام السحوبات" data-en="Giveaways">نظام السحوبات</span></h3>
         <label class="switch"><input type="checkbox" checked><i></i></label></div>
-      <p class="desc" data-ar="سحوبات تلقائية عادلة للقطيع." data-en="Fair automatic giveaways.">سحوبات تلقائية عادلة للقطيع.</p>
-      <div class="two-col">
-        <div>
-          <div class="field"><label data-ar="القناة" data-en="Channel">القناة</label><select><option>#السحوبات</option><option>#giveaway</option></select></div>
-          <div class="field"><label data-ar="المدة (ساعات)" data-en="Duration (hours)">المدة (ساعات)</label><input type="number" value="24"></div>
-        </div>
-        <div>
-          <div class="field"><label data-ar="عدد الفائزين" data-en="Winners">عدد الفائزين</label><input type="number" value="1"></div>
-          <div class="field"><label data-ar="شرط دخول" data-en="Entry Requirement">شرط دخول</label><select><option>تفاعل بالزر فقط</option><option>متطلب رتبة</option></select></div>
-        </div>
-      </div>
+      <div class="field"><label data-ar="القناة" data-en="Channel">القناة</label><select><option>#السحوبات</option></select></div>
       <button class="btn" data-save>💾 <span data-ar="حفظ الإعدادات" data-en="Save Settings">حفظ الإعدادات</span></button>
     </div>
   </section>
@@ -489,41 +354,22 @@
     <div class="card center-card">
       <div class="big-wolf">🐺</div>
       <h2>UNIBOT — ALPHA WOLF</h2>
-      <p class="desc" data-ar="قوة • سرعة • هيمنة. بوت متكامل بروح ذئب ألفا، بألوان البنفسجي والأزرق والأحمر." data-en="Power • Speed • Dominance. A complete bot with the alpha wolf spirit.">قوة • سرعة • هيمنة. بوت متكامل بروح ذئب ألفا، بألوان البنفسجي والأزرق والأحمر.</p>
-      <div class="chips center">
-        <span class="chip static">💜</span>
-        <span class="chip static">💙</span>
-        <span class="chip static">❤️</span>
-      </div>
+      <p class="desc">قوة • سرعة • هيمنة. بوت متكامل بروح ذئب ألفا.</p>
       <p class="ver">UniBot v3.1 — ALPHA EDITION</p>
     </div>
   </section>
 
-  <footer>🐺 UniBot © 2030 — <span data-ar="القطيع يتبع الألفا" data-en="The pack follows the alpha">القطيع يتبع الألفا</span></footer>
+  <footer>🐺 UniBot © 2030 — القطيع يتبع الألفا</footer>
 </main>
-
-<!-- ================= نافذة إضافة رتبة ================= -->
-<div class="modal" id="modal">
-  <div class="modal-box">
-    <h3>➕ <span data-ar="رتبة جديدة" data-en="New Role">رتبة جديدة</span></h3>
-    <div class="field"><label data-ar="اسم الرتبة" data-en="Role Name">اسم الرتبة</label><input id="mName" placeholder="مثال: أسطورة"></div>
-    <div class="field"><label data-ar="شرط الحصول عليها" data-en="Requirement">شرط الحصول عليها</label><input id="mReq" placeholder="مثال: المستوى 100"></div>
-    <div class="modal-btns">
-      <button class="btn" id="mAdd" data-ar="إضافة" data-en="Add">إضافة</button>
-      <button class="btn ghost" id="mCancel" data-ar="إلغاء" data-en="Cancel">إلغاء</button>
-    </div>
-  </div>
-</div>
 
 <div class="toast" id="toast">✅ تم الحفظ</div>
 
 <script src="script.js"></script>
 <script>
-  /* حماية من التعليق: إخفاء اللودر قسراً مهما صار */
   setTimeout(function () {
     var l = document.getElementById('loader');
     if (l) l.classList.add('done');
   }, 4000);
 </script>
 </body>
-                                                                                                                                                                                            </html>
+</html>
