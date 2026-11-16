@@ -2,90 +2,236 @@
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'self'; img-src 'self' data:; connect-src 'self' https:; base-uri 'none'; form-action 'none'">
-<meta name="referrer" content="no-referrer">
-<meta name="color-scheme" content="dark">
-<title>UniBot | لوحة التحكم</title>
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 48 48'%3E%3Cpath fill='%238b5cf6' d='M6 4l11 9h14l11-9-3 19 5 10-13 13h-6l-3-6-3 6h-6L4 33l5-10z'/%3E%3C/svg%3E">
-<link rel="stylesheet" href="style.css">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>UniBot | ذئب ألفا 🐺</title>
+<style>
+* { margin:0; padding:0; box-sizing:border-box; font-family:'Segoe UI', Tahoma, sans-serif; }
+
+body {
+  min-height:100vh;
+  background:#0a0618;
+  color:#fff;
+  overflow-x:hidden;
+}
+
+/* خلفية متحركة */
+.bg {
+  position:fixed; inset:0; z-index:-2;
+  background:
+    radial-gradient(circle at 20% 20%, rgba(124,58,237,.35), transparent 40%),
+    radial-gradient(circle at 80% 30%, rgba(37,99,235,.35), transparent 40%),
+    radial-gradient(circle at 50% 90%, rgba(239,68,68,.25), transparent 45%),
+    #0a0618;
+  animation:bgMove 15s ease-in-out infinite alternate;
+}
+@keyframes bgMove {
+  0% { filter:hue-rotate(0deg) brightness(1); }
+  100% { filter:hue-rotate(25deg) brightness(1.15); }
+}
+.stars { position:fixed; inset:0; z-index:-1; pointer-events:none; }
+.star { position:absolute; background:#fff; border-radius:50%; animation:twinkle 3s infinite; }
+@keyframes twinkle { 0%,100%{opacity:.2} 50%{opacity:1} }
+
+/* الهيدر */
+header {
+  display:flex; align-items:center; justify-content:center; gap:20px;
+  padding:40px 20px 20px;
+}
+.avatar {
+  width:110px; height:110px; border-radius:50%;
+  background:linear-gradient(135deg,#7c3aed,#2563eb,#ef4444);
+  display:flex; align-items:center; justify-content:center;
+  font-size:60px;
+  box-shadow:0 0 30px rgba(124,58,237,.8), 0 0 60px rgba(37,99,235,.5);
+  animation:pulse 2.5s infinite;
+}
+@keyframes pulse {
+  0%,100% { box-shadow:0 0 25px rgba(124,58,237,.7); transform:scale(1); }
+  50% { box-shadow:0 0 60px rgba(239,68,68,.6); transform:scale(1.05); }
+}
+h1 {
+  font-size:2.4em;
+  background:linear-gradient(90deg,#a78bfa,#60a5fa,#f87171);
+  -webkit-background-clip:text; background-clip:text; color:transparent;
+}
+.tagline { text-align:center; color:#cbd5e1; margin-bottom:30px; }
+
+/* الحالات */
+.status {
+  text-align:center; margin-bottom:30px;
+}
+.status span {
+  display:inline-flex; align-items:center; gap:8px;
+  background:rgba(34,197,94,.15); border:1px solid #22c55e;
+  padding:8px 20px; border-radius:50px; color:#4ade80; font-weight:bold;
+}
+.dot { width:10px; height:10px; background:#22c55e; border-radius:50%; animation:blink 1.2s infinite; }
+@keyframes blink { 50%{opacity:.3} }
+
+/* الإحصائيات */
+.stats {
+  display:grid; grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
+  gap:20px; max-width:1000px; margin:0 auto 40px; padding:0 20px;
+}
+.stat {
+  background:rgba(255,255,255,.06);
+  backdrop-filter:blur(12px);
+  border:1px solid rgba(255,255,255,.12);
+  border-radius:18px; padding:25px; text-align:center;
+  transition:.3s; position:relative; overflow:hidden;
+}
+.stat::before {
+  content:''; position:absolute; top:0; left:0; right:0; height:3px;
+  background:linear-gradient(90deg,#7c3aed,#2563eb,#ef4444);
+}
+.stat:hover { transform:translateY(-8px) scale(1.03); box-shadow:0 10px 40px rgba(124,58,237,.4); }
+.stat .num { font-size:2em; font-weight:bold; background:linear-gradient(90deg,#a78bfa,#60a5fa); -webkit-background-clip:text; background-clip:text; color:transparent; }
+.stat .lbl { color:#94a3b8; margin-top:5px; }
+
+/* الأوامر */
+.section {
+  max-width:900px; margin:0 auto 50px; padding:0 20px;
+}
+.section h2 {
+  text-align:center; margin-bottom:25px; font-size:1.6em;
+  color:#e0e7ff;
+}
+.commands {
+  display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); gap:15px;
+}
+.cmd {
+  background:rgba(255,255,255,.05);
+  backdrop-filter:blur(10px);
+  border:1px solid rgba(124,58,237,.4);
+  border-radius:15px; padding:20px;
+  transition:.3s; cursor:pointer;
+}
+.cmd:hover {
+  background:rgba(124,58,237,.2);
+  border-color:#ef4444;
+  transform:scale(1.05);
+}
+.cmd .name { font-size:1.2em; font-weight:bold; color:#93c5fd; }
+.cmd .desc { color:#94a3b8; font-size:.9em; margin-top:5px; }
+.cmd .uses { color:#f87171; font-size:.8em; margin-top:8px; }
+
+/* الألعاب */
+.games { display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:15px; }
+.game {
+  background:linear-gradient(135deg,rgba(124,58,237,.25),rgba(37,99,235,.25),rgba(239,68,68,.2));
+  border:1px solid rgba(255,255,255,.15);
+  border-radius:15px; padding:25px; text-align:center; transition:.3s;
+}
+.game:hover { transform:translateY(-5px); box-shadow:0 8px 30px rgba(37,99,235,.4); }
+.game .emoji { font-size:2.5em; }
+.game .gname { font-size:1.2em; font-weight:bold; margin-top:10px; color:#e0e7ff; }
+.game .players { color:#94a3b8; font-size:.85em; margin-top:5px; }
+.game .badge {
+  display:inline-block; margin-top:10px; padding:4px 14px; border-radius:50px;
+  font-size:.75em; font-weight:bold;
+}
+.live { background:rgba(34,197,94,.2); color:#4ade80; border:1px solid #22c55e; }
+.paused { background:rgba(239,68,68,.2); color:#f87171; border:1px solid #ef4444; }
+
+/* البطولة */
+.leaderboard {
+  background:rgba(255,255,255,.05); backdrop-filter:blur(10px);
+  border:1px solid rgba(124,58,237,.4); border-radius:18px; padding:25px;
+}
+.rank {
+  display:flex; align-items:center; gap:15px;
+  padding:14px; border-radius:12px; margin-bottom:10px;
+  background:rgba(255,255,255,.04); transition:.3s;
+}
+.rank:hover { background:rgba(124,58,237,.2); transform:translateX(-5px); }
+.rank .medal { font-size:1.6em; width:40px; text-align:center; }
+.rank .pname { flex:1; font-weight:bold; }
+.rank .pts { color:#60a5fa; font-weight:bold; }
+.bar-bg { height:6px; background:rgba(255,255,255,.1); border-radius:3px; margin-top:6px; }
+.bar { height:100%; border-radius:3px; background:linear-gradient(90deg,#7c3aed,#2563eb,#ef4444); transition:width 1s; }
+
+footer {
+  text-align:center; padding:40px 20px; color:#64748b;
+  border-top:1px solid rgba(255,255,255,.08);
+}
+footer .wolf { font-size:2em; margin-bottom:10px; }
+
+@media (max-width:600px) {
+  h1 { font-size:1.7em; }
+  .avatar { width:80px; height:80px; font-size:42px; }
+}
+</style>
 </head>
 <body>
-<div class="app">
-  <aside class="side">
-    <div class="brand">
-      <svg class="wolf" viewBox="0 0 48 48" aria-hidden="true"><path d="M6 4l11 9h14l11-9-3 19 5 10-13 13h-6l-3-6-3 6h-6L4 33l5-10z"/><path class="eye" d="M15 24l6 2-2 3zM33 24l-6 2 2 3z"/></svg>
-      <div><strong>UniBot</strong><span>UniverseBot</span></div>
-    </div>
-    <nav id="nav" aria-label="التنقل">
-      <a href="#overview" data-view="overview">نظرة عامة</a>
-      <a href="#servers" data-view="servers">السيرفرات</a>
-      <a href="#commands" data-view="commands">الأوامر</a>
-      <a href="#games" data-view="games">الألعاب</a>
-      <a href="#tickets" data-view="tickets">التذاكر</a>
-      <a href="#logs" data-view="logs">السجلات</a>
-    </nav>
-    <p class="note" id="mode">وضع تجريبي</p>
-  </aside>
+<div class="bg"></div>
+<div class="stars" id="stars"></div>
 
-  <main>
-    <header class="top">
-      <h1 id="title">نظرة عامة</h1>
-      <div class="status" id="status" role="status"><i></i><span>جاري الاتصال</span></div>
-    </header>
+<header>
+  <div class="avatar">🐺</div>
+  <div>
+    <h1>UniBot | ذئب ألفا</h1>
+    <p class="tagline">زعيم القطيع • قوة • سرعة • هيمنة</p>
+  </div>
+</header>
 
-    <section id="overview" class="view" hidden>
-      <div class="stats">
-        <article class="card c-purple"><span>السيرفرات</span><b id="s-servers">0</b></article>
-        <article class="card c-blue"><span>المستخدمين</span><b id="s-users">0</b></article>
-        <article class="card c-red"><span>التأخير (ms)</span><b id="s-ping">0</b></article>
-        <article class="card c-purple"><span>مدة التشغيل</span><b id="s-uptime">0</b></article>
-      </div>
-      <div class="split">
-        <article class="panel"><h2>سرعة الاستجابة</h2><div id="chart" class="chart"></div></article>
-        <article class="panel"><h2>آخر الأحداث</h2><ul id="recent" class="logs"></ul></article>
-      </div>
-    </section>
-
-    <section id="servers" class="view" hidden>
-      <article class="panel"><h2>السيرفرات المتصلة</h2><ul id="server-list" class="rows"></ul></article>
-    </section>
-
-    <section id="commands" class="view" hidden>
-      <article class="panel">
-        <h2>الأوامر</h2>
-        <label class="search"><span class="sr">بحث</span><input id="search" type="search" maxlength="40" placeholder="ابحث عن أمر" autocomplete="off"></label>
-        <div class="table-wrap">
-          <table>
-            <thead><tr><th>الأمر</th><th>الوصف</th><th>الاستخدام</th></tr></thead>
-            <tbody id="cmd-body"></tbody>
-          </table>
-        </div>
-      </article>
-    </section>
-
-    <section id="games" class="view" hidden>
-      <article class="panel"><h2>الألعاب</h2><ul id="game-list" class="rows"></ul></article>
-      <article class="panel"><h2>ترتيب اللاعبين</h2><ol id="leaderboard" class="rows"></ol></article>
-    </section>
-
-    <section id="tickets" class="view" hidden>
-      <article class="panel">
-        <h2>التذاكر</h2>
-        <label class="search"><span class="sr">تصفية</span>
-          <select id="ticket-filter"><option value="all">الكل</option><option value="open">مفتوحة</option><option value="closed">مغلقة</option></select>
-        </label>
-        <ul id="ticket-list" class="rows"></ul>
-      </article>
-    </section>
-
-    <section id="logs" class="view" hidden>
-      <article class="panel"><h2>سجل البوت</h2><ul id="log-list" class="logs"></ul></article>
-    </section>
-  </main>
+<div class="status">
+  <span><span class="dot"></span> البوت متصل ويعمل بكامل قوته</span>
 </div>
-<script src="app.js"></script>
-<script src="games.js"></script>
-<script src="tickets.js"></script>
+
+<section class="stats">
+  <div class="stat"><div class="num">4</div><div class="lbl">السيرفرات</div></div>
+  <div class="stat"><div class="num">79ms</div><div class="lbl">سرعة الاستجابة</div></div>
+  <div class="stat"><div class="num">3ي 0س</div><div class="lbl">مدة التشغيل</div></div>
+  <div class="stat"><div class="num">24/7</div><div class="lbl">يعمل دائماً</div></div>
+</section>
+
+<section class="section">
+  <h2>⚡ الأوامر</h2>
+  <div class="commands">
+    <div class="cmd"><div class="name">/help</div><div class="desc">عرض قائمة الأوامر</div><div class="uses">842 استخدام</div></div>
+    <div class="cmd"><div class="name">/ping</div><div class="desc">قياس سرعة البوت</div><div class="uses">1,530 استخدام</div></div>
+    <div class="cmd"><div class="name">/play</div><div class="desc">تشغيل أغنية</div><div class="uses">970 استخدام</div></div>
+    <div class="cmd"><div class="name">/stats</div><div class="desc">إحصائيات السيرفر</div><div class="uses">311 استخدام</div></div>
+  </div>
+</section>
+
+<section class="section">
+  <h2>🎮 الألعاب</h2>
+  <div class="games">
+    <div class="game"><div class="emoji">🐺</div><div class="gname">Wolf Hunt</div><div class="players">128 لاعب نشط</div><span class="badge live">مباشر</span></div>
+    <div class="game"><div class="emoji">🧠</div><div class="gname">Universe Quiz</div><div class="players">342 لاعب نشط</div><span class="badge live">مباشر</span></div>
+    <div class="game"><div class="emoji">⚔️</div><div class="gname">Alpha Duel</div><div class="players">متوقفة مؤقتاً</div><span class="badge paused">متوقفة</span></div>
+  </div>
+</section>
+
+<section class="section">
+  <h2>👑 عرش الذئاب</h2>
+  <div class="leaderboard">
+    <div class="rank"><div class="medal">🥇</div><div class="pname">AlphaKing<div class="bar-bg"><div class="bar" style="width:100%"></div></div></div><div class="pts">9,820</div></div>
+    <div class="rank"><div class="medal">🥈</div><div class="pname">NightWolf<div class="bar-bg"><div class="bar" style="width:86%"></div></div></div><div class="pts">8,410</div></div>
+    <div class="rank"><div class="medal">🥉</div><div class="pname">Luna<div class="bar-bg"><div class="bar" style="width:79%"></div></div></div><div class="pts">7,755</div></div>
+    <div class="rank"><div class="medal">🐺</div><div class="pname">ShadowPack<div class="bar-bg"><div class="bar" style="width:62%"></div></div></div><div class="pts">6,120</div></div>
+  </div>
+</section>
+
+<footer>
+  <div class="wolf">🐺</div>
+  <p>UniBot — قائد القطيع يراقب دائماً</p>
+</footer>
+
+<script>
+// نجوم متلألئة
+const stars = document.getElementById('stars');
+for (let i = 0; i < 60; i++) {
+  const s = document.createElement('div');
+  s.className = 'star';
+  s.style.left = Math.random() * 100 + '%';
+  s.style.top = Math.random() * 100 + '%';
+  const size = Math.random() * 3 + 1;
+  s.style.width = s.style.height = size + 'px';
+  s.style.animationDelay = Math.random() * 3 + 's';
+  stars.appendChild(s);
+}
+</script>
 </body>
 </html>
