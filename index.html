@@ -3,235 +3,170 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>UniBot | ذئب ألفا 🐺</title>
-<style>
-* { margin:0; padding:0; box-sizing:border-box; font-family:'Segoe UI', Tahoma, sans-serif; }
-
-body {
-  min-height:100vh;
-  background:#0a0618;
-  color:#fff;
-  overflow-x:hidden;
-}
-
-/* خلفية متحركة */
-.bg {
-  position:fixed; inset:0; z-index:-2;
-  background:
-    radial-gradient(circle at 20% 20%, rgba(124,58,237,.35), transparent 40%),
-    radial-gradient(circle at 80% 30%, rgba(37,99,235,.35), transparent 40%),
-    radial-gradient(circle at 50% 90%, rgba(239,68,68,.25), transparent 45%),
-    #0a0618;
-  animation:bgMove 15s ease-in-out infinite alternate;
-}
-@keyframes bgMove {
-  0% { filter:hue-rotate(0deg) brightness(1); }
-  100% { filter:hue-rotate(25deg) brightness(1.15); }
-}
-.stars { position:fixed; inset:0; z-index:-1; pointer-events:none; }
-.star { position:absolute; background:#fff; border-radius:50%; animation:twinkle 3s infinite; }
-@keyframes twinkle { 0%,100%{opacity:.2} 50%{opacity:1} }
-
-/* الهيدر */
-header {
-  display:flex; align-items:center; justify-content:center; gap:20px;
-  padding:40px 20px 20px;
-}
-.avatar {
-  width:110px; height:110px; border-radius:50%;
-  background:linear-gradient(135deg,#7c3aed,#2563eb,#ef4444);
-  display:flex; align-items:center; justify-content:center;
-  font-size:60px;
-  box-shadow:0 0 30px rgba(124,58,237,.8), 0 0 60px rgba(37,99,235,.5);
-  animation:pulse 2.5s infinite;
-}
-@keyframes pulse {
-  0%,100% { box-shadow:0 0 25px rgba(124,58,237,.7); transform:scale(1); }
-  50% { box-shadow:0 0 60px rgba(239,68,68,.6); transform:scale(1.05); }
-}
-h1 {
-  font-size:2.4em;
-  background:linear-gradient(90deg,#a78bfa,#60a5fa,#f87171);
-  -webkit-background-clip:text; background-clip:text; color:transparent;
-}
-.tagline { text-align:center; color:#cbd5e1; margin-bottom:30px; }
-
-/* الحالات */
-.status {
-  text-align:center; margin-bottom:30px;
-}
-.status span {
-  display:inline-flex; align-items:center; gap:8px;
-  background:rgba(34,197,94,.15); border:1px solid #22c55e;
-  padding:8px 20px; border-radius:50px; color:#4ade80; font-weight:bold;
-}
-.dot { width:10px; height:10px; background:#22c55e; border-radius:50%; animation:blink 1.2s infinite; }
-@keyframes blink { 50%{opacity:.3} }
-
-/* الإحصائيات */
-.stats {
-  display:grid; grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
-  gap:20px; max-width:1000px; margin:0 auto 40px; padding:0 20px;
-}
-.stat {
-  background:rgba(255,255,255,.06);
-  backdrop-filter:blur(12px);
-  border:1px solid rgba(255,255,255,.12);
-  border-radius:18px; padding:25px; text-align:center;
-  transition:.3s; position:relative; overflow:hidden;
-}
-.stat::before {
-  content:''; position:absolute; top:0; left:0; right:0; height:3px;
-  background:linear-gradient(90deg,#7c3aed,#2563eb,#ef4444);
-}
-.stat:hover { transform:translateY(-8px) scale(1.03); box-shadow:0 10px 40px rgba(124,58,237,.4); }
-.stat .num { font-size:2em; font-weight:bold; background:linear-gradient(90deg,#a78bfa,#60a5fa); -webkit-background-clip:text; background-clip:text; color:transparent; }
-.stat .lbl { color:#94a3b8; margin-top:5px; }
-
-/* الأوامر */
-.section {
-  max-width:900px; margin:0 auto 50px; padding:0 20px;
-}
-.section h2 {
-  text-align:center; margin-bottom:25px; font-size:1.6em;
-  color:#e0e7ff;
-}
-.commands {
-  display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); gap:15px;
-}
-.cmd {
-  background:rgba(255,255,255,.05);
-  backdrop-filter:blur(10px);
-  border:1px solid rgba(124,58,237,.4);
-  border-radius:15px; padding:20px;
-  transition:.3s; cursor:pointer;
-}
-.cmd:hover {
-  background:rgba(124,58,237,.2);
-  border-color:#ef4444;
-  transform:scale(1.05);
-}
-.cmd .name { font-size:1.2em; font-weight:bold; color:#93c5fd; }
-.cmd .desc { color:#94a3b8; font-size:.9em; margin-top:5px; }
-.cmd .uses { color:#f87171; font-size:.8em; margin-top:8px; }
-
-/* الألعاب */
-.games { display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:15px; }
-.game {
-  background:linear-gradient(135deg,rgba(124,58,237,.25),rgba(37,99,235,.25),rgba(239,68,68,.2));
-  border:1px solid rgba(255,255,255,.15);
-  border-radius:15px; padding:25px; text-align:center; transition:.3s;
-}
-.game:hover { transform:translateY(-5px); box-shadow:0 8px 30px rgba(37,99,235,.4); }
-.game .emoji { font-size:2.5em; }
-.game .gname { font-size:1.2em; font-weight:bold; margin-top:10px; color:#e0e7ff; }
-.game .players { color:#94a3b8; font-size:.85em; margin-top:5px; }
-.game .badge {
-  display:inline-block; margin-top:10px; padding:4px 14px; border-radius:50px;
-  font-size:.75em; font-weight:bold;
-}
-.live { background:rgba(34,197,94,.2); color:#4ade80; border:1px solid #22c55e; }
-.paused { background:rgba(239,68,68,.2); color:#f87171; border:1px solid #ef4444; }
-
-/* البطولة */
-.leaderboard {
-  background:rgba(255,255,255,.05); backdrop-filter:blur(10px);
-  border:1px solid rgba(124,58,237,.4); border-radius:18px; padding:25px;
-}
-.rank {
-  display:flex; align-items:center; gap:15px;
-  padding:14px; border-radius:12px; margin-bottom:10px;
-  background:rgba(255,255,255,.04); transition:.3s;
-}
-.rank:hover { background:rgba(124,58,237,.2); transform:translateX(-5px); }
-.rank .medal { font-size:1.6em; width:40px; text-align:center; }
-.rank .pname { flex:1; font-weight:bold; }
-.rank .pts { color:#60a5fa; font-weight:bold; }
-.bar-bg { height:6px; background:rgba(255,255,255,.1); border-radius:3px; margin-top:6px; }
-.bar { height:100%; border-radius:3px; background:linear-gradient(90deg,#7c3aed,#2563eb,#ef4444); transition:width 1s; }
-
-footer {
-  text-align:center; padding:40px 20px; color:#64748b;
-  border-top:1px solid rgba(255,255,255,.08);
-}
-footer .wolf { font-size:2em; margin-bottom:10px; }
-
-@media (max-width:600px) {
-  h1 { font-size:1.7em; }
-  .avatar { width:80px; height:80px; font-size:42px; }
-}
-</style>
+<title>UNIBOT ⚡ ALPHA WOLF 2030</title>
+<link rel="stylesheet" href="style.css">
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Cairo:wght@400;700;900&display=swap" rel="stylesheet">
 </head>
 <body>
-<div class="bg"></div>
-<div class="stars" id="stars"></div>
 
-<header>
-  <div class="avatar">🐺</div>
-  <div>
-    <h1>UniBot | ذئب ألفا</h1>
-    <p class="tagline">زعيم القطيع • قوة • سرعة • هيمنة</p>
-  </div>
-</header>
+<!-- شبكة مستقبلية -->
+<div class="grid-floor"></div>
+<canvas id="particles"></canvas>
 
-<div class="status">
-  <span><span class="dot"></span> البوت متصل ويعمل بكامل قوته</span>
+<!-- شاشة تحميل -->
+<div id="loader">
+  <div class="wolf-loader">🐺</div>
+  <div class="load-bar"><div class="load-fill"></div></div>
+  <p class="load-text">UNLEASHING THE ALPHA...</p>
 </div>
 
-<section class="stats">
-  <div class="stat"><div class="num">4</div><div class="lbl">السيرفرات</div></div>
-  <div class="stat"><div class="num">79ms</div><div class="lbl">سرعة الاستجابة</div></div>
-  <div class="stat"><div class="num">3ي 0س</div><div class="lbl">مدة التشغيل</div></div>
-  <div class="stat"><div class="num">24/7</div><div class="lbl">يعمل دائماً</div></div>
-</section>
+<!-- مؤشر ماوس -->
+<div class="cursor-dot"></div>
+<div class="cursor-ring"></div>
 
-<section class="section">
-  <h2>⚡ الأوامر</h2>
-  <div class="commands">
-    <div class="cmd"><div class="name">/help</div><div class="desc">عرض قائمة الأوامر</div><div class="uses">842 استخدام</div></div>
-    <div class="cmd"><div class="name">/ping</div><div class="desc">قياس سرعة البوت</div><div class="uses">1,530 استخدام</div></div>
-    <div class="cmd"><div class="name">/play</div><div class="desc">تشغيل أغنية</div><div class="uses">970 استخدام</div></div>
-    <div class="cmd"><div class="name">/stats</div><div class="desc">إحصائيات السيرفر</div><div class="uses">311 استخدام</div></div>
+<!-- سكان صفحة -->
+<div class="scanline"></div>
+
+<nav class="navbar glass">
+  <div class="logo">🐺 <span>UNI<em>BOT</em></span></div>
+  <ul class="nav-links">
+    <li><a href="#home">الرئيسية</a></li>
+    <li><a href="#stats">القوة</a></li>
+    <li><a href="#commands">الأوامر</a></li>
+    <li><a href="#games">الألعاب</a></li>
+    <li><a href="#throne">العرش</a></li>
+  </ul>
+</nav>
+
+<!-- البطل -->
+<section id="home" class="hero">
+  <div class="hero-glow"></div>
+  <div class="wolf-orb" data-tilt>
+    <div class="orb-ring r1"></div>
+    <div class="orb-ring r2"></div>
+    <div class="orb-ring r3"></div>
+    <div class="wolf-face">🐺</div>
+  </div>
+  <h1 class="glitch" data-text="UNIBOT">UNIBOT</h1>
+  <p class="hero-sub">ذئب ألفا • عقل رقمي من عام <span class="accent">2030</span></p>
+  <div class="hero-btns">
+    <a href="#commands" class="btn btn-fire">⚡ استدعِ القطيع</a>
+    <a href="#stats" class="btn btn-ghost">📊 تحليل القوة</a>
   </div>
 </section>
 
-<section class="section">
-  <h2>🎮 الألعاب</h2>
-  <div class="games">
-    <div class="game"><div class="emoji">🐺</div><div class="gname">Wolf Hunt</div><div class="players">128 لاعب نشط</div><span class="badge live">مباشر</span></div>
-    <div class="game"><div class="emoji">🧠</div><div class="gname">Universe Quiz</div><div class="players">342 لاعب نشط</div><span class="badge live">مباشر</span></div>
-    <div class="game"><div class="emoji">⚔️</div><div class="gname">Alpha Duel</div><div class="players">متوقفة مؤقتاً</div><span class="badge paused">متوقفة</span></div>
+<!-- الإحصائيات -->
+<section id="stats" class="section">
+  <h2 class="sec-title">⚙️ <span>نواة القوة</span></h2>
+  <div class="stats-grid">
+    <div class="stat-card neon-violet" data-tilt>
+      <div class="stat-icon">🌐</div>
+      <div class="stat-num" data-count="4">0</div>
+      <div class="stat-lbl">بُعد السيرفرات</div>
+    </div>
+    <div class="stat-card neon-blue" data-tilt>
+      <div class="stat-icon">⚡</div>
+      <div class="stat-num"><span data-count="79">0</span><small>ms</small></div>
+      <div class="stat-lbl">سرعة الصاعقة</div>
+    </div>
+    <div class="stat-card neon-red" data-tilt>
+      <div class="stat-icon">🔥</div>
+      <div class="stat-num" data-uptime>3ي 0س</div>
+      <div class="stat-lbl">لهيب التشغيل</div>
+    </div>
+    <div class="stat-card neon-violet" data-tilt>
+      <div class="stat-icon">♾️</div>
+      <div class="stat-num">24/7</div>
+      <div class="stat-lbl">يقظة الألفا</div>
+    </div>
   </div>
 </section>
 
-<section class="section">
-  <h2>👑 عرش الذئاب</h2>
-  <div class="leaderboard">
-    <div class="rank"><div class="medal">🥇</div><div class="pname">AlphaKing<div class="bar-bg"><div class="bar" style="width:100%"></div></div></div><div class="pts">9,820</div></div>
-    <div class="rank"><div class="medal">🥈</div><div class="pname">NightWolf<div class="bar-bg"><div class="bar" style="width:86%"></div></div></div><div class="pts">8,410</div></div>
-    <div class="rank"><div class="medal">🥉</div><div class="pname">Luna<div class="bar-bg"><div class="bar" style="width:79%"></div></div></div><div class="pts">7,755</div></div>
-    <div class="rank"><div class="medal">🐺</div><div class="pname">ShadowPack<div class="bar-bg"><div class="bar" style="width:62%"></div></div></div><div class="pts">6,120</div></div>
+<!-- الأوامر -->
+<section id="commands" class="section">
+  <h2 class="sec-title">⌨️ <span>أوامر الصيد</span></h2>
+  <div class="cmd-grid">
+    <div class="cmd-card" data-tilt data-uses="842">
+      <span class="cmd-pulse"></span>
+      <h3>/help</h3><p>خريطة أوامر القطيع</p>
+      <div class="cmd-meter"><i style="--w:70%"></i></div>
+    </div>
+    <div class="cmd-card" data-tilt data-uses="1530">
+      <span class="cmd-pulse"></span>
+      <h3>/ping</h3><p>نبض الذئب</p>
+      <div class="cmd-meter"><i style="--w:100%"></i></div>
+    </div>
+    <div class="cmd-card" data-tilt data-uses="970">
+      <span class="cmd-pulse"></span>
+      <h3>/play</h3><p>عواء الموسيقى</p>
+      <div class="cmd-meter"><i style="--w:82%"></i></div>
+    </div>
+    <div class="cmd-card" data-tilt data-uses="311">
+      <span class="cmd-pulse"></span>
+      <h3>/stats</h3><p>سجل الصيد</p>
+      <div class="cmd-meter"><i style="--w:45%"></i></div>
+    </div>
+  </div>
+</section>
+
+<!-- الألعاب -->
+<section id="games" class="section">
+  <h2 class="sec-title">🎮 <span>ساحة الصيد</span></h2>
+  <div class="game-grid">
+    <div class="game-card red" data-tilt>
+      <div class="g-emoji">🐺</div><h3>WOLF HUNT</h3>
+      <div class="g-players">128 صياد نشط</div>
+      <span class="tag live">● مباشر</span>
+    </div>
+    <div class="game-card blue" data-tilt>
+      <div class="g-emoji">🧠</div><h3>UNIVERSE QUIZ</h3>
+      <div class="g-players">342 صياد نشط</div>
+      <span class="tag live">● مباشر</span>
+    </div>
+    <div class="game-card violet" data-tilt>
+      <div class="g-emoji">⚔️</div><h3>ALPHA DUEL</h3>
+      <div class="g-players">في السبات الشتوي</div>
+      <span class="tag off">✕ متوقفة</span>
+    </div>
+  </div>
+</section>
+
+<!-- العرش -->
+<section id="throne" class="section">
+  <h2 class="sec-title">👑 <span>عرش الذئاب</span></h2>
+  <div class="throne">
+    <div class="throne-row gold">
+      <span class="medal">🥇</span>
+      <span class="t-name">ALPHA KING</span>
+      <span class="t-pts">9,820</span>
+      <div class="t-bar"><i style="--w:100%"></i></div>
+    </div>
+    <div class="throne-row silver">
+      <span class="medal">🥈</span>
+      <span class="t-name">NIGHT WOLF</span>
+      <span class="t-pts">8,410</span>
+      <div class="t-bar"><i style="--w:86%"></i></div>
+    </div>
+    <div class="throne-row bronze">
+      <span class="medal">🥉</span>
+      <span class="t-name">LUNA</span>
+      <span class="t-pts">7,755</span>
+      <div class="t-bar"><i style="--w:79%"></i></div>
+    </div>
+    <div class="throne-row">
+      <span class="medal">🐺</span>
+      <span class="t-name">SHADOW PACK</span>
+      <span class="t-pts">6,120</span>
+      <div class="t-bar"><i style="--w:62%"></i></div>
+    </div>
   </div>
 </section>
 
 <footer>
-  <div class="wolf">🐺</div>
-  <p>UniBot — قائد القطيع يراقب دائماً</p>
+  <div class="f-wolf">🐺</div>
+  <p>UNIBOT © 2030 — الألفا لا يتبع القطيع، القطيع يتبع الألفا</p>
 </footer>
 
-<script>
-// نجوم متلألئة
-const stars = document.getElementById('stars');
-for (let i = 0; i < 60; i++) {
-  const s = document.createElement('div');
-  s.className = 'star';
-  s.style.left = Math.random() * 100 + '%';
-  s.style.top = Math.random() * 100 + '%';
-  const size = Math.random() * 3 + 1;
-  s.style.width = s.style.height = size + 'px';
-  s.style.animationDelay = Math.random() * 3 + 's';
-  stars.appendChild(s);
-}
-</script>
+<script src="script.js"></script>
 </body>
 </html>
