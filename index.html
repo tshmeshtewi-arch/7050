@@ -18,7 +18,8 @@
   <span class="orb o2"></span>
   <span class="orb o3"></span>
 </div>
-<div id="fx"></div>
+<canvas id="fx"></canvas>
+<div class="scanline" aria-hidden="true"></div>
 
 <!-- ================= شاشة تحميل ================= -->
 <div id="loader" aria-hidden="true">
@@ -43,15 +44,19 @@
     </div>
   </div>
 
+  <!-- صندوق تسجيل الدخول، اختيار السيرفر، وزر إضافة البوت -->
   <div class="side-server" style="flex-direction:column; align-items:stretch; gap:8px;">
-    <button id="discordLoginBtn" class="btn" style="padding:9px; font-size:0.85em; width:100%;">
+    <button id="discordLoginBtn" class="btn" style="padding:9px; font-size:0.82em; width:100%;">
       🔑 تسجيل الدخول بديسكورد
     </button>
     <div id="guildSelectorBox" style="display:none;">
-      <select id="guildSelect" style="width:100%; padding:8px; border-radius:10px; background:#0f0a23; color:#fff; border:1px solid var(--v); font-family:inherit; font-weight:bold;">
-        <option value="">اختر السيرفر...</option>
+      <select id="guildSelect" style="width:100%; padding:8px; border-radius:10px; background:#0f0a23; color:#fff; border:1px solid var(--v); font-family:inherit; font-weight:bold; font-size:0.85em;">
+        <option value="">اختر السيرفر للتحكم...</option>
       </select>
     </div>
+    <a id="addBotBtn" href="https://discord.com/api/oauth2/authorize?client_id=1523042577924886749&permissions=8&scope=bot%20applications.commands" target="_blank" class="btn ghost" style="text-align:center; text-decoration:none; padding:8px; font-size:0.8em; display:flex; align-items:center; justify-content:center; gap:6px;">
+      <span>🎮</span> أضف البوت إلى سيرفرك
+    </a>
   </div>
 
   <nav class="nav" id="nav">
@@ -120,6 +125,28 @@
       </div>
       <canvas id="chart" height="180"></canvas>
     </div>
+
+    <div class="two-col">
+      <div class="card">
+        <div class="card-head"><h3><span class="ico">🧩</span> <span data-ar="حالة الأنظمة" data-en="Systems Status">حالة الأنظمة</span></h3></div>
+        <div class="sys-row"><span>🎉 <span data-ar="الترحيب" data-en="Welcome">الترحيب</span></span><label class="switch"><input type="checkbox" data-store="sys-welcome" checked><i></i></label></div>
+        <div class="sys-row"><span>🏆 <span data-ar="الرتبة التلقائية" data-en="Auto Rank">الرتبة التلقائية</span></span><label class="switch"><input type="checkbox" data-store="sys-rank" checked><i></i></label></div>
+        <div class="sys-row"><span>📈 <span data-ar="المستويات" data-en="Levels">المستويات</span></span><label class="switch"><input type="checkbox" data-store="sys-levels" checked><i></i></label></div>
+        <div class="sys-row"><span>📝 <span data-ar="التقديم" data-en="Applications">التقديم</span></span><label class="switch"><input type="checkbox" data-store="sys-present" checked><i></i></label></div>
+        <div class="sys-row"><span>🎫 <span data-ar="التذاكر" data-en="Tickets">التذاكر</span></span><label class="switch"><input type="checkbox" data-store="sys-tickets" checked><i></i></label></div>
+        <div class="sys-row"><span>🛡️ <span data-ar="الحماية" data-en="Protection">الحماية</span></span><label class="switch"><input type="checkbox" data-store="sys-protect" checked><i></i></label></div>
+        <div class="sys-row"><span>🎵 <span data-ar="الموسيقى" data-en="Music">الموسيقى</span></span><label class="switch"><input type="checkbox" data-store="sys-music" checked><i></i></label></div>
+        <div class="sys-row"><span>🔔 <span data-ar="الإشعارات" data-en="Notifications">الإشعارات</span></span><label class="switch"><input type="checkbox" data-store="sys-notify"><i></i></label></div>
+      </div>
+      <div class="card">
+        <div class="card-head"><h3><span class="ico">📰</span> <span data-ar="آخر الأحداث العامة" data-en="Recent Activity">آخر الأحداث العامة</span></h3></div>
+        <div class="feed" id="feed">
+          <div class="feed-item"><i style="--c:#a855f7"></i><div><b>تم تحديث الإحصائيات</b><small>الآن</small></div></div>
+          <div class="feed-item"><i style="--c:#3b82f6"></i><div><b>أنظمة الألعاب تعمل بشكل طبيعي</b><small>قبل ساعة</small></div></div>
+          <div class="feed-item"><i style="--c:#ef4444"></i><div><b>أُعيد تشغيل وحدة الموسيقى</b><small>قبل 3 ساعات</small></div></div>
+        </div>
+      </div>
+    </div>
   </section>
 
   <!-- ============ إعدادات البوت ============ -->
@@ -127,6 +154,12 @@
     <div class="card">
       <div class="card-head"><h3><span class="ico">⚙️</span> <span data-ar="الإعدادات العامة" data-en="General Settings">الإعدادات العامة</span></h3></div>
       <div class="field"><label data-ar="بادئة الأوامر (Prefix)" data-en="Command Prefix">بادئة الأوامر (Prefix)</label><input value="!"></div>
+      <div class="field"><label data-ar="لغة البوت" data-en="Bot Language">لغة البوت</label>
+        <select id="botLang">
+          <option value="ar">العربية</option>
+          <option value="en">English</option>
+        </select>
+      </div>
       <button class="btn" data-save>💾 <span data-ar="حفظ الإعدادات" data-en="Save Settings">حفظ الإعدادات</span></button>
     </div>
   </section>
@@ -138,9 +171,20 @@
         <h3><span class="ico">🎉</span> <span data-ar="نظام الترحيب" data-en="Welcome System">نظام الترحيب</span></h3>
         <label class="switch"><input type="checkbox" checked><i></i></label>
       </div>
-      <div class="field"><label data-ar="قناة الترحيب" data-en="Welcome Channel">قناة الترحيب</label><select><option>#الترحيب</option></select></div>
-      <div class="field"><label data-ar="نص الرسالة" data-en="Message Text">نص الرسالة</label><textarea id="wmsg">أهلاً {member} في قطيع الذئاب 🐺</textarea></div>
-      <button class="btn" data-save>💾 <span data-ar="حفظ" data-en="Save">حفظ</span></button>
+      <div class="two-col">
+        <div>
+          <div class="field"><label data-ar="قناة الترحيب" data-en="Welcome Channel">قناة الترحيب</label><select><option>#الترحيب</option></select></div>
+          <div class="field"><label data-ar="نص الرسالة" data-en="Message Text">نص الرسالة</label><textarea id="wmsg">أهلاً {member} في قطيع الذئاب 🐺</textarea></div>
+          <button class="btn" data-save>💾 <span data-ar="حفظ" data-en="Save">حفظ</span></button>
+        </div>
+        <div>
+          <label class="f-label">معاينة حية 👇</label>
+          <div class="preview" id="wpreview" style="--pc:#a855f7">
+            <b>🎉 ترحيب!</b>
+            <p id="wptext">أهلاً @عضو في قطيع الذئاب 🐺</p>
+          </div>
+        </div>
+      </div>
     </div>
   </section>
 
