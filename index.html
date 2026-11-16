@@ -3,170 +3,389 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>UNIBOT ⚡ ALPHA WOLF 2030</title>
+<meta name="theme-color" content="#a855f7">
+<meta name="description" content="UniBot — لوحة تحكم ذئب ألفا">
+<title>UniBot | لوحة التحكم 🐺</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600;800&family=Cairo:wght@400;700;900&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="style.css">
-<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Cairo:wght@400;700;900&display=swap" rel="stylesheet">
 </head>
 <body>
 
-<!-- شبكة مستقبلية -->
-<div class="grid-floor"></div>
-<canvas id="particles"></canvas>
+<!-- ================= خلفية ================= -->
+<div class="bg-orbs" aria-hidden="true">
+  <span class="orb o1"></span>
+  <span class="orb o2"></span>
+  <span class="orb o3"></span>
+</div>
+<canvas id="fx"></canvas>
+<div class="scanline" aria-hidden="true"></div>
 
-<!-- شاشة تحميل -->
-<div id="loader">
-  <div class="wolf-loader">🐺</div>
-  <div class="load-bar"><div class="load-fill"></div></div>
-  <p class="load-text">UNLEASHING THE ALPHA...</p>
+<!-- ================= شاشة تحميل ================= -->
+<div id="loader" aria-hidden="true">
+  <div class="l-wolf">🐺</div>
+  <div class="l-bar"><div class="l-fill"></div></div>
+  <p class="l-txt">الذئب يستيقظ...</p>
 </div>
 
-<!-- مؤشر ماوس -->
-<div class="cursor-dot"></div>
-<div class="cursor-ring"></div>
-
-<!-- سكان صفحة -->
-<div class="scanline"></div>
-
-<nav class="navbar glass">
-  <div class="logo">🐺 <span>UNI<em>BOT</em></span></div>
-  <ul class="nav-links">
-    <li><a href="#home">الرئيسية</a></li>
-    <li><a href="#stats">القوة</a></li>
-    <li><a href="#commands">الأوامر</a></li>
-    <li><a href="#games">الألعاب</a></li>
-    <li><a href="#throne">العرش</a></li>
-  </ul>
-</nav>
-
-<!-- البطل -->
-<section id="home" class="hero">
-  <div class="hero-glow"></div>
-  <div class="wolf-orb" data-tilt>
-    <div class="orb-ring r1"></div>
-    <div class="orb-ring r2"></div>
-    <div class="orb-ring r3"></div>
-    <div class="wolf-face">🐺</div>
-  </div>
-  <h1 class="glitch" data-text="UNIBOT">UNIBOT</h1>
-  <p class="hero-sub">ذئب ألفا • عقل رقمي من عام <span class="accent">2030</span></p>
-  <div class="hero-btns">
-    <a href="#commands" class="btn btn-fire">⚡ استدعِ القطيع</a>
-    <a href="#stats" class="btn btn-ghost">📊 تحليل القوة</a>
-  </div>
-</section>
-
-<!-- الإحصائيات -->
-<section id="stats" class="section">
-  <h2 class="sec-title">⚙️ <span>نواة القوة</span></h2>
-  <div class="stats-grid">
-    <div class="stat-card neon-violet" data-tilt>
-      <div class="stat-icon">🌐</div>
-      <div class="stat-num" data-count="4">0</div>
-      <div class="stat-lbl">بُعد السيرفرات</div>
-    </div>
-    <div class="stat-card neon-blue" data-tilt>
-      <div class="stat-icon">⚡</div>
-      <div class="stat-num"><span data-count="79">0</span><small>ms</small></div>
-      <div class="stat-lbl">سرعة الصاعقة</div>
-    </div>
-    <div class="stat-card neon-red" data-tilt>
-      <div class="stat-icon">🔥</div>
-      <div class="stat-num" data-uptime>3ي 0س</div>
-      <div class="stat-lbl">لهيب التشغيل</div>
-    </div>
-    <div class="stat-card neon-violet" data-tilt>
-      <div class="stat-icon">♾️</div>
-      <div class="stat-num">24/7</div>
-      <div class="stat-lbl">يقظة الألفا</div>
+<!-- ================= شريط جانبي ================= -->
+<aside class="sidebar" id="sidebar">
+  <div class="side-head">
+    <div class="wolf-logo">🐺</div>
+    <div class="side-title">
+      <b>UniBot</b>
+      <small>ALPHA CONTROL v3.0</small>
     </div>
   </div>
-</section>
 
-<!-- الأوامر -->
-<section id="commands" class="section">
-  <h2 class="sec-title">⌨️ <span>أوامر الصيد</span></h2>
-  <div class="cmd-grid">
-    <div class="cmd-card" data-tilt data-uses="842">
-      <span class="cmd-pulse"></span>
-      <h3>/help</h3><p>خريطة أوامر القطيع</p>
-      <div class="cmd-meter"><i style="--w:70%"></i></div>
-    </div>
-    <div class="cmd-card" data-tilt data-uses="1530">
-      <span class="cmd-pulse"></span>
-      <h3>/ping</h3><p>نبض الذئب</p>
-      <div class="cmd-meter"><i style="--w:100%"></i></div>
-    </div>
-    <div class="cmd-card" data-tilt data-uses="970">
-      <span class="cmd-pulse"></span>
-      <h3>/play</h3><p>عواء الموسيقى</p>
-      <div class="cmd-meter"><i style="--w:82%"></i></div>
-    </div>
-    <div class="cmd-card" data-tilt data-uses="311">
-      <span class="cmd-pulse"></span>
-      <h3>/stats</h3><p>سجل الصيد</p>
-      <div class="cmd-meter"><i style="--w:45%"></i></div>
+  <div class="side-server">
+    <div class="sv-ava">🐺</div>
+    <div class="sv-info">
+      <b>Wolf Pack</b>
+      <small><span class="on-dot"></span> البوت متصل</small>
     </div>
   </div>
-</section>
 
-<!-- الألعاب -->
-<section id="games" class="section">
-  <h2 class="sec-title">🎮 <span>ساحة الصيد</span></h2>
-  <div class="game-grid">
-    <div class="game-card red" data-tilt>
-      <div class="g-emoji">🐺</div><h3>WOLF HUNT</h3>
-      <div class="g-players">128 صياد نشط</div>
-      <span class="tag live">● مباشر</span>
+  <nav class="nav" id="nav">
+    <p class="nav-cap">— عام —</p>
+    <a href="#" data-page="overview" class="active"><i>📊</i> نظرة عامة</a>
+    <a href="#" data-page="settings"><i>⚙️</i> إعدادات البوت</a>
+
+    <p class="nav-cap">— الأنظمة —</p>
+    <a href="#" data-page="welcome"><i>🎉</i> نظام الترحيب</a>
+    <a href="#" data-page="autorank"><i>🏆</i> الرتبة التلقائية</a>
+    <a href="#" data-page="tickets"><i>🎫</i> نظام التذاكر</a>
+    <a href="#" data-page="notify"><i>🔔</i> نظام الإشعارات</a>
+    <a href="#" data-page="protect"><i>🛡️</i> نظام الحماية</a>
+    <a href="#" data-page="music"><i>🎵</i> الموسيقى</a>
+    <a href="#" data-page="games"><i>🎮</i> الألعاب</a>
+    <a href="#" data-page="embeds"><i>💬</i> رسائل مخصصة</a>
+    <a href="#" data-page="gives"><i>🎁</i> السحوبات</a>
+
+    <p class="nav-cap">— أخرى —</p>
+    <a href="#" data-page="about"><i>🐺</i> عن UniBot</a>
+  </nav>
+
+  <div class="side-foot">
+    <div class="uptime-box">
+      <small>مدة التشغيل</small>
+      <b id="uptime">3ي 0س 0د</b>
     </div>
-    <div class="game-card blue" data-tilt>
-      <div class="g-emoji">🧠</div><h3>UNIVERSE QUIZ</h3>
-      <div class="g-players">342 صياد نشط</div>
-      <span class="tag live">● مباشر</span>
+    <div class="status-pill ok"><i class="dot"></i> متصل — 79ms</div>
+  </div>
+</aside>
+
+<button class="burger" id="burger" aria-label="القائمة">
+  <span></span><span></span><span></span>
+</button>
+<div class="overlay" id="overlay"></div>
+
+<!-- ================= المحتوى ================= -->
+<main id="main">
+  <header class="top">
+    <div>
+      <h1>لوحة تحكم <em>UniBot</em></h1>
+      <p class="crumb" id="crumb">نظرة عامة</p>
     </div>
-    <div class="game-card violet" data-tilt>
-      <div class="g-emoji">⚔️</div><h3>ALPHA DUEL</h3>
-      <div class="g-players">في السبات الشتوي</div>
-      <span class="tag off">✕ متوقفة</span>
+    <div class="top-tools">
+      <div class="search-box">
+        <input type="text" id="search" placeholder="🔍 بحث سريع في الأقسام...">
+      </div>
+      <div class="clock" id="clock">00:00:00</div>
+    </div>
+  </header>
+
+  <!-- ============ نظرة عامة ============ -->
+  <section class="page on" id="overview">
+    <div class="stat-grid">
+      <div class="stat-card v"><span class="s-ico">🌐</span><b class="s-num" data-count="4">0</b><span class="s-lbl">السيرفرات</span></div>
+      <div class="stat-card b"><span class="s-ico">⚡</span><b class="s-num"><span data-count="79">0</span><small>ms</small></b><span class="s-lbl">التأخير</span></div>
+      <div class="stat-card r"><span class="s-ico">🔥</span><b class="s-num">24/7</b><span class="s-lbl">يقظة الألفا</span></div>
+      <div class="stat-card v"><span class="s-ico">✅</span><b class="s-num">99.9%</b><span class="s-lbl">جودة الخدمة</span></div>
+    </div>
+
+    <div class="card">
+      <div class="card-head">
+        <h3><span class="ico">📈</span> مخطط الأداء الحي</h3>
+        <span class="tag live">● مباشر</span>
+      </div>
+      <canvas id="chart" height="180"></canvas>
+    </div>
+
+    <div class="two-col">
+      <div class="card">
+        <div class="card-head"><h3><span class="ico">🧩</span> حالة الأنظمة</h3></div>
+        <div class="sys-row"><span>🎉 الترحيب</span><label class="switch"><input type="checkbox" data-store="sys-welcome" checked><i></i></label></div>
+        <div class="sys-row"><span>🏆 الرتبة التلقائية</span><label class="switch"><input type="checkbox" data-store="sys-rank" checked><i></i></label></div>
+        <div class="sys-row"><span>🎫 التذاكر</span><label class="switch"><input type="checkbox" data-store="sys-tickets" checked><i></i></label></div>
+        <div class="sys-row"><span>🛡️ الحماية</span><label class="switch"><input type="checkbox" data-store="sys-protect" checked><i></i></label></div>
+        <div class="sys-row"><span>🎵 الموسيقى</span><label class="switch"><input type="checkbox" data-store="sys-music" checked><i></i></label></div>
+        <div class="sys-row"><span>🔔 الإشعارات</span><label class="switch"><input type="checkbox" data-store="sys-notify"><i></i></label></div>
+      </div>
+      <div class="card">
+        <div class="card-head"><h3><span class="ico">📰</span> آخر الأحداث العامة</h3></div>
+        <div class="feed" id="feed">
+          <div class="feed-item"><i style="--c:#a855f7"></i><div><b>تم تحديث الإحصائيات</b><small>قبل لحظات</small></div></div>
+          <div class="feed-item"><i style="--c:#3b82f6"></i><div><b>أنظمة الألعاب تعمل بشكل طبيعي</b><small>قبل ساعة</small></div></div>
+          <div class="feed-item"><i style="--c:#ef4444"></i><div><b>أُعيد تشغيل وحدة الموسيقى</b><small>قبل 3 ساعات</small></div></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ إعدادات البوت ============ -->
+  <section class="page" id="settings">
+    <div class="card">
+      <div class="card-head"><h3><span class="ico">⚙️</span> الإعدادات العامة</h3></div>
+      <div class="field"><label>بادئة الأوامر (Prefix)</label><input value="!"></div>
+      <div class="field"><label>اللغة</label><select><option>العربية</option><option>English</option></select></div>
+      <div class="field"><label>المنطقة الزمنية</label><select><option>(UTC+03:00) العربي</option><option>(UTC+00:00) غرينتش</option></select></div>
+      <div class="field"><label>حالة البوت</label><select><option>🐺 يراقب القطيع</option><option>🎮 يلعب</option><option>🎵 يستمع</option></select></div>
+      <button class="btn" data-save>💾 حفظ الإعدادات</button>
+    </div>
+  </section>
+
+  <!-- ============ الترحيب ============ -->
+  <section class="page" id="welcome">
+    <div class="card">
+      <div class="card-head">
+        <h3><span class="ico">🎉</span> نظام الترحيب</h3>
+        <label class="switch"><input type="checkbox" checked><i></i></label>
+      </div>
+      <p class="desc">رسالة ترحيب تلقائية وجمالية لكل من ينضم للقطيع.</p>
+      <div class="two-col">
+        <div>
+          <div class="field"><label>قناة الترحيب</label><select><option>#الترحيب</option><option>#welcome</option><option>#general</option></select></div>
+          <div class="field"><label>نص الرسالة</label><textarea id="wmsg">أهلاً {member} في قطيع الذئاب 🐺</textarea></div>
+          <div class="field"><label>متغيرات جاهزة</label>
+            <div class="chips">
+              <button class="chip" data-var="{member}">{member}</button>
+              <button class="chip" data-var="{server}">{server}</button>
+              <button class="chip" data-var="{count}">{count}</button>
+            </div>
+          </div>
+          <div class="field"><label>لون البطاقة</label><input type="color" value="#a855f7" class="wcolor"></div>
+          <button class="btn" data-save>💾 حفظ</button>
+        </div>
+        <div>
+          <label class="f-label">معاينة حية 👇</label>
+          <div class="preview" id="wpreview" style="--pc:#a855f7">
+            <b>🎉 ترحيب!</b>
+            <p id="wptext">أهلاً @عضو في قطيع الذئاب 🐺</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ الرتبة التلقائية ============ -->
+  <section class="page" id="autorank">
+    <div class="card">
+      <div class="card-head">
+        <h3><span class="ico">🏆</span> الرتبة التلقائية</h3>
+        <label class="switch"><input type="checkbox" checked><i></i></label>
+      </div>
+      <p class="desc">منح الرتب تلقائياً حسب النقاط أو النشاط — بدون تدخل يدوي.</p>
+      <div class="field"><label>مصدر الترقية</label>
+        <select><option>نقاط الألعاب والنشاط</option><option>عدد الرسائل</option><option>وقت البقاء في السيرفر</option></select>
+      </div>
+      <div class="field"><label>نقاط XP لكل رسالة: <b id="xpval">10</b></label>
+        <input type="range" min="1" max="50" value="10" id="xpslide">
+      </div>
+      <div id="ranklist">
+        <div class="rank-row"><span class="rb rb1">👑</span><div><b>ألفا — Alpha</b><small>أعلى نقاط في الترتيب</small></div><label class="switch"><input type="checkbox" checked><i></i></label></div>
+        <div class="rank-row"><span class="rb rb2">💜</span><div><b>محارب — Warrior</b><small>500 نقطة</small></div><label class="switch"><input type="checkbox" checked><i></i></label></div>
+        <div class="rank-row"><span class="rb rb3">💙</span><div><b>صياد — Hunter</b><small>200 نقطة</small></div><label class="switch"><input type="checkbox"><i></i></label></div>
+        <div class="rank-row"><span class="rb rb4">❤️</span><div><b>شبل — Pup</b><small>رتبة الدخول التلقائية</small></div><label class="switch"><input type="checkbox" checked><i></i></label></div>
+      </div>
+      <button class="add-btn" id="addRank">➕ إضافة رتبة</button>
+      <button class="btn" data-save>💾 حفظ نظام الرتب</button>
+    </div>
+  </section>
+
+  <!-- ============ التذاكر ============ -->
+  <section class="page" id="tickets">
+    <div class="card">
+      <div class="card-head">
+        <h3><span class="ico">🎫</span> نظام التذاكر</h3>
+        <label class="switch"><input type="checkbox" checked><i></i></label>
+      </div>
+      <p class="desc">تذاكر دعم منظمة بفئات قابلة للتخصيص.</p>
+      <div class="two-col">
+        <div>
+          <div class="field"><label>قناة فتح التذاكر</label><select><option>#ticket-here</option><option>#الدعم</option></select></div>
+          <div class="field"><label>فئة التذاكر</label><select><option>الدعم الفني</option><option>الاستفسارات العامة</option><option>البلاغات</option></select></div>
+          <div class="field"><label>أقصى عدد تذاكر للفرد</label><input type="number" value="1" min="1" max="10"></div>
+          <div class="field"><label>أرشفة تلقائية بعد الإغلاق</label>
+            <label class="switch"><input type="checkbox" checked><i></i></label></div>
+        </div>
+        <div>
+          <div class="field"><label>رسالة الترحيب داخل التذكرة</label><textarea>صف مشكلتك وسيتم الرد قريباً 🐺</textarea></div>
+          <div class="field"><label>اسم زر الفتح</label><input value="🐺 افتح تذكرة"></div>
+          <div class="field"><label>لون الزر</label><select><option>بنفسجي</option><option>أزرق</option><option>أحمر</option><option>أخضر</option></select></div>
+        </div>
+      </div>
+      <button class="btn" data-save>💾 حفظ الإعدادات</button>
+    </div>
+  </section>
+
+  <!-- ============ الإشعارات ============ -->
+  <section class="page" id="notify">
+    <div class="card">
+      <div class="card-head">
+        <h3><span class="ico">🔔</span> نظام الإشعارات</h3>
+        <label class="switch"><input type="checkbox"><i></i></label>
+      </div>
+      <p class="desc">إشعار تلقائي عند نشر جديد على المنصات المتصلة.</p>
+      <div class="field"><label>قناة الإشعارات</label><select><option>#الإشعارات</option><option>#notifications</option></select></div>
+      <div class="field"><label>رسالة الإشعار</label><textarea>🔔 جديد على {platform}: {url}</textarea></div>
+      <div class="field"><label>المنصات المرصودة</label>
+        <div class="chips">
+          <button class="chip tog">YouTube</button>
+          <button class="chip tog on">Twitch</button>
+          <button class="chip tog">Kick</button>
+          <button class="chip tog">X</button>
+        </div>
+      </div>
+      <button class="btn" data-save>💾 حفظ الإعدادات</button>
+    </div>
+  </section>
+
+  <!-- ============ الحماية ============ -->
+  <section class="page" id="protect">
+    <div class="card">
+      <div class="card-head">
+        <h3><span class="ico">🛡️</span> نظام الحماية</h3>
+        <label class="switch"><input type="checkbox" checked><i></i></label>
+      </div>
+      <p class="desc">درع الذئب — حماية شاملة للقطيع.</p>
+      <div class="field"><label>قناة سجل الحماية</label><select><option>#mod-log</option><option>#السجل</option></select></div>
+      <div class="pro-row"><span>🚫 مانع الروابط</span><label class="switch"><input type="checkbox" checked><i></i></label></div>
+      <div class="pro-row"><span>🧹 مضاد السبام</span><label class="switch"><input type="checkbox" checked><i></i></label></div>
+      <div class="pro-row"><span>⚔️ مضاد الرايد</span><label class="switch"><input type="checkbox"><i></i></label></div>
+      <div class="pro-row"><span>🔒 حماية الرتب والقنوات</span><label class="switch"><input type="checkbox" checked><i></i></label></div>
+      <div class="field"><label>إجراء المخالفة</label><select><option>تحذير ثم كتم</option><option>كتم مباشر</option><option>طرد</option></select></div>
+      <button class="btn" data-save>💾 حفظ الإعدادات</button>
+    </div>
+  </section>
+
+  <!-- ============ الموسيقى ============ -->
+  <section class="page" id="music">
+    <div class="card">
+      <div class="card-head">
+        <h3><span class="ico">🎵</span> نظام الموسيقى</h3>
+        <label class="switch"><input type="checkbox" checked><i></i></label>
+      </div>
+      <p class="desc">عواء موسيقي بجودة عالية في الرومات الصوتية.</p>
+      <div class="field"><label>المنصة الافتراضية</label><select><option>YouTube</option><option>Spotify</option><option>SoundCloud</option></select></div>
+      <div class="field"><label>مستوى الصوت: <b id="volval">70%</b></label><input type="range" min="0" max="100" value="70" id="vol"></div>
+      <div class="field"><label>أقصى مدة للأغنية (دقيقة)</label><input type="number" value="15"></div>
+      <div class="field"><label>وضع DJ فقط</label><label class="switch"><input type="checkbox"><i></i></label></div>
+      <button class="btn" data-save>💾 حفظ الإعدادات</button>
+    </div>
+  </section>
+
+  <!-- ============ الألعاب ============ -->
+  <section class="page" id="games">
+    <div class="game-grid">
+      <div class="game-card red">
+        <span class="g-emoji">🐺</span><h3>WOLF HUNT</h3>
+        <div class="field"><label>الجائزة</label><input value="500 نقطة"></div>
+        <div class="field"><label>مدة الجولة (دقيقة)</label><input type="number" value="10"></div>
+        <label class="switch lbl-center"><input type="checkbox" checked><i></i></label>
+      </div>
+      <div class="game-card blue">
+        <span class="g-emoji">🧠</span><h3>UNIVERSE QUIZ</h3>
+        <div class="field"><label>عدد الأسئلة</label><input type="number" value="10"></div>
+        <div class="field"><label>وقت السؤال (ثانية)</label><input type="number" value="20"></div>
+        <label class="switch lbl-center"><input type="checkbox" checked><i></i></label>
+      </div>
+      <div class="game-card violet">
+        <span class="g-emoji">⚔️</span><h3>ALPHA DUEL</h3>
+        <div class="field"><label>نقاط الفوز</label><input type="number" value="100"></div>
+        <div class="field"><label>عدد الجولات</label><input type="number" value="3"></div>
+        <label class="switch lbl-center"><input type="checkbox"><i></i></label>
+      </div>
+    </div>
+    <button class="btn" data-save>💾 حفظ الألعاب</button>
+  </section>
+
+  <!-- ============ رسائل مخصصة ============ -->
+  <section class="page" id="embeds">
+    <div class="card">
+      <div class="card-head"><h3><span class="ico">💬</span> منشئ الرسائل المخصصة</h3></div>
+      <p class="desc">صمم رسالة Embed احترافية بنفس ألوان القطيع.</p>
+      <div class="two-col">
+        <div>
+          <div class="field"><label>العنوان</label><input id="eTitle" value="عنوان الرسالة"></div>
+          <div class="field"><label>الوصف</label><textarea id="eDesc">اكتب وصف الرسالة هنا...</textarea></div>
+          <div class="field"><label>اللون</label><input type="color" value="#3b82f6" id="eColor"></div>
+        </div>
+        <div>
+          <label class="f-label">معاينة 👇</label>
+          <div class="preview" id="ePreview" style="--pc:#3b82f6">
+            <b id="epT">عنوان الرسالة</b>
+            <p id="epD">اكتب وصف الرسالة هنا...</p>
+          </div>
+        </div>
+      </div>
+      <button class="btn" data-save>💾 حفظ الرسالة</button>
+    </div>
+  </section>
+
+  <!-- ============ السحوبات ============ -->
+  <section class="page" id="gives">
+    <div class="card">
+      <div class="card-head"><h3><span class="ico">🎁</span> نظام السحوبات</h3>
+        <label class="switch"><input type="checkbox" checked><i></i></label></div>
+      <p class="desc">سحوبات تلقائية عادلة للقطيع.</p>
+      <div class="two-col">
+        <div>
+          <div class="field"><label>القناة</label><select><option>#السحوبات</option><option>#giveaway</option></select></div>
+          <div class="field"><label>المدة (ساعات)</label><input type="number" value="24"></div>
+        </div>
+        <div>
+          <div class="field"><label>عدد الفائزين</label><input type="number" value="1"></div>
+          <div class="field"><label>شرط دخول</label><select><option>تفاعل بالزر فقط</option><option>متطلب رتبة</option></select></div>
+        </div>
+      </div>
+      <button class="btn" data-save>💾 حفظ الإعدادات</button>
+    </div>
+  </section>
+
+  <!-- ============ عن UniBot ============ -->
+  <section class="page" id="about">
+    <div class="card center-card">
+      <div class="big-wolf">🐺</div>
+      <h2>UNIBOT — زعيم القطيع</h2>
+      <p class="desc">قوة • سرعة • هيمنة. بوت متكامل بروح ذئب ألفا، بألوان البنفسجي والأزرق والأحمر.</p>
+      <div class="chips center">
+        <span class="chip static">💜 بنفسجي</span>
+        <span class="chip static">💙 أزرق</span>
+        <span class="chip static">❤️ أحمر</span>
+      </div>
+      <p class="ver">UniBot v3.0 — ALPHA EDITION</p>
+    </div>
+  </section>
+
+  <footer>🐺 UniBot © 2030 — القطيع يتبع الألفا</footer>
+</main>
+
+<!-- نافذة إضافة رتبة -->
+<div class="modal" id="modal">
+  <div class="modal-box">
+    <h3>➕ رتبة جديدة</h3>
+    <div class="field"><label>اسم الرتبة</label><input id="mName" placeholder="مثال: أسطورة"></div>
+    <div class="field"><label>شرط الحصول عليها</label><input id="mReq" placeholder="مثال: 1000 نقطة"></div>
+    <div class="modal-btns">
+      <button class="btn" id="mAdd">إضافة</button>
+      <button class="btn ghost" id="mCancel">إلغاء</button>
     </div>
   </div>
-</section>
+</div>
 
-<!-- العرش -->
-<section id="throne" class="section">
-  <h2 class="sec-title">👑 <span>عرش الذئاب</span></h2>
-  <div class="throne">
-    <div class="throne-row gold">
-      <span class="medal">🥇</span>
-      <span class="t-name">ALPHA KING</span>
-      <span class="t-pts">9,820</span>
-      <div class="t-bar"><i style="--w:100%"></i></div>
-    </div>
-    <div class="throne-row silver">
-      <span class="medal">🥈</span>
-      <span class="t-name">NIGHT WOLF</span>
-      <span class="t-pts">8,410</span>
-      <div class="t-bar"><i style="--w:86%"></i></div>
-    </div>
-    <div class="throne-row bronze">
-      <span class="medal">🥉</span>
-      <span class="t-name">LUNA</span>
-      <span class="t-pts">7,755</span>
-      <div class="t-bar"><i style="--w:79%"></i></div>
-    </div>
-    <div class="throne-row">
-      <span class="medal">🐺</span>
-      <span class="t-name">SHADOW PACK</span>
-      <span class="t-pts">6,120</span>
-      <div class="t-bar"><i style="--w:62%"></i></div>
-    </div>
-  </div>
-</section>
-
-<footer>
-  <div class="f-wolf">🐺</div>
-  <p>UNIBOT © 2030 — الألفا لا يتبع القطيع، القطيع يتبع الألفا</p>
-</footer>
+<div class="toast" id="toast">✅ تم حفظ الإعدادات بنجاح!</div>
 
 <script src="script.js"></script>
 </body>
-</html>
+                                                                                                           </html>
