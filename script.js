@@ -50,7 +50,7 @@ links.forEach(a => a.addEventListener('click', e => {
   goTo(a.dataset.page);
 }));
 
-/* ---------- القائمة المنسدلة (البرغر) الاصلاح النهائي ---------- */
+/* ---------- القائمة المنسدلة (البرغر) ---------- */
 const burger  = $('#burger');
 const sidebar = $('#sidebar');
 const overlay = $('#overlay');
@@ -139,7 +139,7 @@ async function handleAuthCallback() {
   }
 }
 
-/* ---------- جلب سيرفرات المستخدم الحقيقية ---------- */
+/* ---------- جلب سيرفرات المستخدم وإخفاء زر الدخول وإظهار القائمة ---------- */
 async function loadUserGuilds() {
   const session = localStorage.getItem('unibot-session');
   if (!session) return;
@@ -154,10 +154,12 @@ async function loadUserGuilds() {
     }
     const data = await r.json();
     
+    // إخفاء زر تسجيل الدخول وإظهار اسم المستخدم بدلاً منه أو تدويره لخروج
     if (loginBtn && data.user) {
-      loginBtn.textContent = `👤 ${data.user.username} (خروج)`;
+      loginBtn.innerHTML = `👤 ${data.user.username} (تسجيل خروج)`;
       loginBtn.onclick = () => {
         localStorage.removeItem('unibot-session');
+        localStorage.removeItem('unibot-selected-guild');
         location.reload();
       };
     }
@@ -165,22 +167,19 @@ async function loadUserGuilds() {
     const box = document.getElementById('guildSelectorBox');
     const select = document.getElementById('guildSelect');
     if (box && select && data.guilds) {
-      box.style.display = 'block';
+      box.style.display = 'block'; // إظهار قائمة السيرفرات المنسدلة
       select.innerHTML = data.guilds.length 
-        ? data.guilds.map(g => `<option value="${g.id}">${g.name}</option>`).join('')
+        ? `<option value="">اختر السيرفر للتحكم...</option>` + data.guilds.map(g => `<option value="${g.id}">${g.name}</option>`).join('')
         : '<option value="">البوت غير موجود في سيرفراتك</option>';
 
       if (currentGuildId && data.guilds.some(g => g.id === currentGuildId)) {
         select.value = currentGuildId;
-      } else if (data.guilds.length > 0) {
-        currentGuildId = data.guilds[0].id;
-        localStorage.setItem('unibot-selected-guild', currentGuildId);
       }
 
       select.addEventListener('change', () => {
         currentGuildId = select.value;
         localStorage.setItem('unibot-selected-guild', currentGuildId);
-        loadGuildRealData(currentGuildId);
+        if (currentGuildId) loadGuildRealData(currentGuildId);
       });
 
       if (currentGuildId) loadGuildRealData(currentGuildId);
