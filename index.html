@@ -12,29 +12,28 @@
 </head>
 <body>
 
-<!-- ================= خلفية ================= -->
+<!-- خلفية -->
 <div class="bg-orbs" aria-hidden="true">
   <span class="orb o1"></span>
   <span class="orb o2"></span>
   <span class="orb o3"></span>
 </div>
-<canvas id="fx"></canvas>
-<div class="scanline" aria-hidden="true"></div>
+<div id="fx"></div>
 
-<!-- ================= شاشة تحميل ================= -->
+<!-- شاشة تحميل -->
 <div id="loader" aria-hidden="true">
   <img src="wolf.jpg" alt="Alpha Wolf" class="l-wolf-img" onerror="this.style.display='none'">
   <div class="l-bar"><div class="l-fill"></div></div>
   <p class="l-txt">الذئب يستيقظ...</p>
 </div>
 
-<!-- ================= زر الشرطات ================= -->
+<!-- زر القائمة -->
 <button class="burger" id="burger" aria-label="القائمة">
   <span></span><span></span><span></span>
 </button>
 <div class="overlay" id="overlay"></div>
 
-<!-- ================= الشريط الجانبي ================= -->
+<!-- الشريط الجانبي -->
 <aside class="sidebar" id="sidebar">
   <div class="side-head">
     <div class="wolf-logo">🐺</div>
@@ -44,9 +43,8 @@
     </div>
   </div>
 
-  <!-- صندوق تسجيل الدخول، اختيار السيرفر، وزر إضافة البوت -->
-  <div class="side-server" style="flex-direction:column; align-items:stretch; gap:8px;">
-    <button id="discordLoginBtn" class="btn" style="padding:9px; font-size:0.82em; width:100%;">
+  <div class="side-server" style="display:flex; flex-direction:column; gap:8px; padding:10px;">
+    <button id="discordLoginBtn" class="btn" style="width:100%; font-size:0.82em;">
       🔑 تسجيل الدخول بديسكورد
     </button>
     <div id="guildSelectorBox" style="display:none;">
@@ -90,12 +88,12 @@
   </div>
 </aside>
 
-<!-- ================= المحتوى ================= -->
+<!-- المحتوى -->
 <main id="main">
   <header class="top">
     <div>
       <h1 data-ar="لوحة تحكم UniBot" data-en="UniBot Dashboard">لوحة تحكم <em>UniBot</em></h1>
-      <p class="crumb" id="crumb">نظرة عامة</p>
+      <p class="crumb" id="crumb" data-ar="نظرة عامة" data-en="Overview">نظرة عامة</p>
     </div>
     <div class="top-tools">
       <div class="lang-switch" id="langSwitch">
@@ -103,17 +101,17 @@
         <button class="lang-btn" data-lang="en">EN</button>
       </div>
       <div class="search-box">
-        <input type="text" id="search" placeholder="🔍 بحث سريع...">
+        <input type="text" id="search" placeholder="🔍 بحث سريع في اللوحة...">
       </div>
       <div class="clock" id="clock">00:00:00</div>
     </div>
   </header>
 
-  <!-- ============ نظرة عامة ============ -->
+  <!-- نظرة عامة -->
   <section class="page on" id="overview">
     <div class="stat-grid">
-      <div class="stat-card v"><span class="s-ico">🌐</span><b class="s-num" data-count="4">0</b><span class="s-lbl" data-ar="السيرفرات" data-en="Servers">السيرفرات</span></div>
-      <div class="stat-card b"><span class="s-ico">⚡</span><b class="s-num"><span data-count="79">0</span><small>ms</small></b><span class="s-lbl" data-ar="التأخير" data-en="Latency">التأخير</span></div>
+      <div class="stat-card v"><span class="s-ico">🌐</span><b class="s-num">0</b><span class="s-lbl" data-ar="السيرفرات" data-en="Servers">السيرفرات</span></div>
+      <div class="stat-card b"><span class="s-ico">⚡</span><b class="s-num">79<small>ms</small></b><span class="s-lbl" data-ar="التأخير" data-en="Latency">التأخير</span></div>
       <div class="stat-card r"><span class="s-ico">🔥</span><b class="s-num">24/7</b><span class="s-lbl" data-ar="يقظة الألفا" data-en="Always On">يقظة الألفا</span></div>
       <div class="stat-card v"><span class="s-ico">✅</span><b class="s-num">99.9%</b><span class="s-lbl" data-ar="جودة الخدمة" data-en="Quality">جودة الخدمة</span></div>
     </div>
@@ -123,135 +121,71 @@
         <h3><span class="ico">📈</span> <span data-ar="مخطط الأداء الحي" data-en="Live Performance">مخطط الأداء الحي</span></h3>
         <span class="tag live">● <span data-ar="مباشر" data-en="LIVE">مباشر</span></span>
       </div>
-      <canvas id="chart" height="180"></canvas>
-    </div>
-
-    <div class="two-col">
-      <div class="card">
-        <div class="card-head"><h3><span class="ico">🧩</span> <span data-ar="حالة الأنظمة" data-en="Systems Status">حالة الأنظمة</span></h3></div>
-        <div class="sys-row"><span>🎉 <span data-ar="الترحيب" data-en="Welcome">الترحيب</span></span><label class="switch"><input type="checkbox" data-store="sys-welcome" checked><i></i></label></div>
-        <div class="sys-row"><span>🏆 <span data-ar="الرتبة التلقائية" data-en="Auto Rank">الرتبة التلقائية</span></span><label class="switch"><input type="checkbox" data-store="sys-rank" checked><i></i></label></div>
-        <div class="sys-row"><span>📈 <span data-ar="المستويات" data-en="Levels">المستويات</span></span><label class="switch"><input type="checkbox" data-store="sys-levels" checked><i></i></label></div>
-        <div class="sys-row"><span>📝 <span data-ar="التقديم" data-en="Applications">التقديم</span></span><label class="switch"><input type="checkbox" data-store="sys-present" checked><i></i></label></div>
-        <div class="sys-row"><span>🎫 <span data-ar="التذاكر" data-en="Tickets">التذاكر</span></span><label class="switch"><input type="checkbox" data-store="sys-tickets" checked><i></i></label></div>
-        <div class="sys-row"><span>🛡️ <span data-ar="الحماية" data-en="Protection">الحماية</span></span><label class="switch"><input type="checkbox" data-store="sys-protect" checked><i></i></label></div>
-        <div class="sys-row"><span>🎵 <span data-ar="الموسيقى" data-en="Music">الموسيقى</span></span><label class="switch"><input type="checkbox" data-store="sys-music" checked><i></i></label></div>
-        <div class="sys-row"><span>🔔 <span data-ar="الإشعارات" data-en="Notifications">الإشعارات</span></span><label class="switch"><input type="checkbox" data-store="sys-notify"><i></i></label></div>
-      </div>
-      <div class="card">
-        <div class="card-head"><h3><span class="ico">📰</span> <span data-ar="آخر الأحداث العامة" data-en="Recent Activity">آخر الأحداث العامة</span></h3></div>
-        <div class="feed" id="feed">
-          <div class="feed-item"><i style="--c:#a855f7"></i><div><b>تم تحديث الإحصائيات</b><small>الآن</small></div></div>
-          <div class="feed-item"><i style="--c:#3b82f6"></i><div><b>أنظمة الألعاب تعمل بشكل طبيعي</b><small>قبل ساعة</small></div></div>
-          <div class="feed-item"><i style="--c:#ef4444"></i><div><b>أُعيد تشغيل وحدة الموسيقى</b><small>قبل 3 ساعات</small></div></div>
-        </div>
-      </div>
+      <canvas id="chart" height="160"></canvas>
     </div>
   </section>
 
-  <!-- ============ إعدادات البوت ============ -->
+  <!-- إعدادات البوت -->
   <section class="page" id="settings">
     <div class="card">
       <div class="card-head"><h3><span class="ico">⚙️</span> <span data-ar="الإعدادات العامة" data-en="General Settings">الإعدادات العامة</span></h3></div>
-      <div class="field"><label data-ar="بادئة الأوامر (Prefix)" data-en="Command Prefix">بادئة الأوامر (Prefix)</label><input value="!"></div>
-      <div class="field"><label data-ar="لغة البوت" data-en="Bot Language">لغة البوت</label>
-        <select id="botLang">
-          <option value="ar">العربية</option>
-          <option value="en">English</option>
-        </select>
-      </div>
+      <div class="field"><label data-ar="بادئة الأوامر (Prefix)" data-en="Command Prefix">بادئة الأوامر (Prefix)</label><input id="prefixInput" value="!"></div>
       <button class="btn" data-save>💾 <span data-ar="حفظ الإعدادات" data-en="Save Settings">حفظ الإعدادات</span></button>
     </div>
   </section>
 
-  <!-- ============ الترحيب ============ -->
+  <!-- الترحيب -->
   <section class="page" id="welcome">
     <div class="card">
       <div class="card-head">
         <h3><span class="ico">🎉</span> <span data-ar="نظام الترحيب" data-en="Welcome System">نظام الترحيب</span></h3>
-        <label class="switch"><input type="checkbox" checked><i></i></label>
+        <label class="switch"><input type="checkbox" id="welcomeToggle" checked><i></i></label>
       </div>
-      <div class="two-col">
-        <div>
-          <div class="field"><label data-ar="قناة الترحيب" data-en="Welcome Channel">قناة الترحيب</label><select><option>#الترحيب</option></select></div>
-          <div class="field"><label data-ar="نص الرسالة" data-en="Message Text">نص الرسالة</label><textarea id="wmsg">أهلاً {member} في قطيع الذئاب 🐺</textarea></div>
-          <button class="btn" data-save>💾 <span data-ar="حفظ" data-en="Save">حفظ</span></button>
-        </div>
-        <div>
-          <label class="f-label">معاينة حية 👇</label>
-          <div class="preview" id="wpreview" style="--pc:#a855f7">
-            <b>🎉 ترحيب!</b>
-            <p id="wptext">أهلاً @عضو في قطيع الذئاب 🐺</p>
-          </div>
-        </div>
-      </div>
+      <div class="field"><label data-ar="قناة الترحيب" data-en="Welcome Channel">قناة الترحيب</label><select id="welcomeChannel"><option>اختر القناة...</option></select></div>
+      <div class="field"><label data-ar="نص الرسالة" data-en="Message Text">نص الرسالة</label><textarea id="wmsg">أهلاً {member} في قطيع الذئاب 🐺</textarea></div>
+      <button class="btn" data-save>💾 <span data-ar="حفظ الترحيب" data-en="Save Welcome">حفظ الترحيب</span></button>
     </div>
   </section>
 
-  <!-- ============ الرتبة التلقائية ============ -->
+  <!-- الرتبة التلقائية -->
   <section class="page" id="autorank">
     <div class="card">
-      <div class="card-head"><h3><span class="ico">🚪</span> <span data-ar="رتبة الدخول" data-en="Auto Join Role">رتبة الدخول</span></h3></div>
-      <div class="field"><label>الرتبة</label><select id="joinRole"><option>اختر رتبة...</option></select></div>
-      <button class="btn" data-save>💾 حفظ</button>
+      <div class="card-head">
+        <h3><span class="ico">🏆</span> <span data-ar="الرتبة التلقائية" data-en="Auto Rank">الرتبة التلقائية</span></h3>
+        <label class="switch"><input type="checkbox" id="autorankToggle" checked><i></i></label>
+      </div>
+      <div class="field"><label data-ar="رتبة الأعضاء الجدد" data-en="Auto Join Role">رتبة الأعضاء الجدد</label><select id="joinRole"><option>اختر الرتبة...</option></select></div>
+      <button class="btn" data-save>💾 <span data-ar="حفظ الرتبة" data-en="Save Auto Rank">حفظ الرتبة</span></button>
     </div>
   </section>
 
-  <!-- ============ المستويات ============ -->
-  <section class="page" id="levels">
-    <div class="card"><h3>نظام المستويات</h3><button class="btn" data-save>💾 حفظ</button></div>
-  </section>
-
-  <!-- ============ التقديم ============ -->
-  <section class="page" id="present">
-    <div class="card"><h3>نظام التقديم</h3><button class="btn" data-save>💾 حفظ</button></div>
-  </section>
-
-  <!-- ============ الحماية ============ -->
+  <!-- المستويات -->
+  <section class="page" id="levels"><div class="card"><h3>نظام المستويات</h3><button class="btn" data-save>💾 حفظ</button></div></section>
+  <!-- التقديم -->
+  <section class="page" id="present"><div class="card"><h3>نظام التقديم</h3><button class="btn" data-save>💾 حفظ</button></div></section>
+  <!-- الحماية -->
   <section class="page" id="protect">
-    <div class="card">
-      <h3>نظام الحماية</h3>
-      <div class="field"><label>روم التنبيهات</label><select id="globalAlert"><option>#alerts</option></select></div>
-      <button class="btn" data-save>💾 حفظ</button>
-    </div>
+    <div class="card"><h3>نظام الحماية</h3><div class="field"><label>روم التنبيهات</label><select id="globalAlert"><option>#alerts</option></select></div><button class="btn" data-save>💾 حفظ</button></div>
   </section>
+  <!-- التذاكر -->
+  <section class="page" id="tickets"><div class="card"><h3>نظام التذاكر</h3><button class="btn" data-save>💾 حفظ</button></div></section>
+  <!-- الإشعارات -->
+  <section class="page" id="notify"><div class="card"><h3>الإشعارات</h3><button class="btn" data-save>💾 حفظ</button></div></section>
+  <!-- الموسيقى -->
+  <section class="page" id="music"><div class="card"><h3>الموسيقى</h3><button class="btn" data-save>💾 حفظ</button></div></section>
+  <!-- الألعاب -->
+  <section class="page" id="games"><div class="card"><h3>الألعاب</h3><button class="btn" data-save>💾 حفظ</button></div></section>
+  <!-- الرسائل المخصصة -->
+  <section class="page" id="embeds"><div class="card"><h3>رسائل مخصصة</h3><button class="btn" data-save>💾 حفظ</button></div></section>
+  <!-- السحوبات -->
+  <section class="page" id="gives"><div class="card"><h3>السحوبات</h3><button class="btn" data-save>💾 حفظ</button></div></section>
 
-  <!-- ============ التذاكر ============ -->
-  <section class="page" id="tickets">
-    <div class="card"><h3>نظام التذاكر</h3><button class="btn" data-save>💾 حفظ</button></div>
-  </section>
-
-  <!-- ============ الإشعارات ============ -->
-  <section class="page" id="notify">
-    <div class="card"><h3>الإشعارات</h3><button class="btn" data-save>💾 حفظ</button></div>
-  </section>
-
-  <!-- ============ الموسيقى ============ -->
-  <section class="page" id="music">
-    <div class="card"><h3>الموسيقى</h3><button class="btn" data-save>💾 حفظ</button></div>
-  </section>
-
-  <!-- ============ الألعاب ============ -->
-  <section class="page" id="games">
-    <div class="card"><h3>الألعاب</h3><button class="btn" data-save>💾 حفظ</button></div>
-  </section>
-
-  <!-- ============ الرسائل المخصصة ============ -->
-  <section class="page" id="embeds">
-    <div class="card"><h3>رسائل مخصصة</h3><button class="btn" data-save>💾 حفظ</button></div>
-  </section>
-
-  <!-- ============ السحوبات ============ -->
-  <section class="page" id="gives">
-    <div class="card"><h3>السحوبات</h3><button class="btn" data-save>💾 حفظ</button></div>
-  </section>
-
-  <!-- ============ عن UniBot ============ -->
+  <!-- عن بوت -->
   <section class="page" id="about">
-    <div class="card center-card">
-      <div class="big-wolf">🐺</div>
+    <div class="card center-card" style="text-align:center; padding:30px;">
+      <div style="font-size:50px; margin-bottom:10px;">🐺</div>
       <h2>UNIBOT — ALPHA WOLF</h2>
-      <p class="ver">UniBot v3.1 — ALPHA EDITION</p>
+      <p style="color:var(--mut);">UniBot v3.1 — ALPHA EDITION</p>
     </div>
   </section>
 
