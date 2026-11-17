@@ -1,6 +1,3 @@
-/* ============================================================
-   UniBot v3.2 — PRO SCRIPT & DISCORD INTEGRATION
-============================================================ */
 'use strict';
 
 const $  = (s, p = document) => p.querySelector(s);
@@ -26,42 +23,6 @@ function toast(msg) {
   toastTimer = setTimeout(() => t.classList.remove('show'), 2400);
 }
 
-let currentLang = localStorage.getItem('unibot-lang') || 'ar';
-function setLanguage(lang) {
-  currentLang = lang;
-  localStorage.setItem('unibot-lang', lang);
-  $$('.lang-btn').forEach(btn => btn.classList.toggle('active', btn.dataset.lang === lang));
-  document.documentElement.setAttribute('dir', lang === 'ar' ? 'rtl' : 'ltr');
-  document.documentElement.setAttribute('lang', lang);
-
-  $$('[data-ar]').forEach(el => {
-    const text = el.getAttribute(`data-${lang}`);
-    if (text) {
-      if (el.tagName === 'INPUT') el.placeholder = text;
-      else el.textContent = text;
-    }
-  });
-}
-$$('.lang-btn').forEach(btn => btn.addEventListener('click', () => setLanguage(btn.dataset.lang)));
-setLanguage(currentLang);
-
-const searchInput = $('#search');
-if (searchInput) {
-  searchInput.addEventListener('input', (e) => {
-    const q = e.target.value.toLowerCase().trim();
-    $$('.nav a').forEach(a => {
-      a.style.display = a.textContent.toLowerCase().includes(q) ? 'flex' : 'none';
-    });
-  });
-}
-
-function updateClock() {
-  const clock = $('#clock');
-  if (clock) clock.textContent = new Date().toTimeString().split(' ')[0];
-}
-setInterval(updateClock, 1000);
-updateClock();
-
 const links = $$('.nav a');
 const crumb = $('#crumb');
 
@@ -69,10 +30,7 @@ function goTo(page) {
   links.forEach(l => l.classList.toggle('active', l.dataset.page === page));
   $$('.page').forEach(p => p.classList.toggle('on', p.id === page));
   const active = links.find(l => l.dataset.page === page);
-  if (active && crumb) {
-    const sp = active.querySelector('span');
-    crumb.textContent = sp ? sp.getAttribute(`data-${currentLang}`) || sp.textContent : active.textContent.trim();
-  }
+  if (active && crumb) crumb.textContent = active.textContent.trim();
   window.scrollTo({ top: 0, behavior: 'smooth' });
   localStorage.setItem('unibot-page', page);
   if (innerWidth <= 900) setNav(false);
@@ -95,27 +53,25 @@ function setNav(open) {
 if (burger) burger.addEventListener('click', () => setNav(!document.body.classList.contains('nav-open')));
 if (overlay) overlay.addEventListener('click', () => setNav(false));
 
-async function loadLiveStats() {
-  try {
-    const res = await fetch(`${API_URL}/api/stats`);
-    const data = await res.json();
-    const srvEl = document.querySelector('.stat-card.v .s-num');
-    if (srvEl && data.servers !== undefined) srvEl.textContent = data.servers;
-
-    const pingEl = $('#pingVal');
-    if (pingEl && data.ping !== undefined) pingEl.textContent = `${data.ping}ms`;
-
-    const upEl = $('#uptime');
-    if (data.uptime && upEl) {
-      const d = Math.floor(data.uptime / 86400);
-      const h = Math.floor((data.uptime % 86400) / 3600);
-      const m = Math.floor((data.uptime % 3600) / 60);
-      upEl.textContent = `${d}ي ${h}س ${m}د`;
+// أزرار الإضافة التفاعلية للردود والإيمبدات
+const addAutoReplyBtn = $('#addAutoReplyBtn');
+if (addAutoReplyBtn) {
+  addAutoReplyBtn.addEventListener('click', () => {
+    const container = $('#autoReplyContainer');
+    if (container) {
+      const div = document.createElement('div');
+      div.className = 'field';
+      div.style.position = 'relative';
+      div.innerHTML = `
+        <button type="button" style="position:absolute; left:0; top:0; background:none; border:none; color:var(--r); font-weight:bold; cursor:pointer;" onclick="this.parentElement.remove()">✕ إزالة</button>
+        <label>كلمة جديدة</label><input placeholder="الكلمة...">
+        <label style="margin-top:6px;">الرد</label><textarea placeholder="الرد..."></textarea>
+      `;
+      container.appendChild(div);
+      toast('➕ تمت إضافة حقل رد جديد');
     }
-  } catch (e) {}
+  });
 }
-loadLiveStats();
-setInterval(loadLiveStats, 15000);
 
 const loginBtn = document.getElementById('discordLoginBtn');
 if (loginBtn) {
@@ -161,7 +117,6 @@ async function loadUserGuilds() {
     if (r.status === 401) { localStorage.removeItem('unibot-session'); return; }
     const data = await r.json();
     
-    // عرض صورة البروفايل الشخصية واسم المستخدم في زر ديسكورد
     if (loginBtn && data.user) {
       const avatarUrl = data.user.avatar 
         ? `https://cdn.discordapp.com/avatars/${data.user.id}/${data.user.avatar}.png` 
@@ -201,7 +156,6 @@ async function loadGuildRealData(guildId) {
     const r = await fetch(`${API_URL}/api/guild/${guildId}/data`, { headers: { 'x-session': session } });
     const data = await r.json();
 
-    // تحديث رصيد العملة Ly في المحفظة
     if (data.wallet) {
       const walletEl = $('#userWalletLy');
       if (walletEl) walletEl.textContent = `${data.wallet.balance} Ly`;
