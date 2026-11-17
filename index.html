@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="theme-color" content="#a855f7">
-<meta name="description" content="UniBot — لوحة تحكم ذئب ألفا">
+<meta name="description" content="UniBot — لوحة التحكم الاحترافية">
 <title>UniBot | لوحة التحكم 🐺</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600;800&family=Cairo:wght@400;700;900&display=swap" rel="stylesheet">
@@ -20,9 +20,9 @@
 <div id="fx"></div>
 
 <div id="loader" aria-hidden="true">
-  <img src="wolf.jpg" alt="Alpha Wolf" class="l-wolf-img" onerror="this.style.display='none'">
+  <div class="l-wolf-img" style="font-size:50px; display:flex; align-items:center; justify-content:center;">🤖</div>
   <div class="l-bar"><div class="l-fill"></div></div>
-  <p class="l-txt">الذئب يستيقظ...</p>
+  <p class="l-txt">جاري تحميل الأنظمة...</p>
 </div>
 
 <button class="burger" id="burger" aria-label="القائمة">
@@ -32,10 +32,10 @@
 
 <aside class="sidebar" id="sidebar">
   <div class="side-head">
-    <div class="wolf-logo">🐺</div>
+    <div class="wolf-logo">🤖</div>
     <div class="side-title">
       <b>UniBot</b>
-      <small>ALPHA CONTROL v3.1</small>
+      <small>PRO CONTROL v3.2</small>
     </div>
   </div>
 
@@ -54,30 +54,34 @@
   </div>
 
   <nav class="nav" id="nav">
-    <p class="nav-cap" data-ar="— عام —" data-en="— GENERAL —">— عام —</p>
-    <a href="#" data-page="overview" class="active"><i>📊</i><span data-ar="نظرة عامة" data-en="Overview">نظرة عامة</span></a>
-    <a href="#" data-page="settings"><i>⚙️</i><span data-ar="إعدادات البوت" data-en="Bot Settings">إعدادات البوت</span></a>
+    <p class="nav-cap">عام</p>
+    <a href="#" data-page="overview" class="active"><i>📊</i><span>نظرة عامة & المحفظة (Ly)</span></a>
+    <a href="#" data-page="wallet-logs"><i>📋</i><span>سجل تحويلات العملة</span></a>
+    <a href="#" data-page="settings"><i>⚙️</i><span>إعدادات السيرفر والبوت</span></a>
 
-    <p class="nav-cap" data-ar="— الأنظمة —" data-en="— SYSTEMS —">— الأنظمة —</p>
-    <a href="#" data-page="welcome"><i>🎉</i><span data-ar="نظام الترحيب" data-en="Welcome System">نظام الترحيب</span></a>
-    <a href="#" data-page="autorank"><i>🏆</i><span data-ar="الرتبة التلقائية" data-en="Auto Rank">الرتبة التلقائية</span></a>
-    <a href="#" data-page="tickets"><i>🎫</i><span data-ar="نظام التذاكر" data-en="Tickets">نظام التذاكر</span></a>
-    <a href="#" data-page="protect"><i>🛡️</i><span data-ar="نظام الحماية" data-en="Protection">نظام الحماية</span></a>
-    <a href="#" data-page="levels"><i>📈</i><span data-ar="نظام المستويات" data-en="Levels">نظام المستويات</span></a>
-    <a href="#" data-page="present"><i>📝</i><span data-ar="نظام التقديم" data-en="Applications">نظام التقديم</span></a>
-    <a href="#" data-page="notify"><i>🔔</i><span data-ar="نظام الإشعارات" data-en="Notifications">نظام الإشعارات</span></a>
-    <a href="#" data-page="music"><i>🎵</i><span data-ar="الموسيقى" data-en="Music">الموسيقى</span></a>
-    <a href="#" data-page="games"><i>🎮</i><span data-ar="الألعاب" data-en="Games">الألعاب</span></a>
-    <a href="#" data-page="embeds"><i>💬</i><span data-ar="رسائل مخصصة" data-en="Custom Messages">رسائل مخصصة</span></a>
-    <a href="#" data-page="gives"><i>🎁</i><span data-ar="السحوبات" data-en="Giveaways">السحوبات</span></a>
+    <p class="nav-cap">قائمة الخصائص</p>
+    <a href="#" data-page="commands-list"><i>📜</i><span>الأوامر الشاملة (/help)</span></a>
+    <a href="#" data-page="welcome"><i>🎉</i><span>الترحيب & المغادرة</span></a>
+    <a href="#" data-page="autoreply"><i>🤖</i><span>الرد التلقائي</span></a>
+    <a href="#" data-page="autorank"><i>🏆</i><span>الرولات التلقائية</span></a>
+    <a href="#" data-page="embeds"><i>💬</i><span>رسائل الإيمبد والألوان & التفاعل</span></a>
+    <a href="#" data-page="tickets"><i>🎫</i><span>نظام التذاكر (زر / منيو)</span></a>
+    <a href="#" data-page="levels"><i>📈</i><span>نظام المستويات & XP</span></a>
+    <a href="#" data-page="present"><i>📝</i><span>نظام التقديم (كامل من الموقع)</span></a>
+    <a href="#" data-page="games"><i>🎮</i><span>ألعاب البوت (جميع الأوامر)</span></a>
+    <a href="#" data-page="broadcasts"><i>📢</i><span>البثوث والبرودكاست</span></a>
 
-    <p class="nav-cap" data-ar="— أخرى —" data-en="— OTHER —">— أخرى —</p>
-    <a href="#" data-page="about"><i>🐺</i><span data-ar="عن UniBot" data-en="About UniBot">عن UniBot</span></a>
+    <p class="nav-cap">الإشراف والحماية</p>
+    <a href="#" data-page="protect"><i>🛡️</i><span>حماية السيرفر المتقدمة</span></a>
+    <a href="#" data-page="logs"><i>📋</i><span>سجل اللوجات</span></a>
+
+    <p class="nav-cap">أخرى</p>
+    <a href="#" data-page="about"><i>💎</i><span>عن UniBot & البريميوم</span></a>
   </nav>
 
   <div class="side-foot">
     <div class="uptime-box">
-      <small data-ar="مدة التشغيل" data-en="Uptime">مدة التشغيل</small>
+      <small>مدة التشغيل</small>
       <b id="uptime">0ي 0س 0د</b>
     </div>
     <div class="status-pill ok"><i class="dot"></i> <span id="pingVal">79ms</span></div>
@@ -87,8 +91,8 @@
 <main id="main">
   <header class="top">
     <div>
-      <h1 data-ar="لوحة تحكم UniBot" data-en="UniBot Dashboard">لوحة تحكم <em>UniBot</em></h1>
-      <p class="crumb" id="crumb" data-ar="نظرة عامة" data-en="Overview">نظرة عامة</p>
+      <h1>لوحة تحكم <em>UniBot</em></h1>
+      <p class="crumb" id="crumb">نظرة عامة & المحفظة</p>
     </div>
     <div class="top-tools">
       <div class="lang-switch" id="langSwitch">
@@ -96,168 +100,223 @@
         <button class="lang-btn" data-lang="en">EN</button>
       </div>
       <div class="search-box">
-        <input type="text" id="search" placeholder="🔍 بحث سريع في اللوحة...">
+        <input type="text" id="search" placeholder="🔍 بحث سريع...">
       </div>
       <div class="clock" id="clock">00:00:00</div>
     </div>
   </header>
 
-  <!-- نظرة عامة -->
+  <!-- نظرة عامة & المحفظة -->
   <section class="page on" id="overview">
     <div class="stat-grid">
-      <div class="stat-card v"><span class="s-ico">🌐</span><b class="s-num">0</b><span class="s-lbl" data-ar="السيرفرات" data-en="Servers">السيرفرات</span></div>
-      <div class="stat-card b"><span class="s-ico">⚡</span><b class="s-num" id="statPing">79<small>ms</small></b><span class="s-lbl" data-ar="التأخير" data-en="Latency">التأخير</span></div>
-      <div class="stat-card r"><span class="s-ico">🔥</span><b class="s-num">24/7</b><span class="s-lbl" data-ar="يقظة الألفا" data-en="Always On">يقظة الألفا</span></div>
-      <div class="stat-card v"><span class="s-ico">✅</span><b class="s-num">99.9%</b><span class="s-lbl" data-ar="جودة الخدمة" data-en="Quality">جودة الخدمة</span></div>
+      <div class="stat-card v"><span class="s-ico">💰</span><b class="s-num" id="userWalletLy">0 Ly</b><span class="s-lbl">رصيد محفظتك</span></div>
+      <div class="stat-card b"><span class="s-ico">📈</span><b class="s-num" id="userLevelVal">المستوى 1</b><span class="s-lbl">مستواك الحالي</span></div>
+      <div class="stat-card r"><span class="s-ico">⚡</span><b class="s-num" id="statPing">79ms</b><span class="s-lbl">تأخير البوت</span></div>
+      <div class="stat-card v"><span class="s-ico">⏱️</span><b class="s-num" id="overviewUptime">0ي 0س</b><span class="s-lbl">مدة التشغيل</span></div>
     </div>
-
     <div class="card">
-      <div class="card-head">
-        <h3><span class="ico">📈</span> <span data-ar="مخطط الأداء الحي" data-en="Live Performance">مخطط الأداء الحي</span></h3>
-        <span class="tag live">● <span data-ar="مباشر" data-en="LIVE">مباشر</span></span>
-      </div>
-      <div style="text-align:center; padding:30px; color:var(--mut);">أداء سيرفرات ديسكورد مستقر 100% 🐺</div>
+      <h3>💼 معلومات المحفظة وعملة Ly</h3>
+      <p style="color:var(--mut); margin-top:8px;">هنا يمكنك متابعة رصيدك من عملة Ly وسجل التحويلات الخاصة بك داخل السيرفرات.</p>
     </div>
   </section>
 
-  <!-- إعدادات البوت -->
+  <!-- سجل تحويلات العملة -->
+  <section class="page" id="wallet-logs">
+    <div class="card"><h3>📋 سجل تحويلات العملة (Ly)</h3><p style="color:var(--mut);">لا توجد تحويلات سابقة حتى الآن.</p></div>
+  </section>
+
+  <!-- الإعدادات -->
   <section class="page" id="settings">
+    <div class="card"><h3>⚙️ إعدادات السيرفر والبوت</h3><div class="field"><label>بادئة الأوامر (Prefix)</label><input id="prefixInput" value="!"></div><button class="btn" data-save>💾 حفظ</button></div>
+  </section>
+
+  <!-- الأوامر الشاملة -->
+  <section class="page" id="commands-list">
     <div class="card">
-      <div class="card-head"><h3><span class="ico">⚙️</span> <span data-ar="الإعدادات العامة" data-en="General Settings">الإعدادات العامة</span></h3></div>
-      <div class="field"><label>بادئة الأوامر (Prefix)</label><input id="prefixInput" value="!"></div>
-      <button class="btn" data-save>💾 حفظ الإعدادات</button>
+      <h3>📜 الأوامر الشاملة (/help)</h3>
+      <p style="color:var(--mut); margin-bottom:12px;">قائمة بجميع أوامر البوت المتاحة للاستخدام في ديسكورد:</p>
+      <ul style="list-style:none; line-height:2.2;">
+        <li><code>/help</code> - لعرض قائمة الأوامر المساعدة</li>
+        <li><code>/ping</code> - لمعرفة سرعة استجابة البوت</li>
+        <li><code>/ticket</code> - لإنشاء تذكرة دعم فني</li>
+        <li><code>/balance</code> - لمعرفة رصيدك من عملة Ly</li>
+        <li><code>/rank</code> - لعرض مستواك وخبرتك XP</li>
+        <li><code>/games</code> - قائمة الألعاب المتاحة</li>
+      </ul>
     </div>
   </section>
 
   <!-- الترحيب -->
   <section class="page" id="welcome">
     <div class="card">
-      <div class="card-head">
-        <h3><span class="ico">🎉</span> نظام الترحيب</h3>
-        <label class="switch"><input type="checkbox" id="welcomeToggle" checked><i></i></label>
-      </div>
+      <div class="card-head"><h3>🎉 الترحيب & المغادرة</h3><label class="switch"><input type="checkbox" id="welcomeToggle" checked><i></i></label></div>
       <div class="field"><label>قناة الترحيب</label><select id="welcomeChannel"><option value="">اختر القناة...</option></select></div>
-      <div class="field"><label>نص الرسالة</label><textarea id="wmsg">أهلاً {member} في قطيع الذئب 🐺</textarea></div>
-      <button class="btn" data-save>💾 حفظ الترحيب</button>
+      <div class="field"><label>نص الرسالة</label><textarea id="wmsg">أهلاً بك {member}</textarea></div>
+      <button class="btn" data-save>💾 حفظ</button>
     </div>
   </section>
 
-  <!-- الرتبة التلقائية -->
+  <!-- الرد التلقائي -->
+  <section class="page" id="autoreply">
+    <div class="card">
+      <h3>🤖 الرد التلقائي</h3>
+      <p style="color:var(--mut); margin-bottom:12px;">الردود التلقائية فارغة حالياً، يمكنك إنشاء رد جديد:</p>
+      <button class="btn" style="margin-bottom:15px;">+ إضافة رد تلقائي</button>
+      <div class="field"><label>الرسالة المطلوبة</label><input id="autoTrigger" placeholder="مثلا: السلام عليكم"></div>
+      <div class="field"><label>الرد التلقائي</label><textarea id="autoResponse" placeholder="مثلا: وعليكم السلام"></textarea></div>
+      <button class="btn" data-save>💾 حفظ الرد التلقائي</button>
+    </div>
+  </section>
+
+  <!-- الرولات التلقائية -->
   <section class="page" id="autorank">
     <div class="card">
-      <div class="card-head">
-        <h3><span class="ico">🏆</span> الرتبة التلقائية عند الدخول</h3>
-        <label class="switch"><input type="checkbox" id="autorankToggle" checked><i></i></label>
-      </div>
+      <div class="card-head"><h3>🏆 الرولات التلقائية</h3><label class="switch"><input type="checkbox" id="autorankToggle" checked><i></i></label></div>
       <div class="field"><label>رتبة الأعضاء الجدد</label><select id="joinRole"><option value="">اختر الرتبة...</option></select></div>
-      <button class="btn" data-save>💾 حفظ الرتبة التلقائية</button>
+      <button class="btn" data-save>💾 حفظ</button>
     </div>
   </section>
 
-  <!-- نظام التذاكر المتكامل -->
+  <!-- رسائل الإيمبد والألوان والتفاعل -->
+  <section class="page" id="embeds">
+    <div class="card">
+      <h3>💬 رسائل الإيمبد والألوان & التفاعل</h3>
+      <div class="field"><label>عنوان الإيمبد</label><input id="embedTitle" placeholder="عنوان الرسالة"></div>
+      <div class="field"><label>محتوى الإيمبد</label><textarea id="embedDesc" placeholder="نص الوصف..."></textarea></div>
+      <div class="field"><label>لون الإيمبد (Hex Color)</label><input type="color" id="embedColor" value="#a855f7" style="height:40px; padding:2px;"></div>
+      <div class="field"><label>إيموجي التفاعل للحصول على رتبة</label><input id="embedEmoji" placeholder="مثلا: ⭐"></div>
+      <div class="field"><label>رتبة التفاعل</label><select id="embedRole"><option value="">اختر الرتبة...</option></select></div>
+      <button class="btn" data-save>💾 إرسال وحفظ الإيمبد</button>
+    </div>
+  </section>
+
+  <!-- التذاكر -->
   <section class="page" id="tickets">
     <div class="card">
-      <div class="card-head">
-        <h3><span class="ico">🎫</span> نظام التذاكر المتكامل</h3>
-        <label class="switch"><input type="checkbox" id="ticketToggle" checked><i></i></label>
-      </div>
-      <div class="field"><label>شات إرسال رسالة التذاكر (Panel Channel)</label><select id="ticketPanelChannel"><option value="">اختر الشات...</option></select></div>
-      <div class="field"><label>محتوى رسالة الإيمبد (Embed Description)</label><textarea id="ticketEmbedDesc">اضغط على الزر أدناه لفتح تذكرة جديدة والتواصل مع الإدارة.</textarea></div>
-      <div class="field"><label>كاتيجوري التذاكر (Categories)</label><select id="ticketCategory"><option value="">اختر الكاتيجوري...</option></select></div>
-      <div class="field"><label>رتب الدعم الفني (Support Roles)</label><select id="ticketSupportRole"><option value="">اختر رتبة الدعم...</option></select></div>
-      <div class="field"><label>شات تسجيل اللوجات (Logs Channel)</label><select id="ticketLogChannel"><option value="">اختر شات اللوج...</option></select></div>
-      <div class="field"><label>رسالة الترحيب داخل التذكرة</label><input id="ticketWelcomeMsg" value="مرحباً بك، سيتم خدمتك قريباً من قبل الإدارة."></div>
-      <button class="btn" data-save>💾 حفظ نظام التذاكر</button>
+      <div class="card-head"><h3>🎫 نظام التذاكر</h3><label class="switch"><input type="checkbox" id="ticketToggle" checked><i></i></label></div>
+      <div class="field"><label>نوع التذكرة</label><select id="ticketType"><option value="button">زر (Button)</option><option value="menu">قائمة منسدلة (Menu)</option></select></div>
+      <div class="field"><label>شات إرسال البانل</label><select id="ticketPanelChannel"><option value="">اختر الشات...</option></select></div>
+      <div class="field"><label>نوع الرسالة</label><select id="ticketMsgType"><option value="embed">رسالة إيمبد (Embed)</option><option value="normal">رسالة عادية</option></select></div>
+      <div class="field"><label>محتوى رسالة التذكرة</label><textarea id="ticketEmbedDesc">اضغط أدناه لفتح تذكرة دعم فني.</textarea></div>
+      <div class="field"><label>كاتيجوري التذاكر</label><select id="ticketCategory"><option value="">اختر الكاتيجوري...</option></select></div>
+      <div class="field"><label>رتبة الدعم الفني</label><select id="ticketSupportRole"><option value="">اختر رتبة الدعم...</option></select></div>
+      <div class="field"><label>روم اللوجات</label><select id="ticketLogChannel"><option value="">اختر شات اللوج...</option></select></div>
+      <button class="btn" data-save>💾 حفظ التذاكر</button>
     </div>
   </section>
 
-  <!-- نظام الحماية المتقدم -->
+  <!-- المستويات -->
+  <section class="page" id="levels">
+    <div class="card">
+      <div class="card-head"><h3>📈 نظام المستويات & XP</h3><label class="switch"><input type="checkbox" id="levelsToggle" checked><i></i></label></div>
+      <div class="field"><label>روم إرسال رسائل صعود المستوى</label><select id="levelUpChannel"><option value="">اختر روم الإشعارات...</option></select></div>
+      <button class="btn" data-save>💾 حفظ المستويات</button>
+    </div>
+  </section>
+
+  <!-- التقديم -->
+  <section class="page" id="present">
+    <div class="card">
+      <div class="card-head"><h3>📝 نظام التقديم الكامل</h3><label class="switch"><input type="checkbox" id="presentToggle" checked><i></i></label></div>
+      <div class="field"><label>روم وصول التقديمات</label><select id="applyReceiveChannel"><option value="">اختر الروم...</option></select></div>
+      <div class="field"><label>روم نتائج القبول والرفض</label><select id="applyResultChannel"><option value="">اختر روم النتائج...</option></select></div>
+      <div class="field"><label>رتبة الإدارة التي تقبل/ترفض</label><select id="applyAdminRole"><option value="">اختر رتبة الأدمن...</option></select></div>
+      <button class="btn" data-save>💾 حفظ إعدادات التقديم</button>
+    </div>
+  </section>
+
+  <!-- الألعاب -->
+  <section class="page" id="games">
+    <div class="card">
+      <h3>🎮 ألعاب البوت</h3>
+      <p style="color:var(--mut); margin-bottom:10px;">جميع ألعاب البوت المتاحة:</p>
+      <ul style="list-style:none; line-height:2.2;">
+        <li>🎮 <code>/rps</code> - لعبة الحجر الورق مقص</li>
+        <li>🔢 <code>/guess</code> - لعبة تخمين الرقم</li>
+        <li>🏴‍☠️ <code>/treasure</code> - لعبة البحث عن الكنز</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- البرودكاست -->
+  <section class="page" id="broadcasts">
+    <div class="card">
+      <h3>📢 البرودكاست والبثوث</h3>
+      <div class="field"><label>نوع الرسالة</label><select id="bcType"><option value="embed">إيمبد (Embed)</option><option value="normal">عادية</option></select></div>
+      <div class="field"><label>نطاق الإرسال</label><select id="bcTarget"><option value="all">للجميع في السيرفر</option><option value="one">شخص واحد محدد</option></select></div>
+      <div class="field"><label>محتوى البرودكاست</label><textarea id="bcContent" placeholder="اكتب رسالتك هنا..."></textarea></div>
+      <button class="btn" data-save>📢 إرسال البرودكاست الآن</button>
+    </div>
+  </section>
+
+  <!-- الحماية -->
   <section class="page" id="protect">
     <div class="card">
-      <div class="card-head"><h3><span class="ico">🛡️</span> إعدادات الحماية العامة</h3></div>
-      <div class="field"><label>روم تنبيهات الحماية (Alerts Channel)</label><select id="protectLogRoom"><option value="">اختر روم التنبيهات...</option></select></div>
+      <h3>🛡️ حماية السيرفر المتقدمة</h3>
+      <div class="field"><label>روم تنبيهات الحماية</label><select id="protectLogRoom"><option value="">اختر روم التنبيهات...</option></select></div>
     </div>
-
-    <!-- 1. حماية دخول البوتات -->
+    <!-- 8 حمايات -->
     <div class="card">
-      <div class="card-head"><h3>🤖 حماية دخول البوتات العادية</h3><label class="switch"><input type="checkbox" id="prot_bots_on"><i></i></label></div>
-      <div class="field"><label>رتب الدعم المستثناة (لا يلمسها البوت)</label><select id="prot_bots_role"><option value="">اختر رتبة...</option></select></div>
-      <div class="field"><label>العقوبة عند المخالفة</label><select id="prot_bots_punish"><option value="ban">حظر الشخص (Ban)</option><option value="strip">سحب الرتب (Strip Roles)</option></select></div>
+      <div class="card-head"><h3>🤖 حماية دخول البوتات</h3><label class="switch"><input type="checkbox" id="prot_bots_on"><i></i></label></div>
+      <div class="field"><label>رتب الدعم المستثناة</label><select id="prot_bots_role"><option value="">اختر رتبة...</option></select></div>
+      <div class="field"><label>العقوبة</label><select id="prot_bots_punish"><option value="ban">حظر (Ban)</option><option value="strip">سحب الرتب</option></select></div>
     </div>
-
-    <!-- 2. حماية دخول البوتات غير الموثوقة -->
     <div class="card">
       <div class="card-head"><h3>⚠️ حماية البوتات غير الموثوقة</h3><label class="switch"><input type="checkbox" id="prot_untrusted_on"><i></i></label></div>
       <div class="field"><label>رتب الدعم المستثناة</label><select id="prot_untrusted_role"><option value="">اختر رتبة...</option></select></div>
-      <div class="field"><label>العقوبة</label><select id="prot_untrusted_punish"><option value="ban">حظر الشخص (Ban)</option><option value="strip">سحب الرتب (Strip Roles)</option></select></div>
+      <div class="field"><label>العقوبة</label><select id="prot_untrusted_punish"><option value="ban">حظر</option><option value="strip">سحب الرتب</option></select></div>
     </div>
-
-    <!-- 3. حماية حظر الأعضاء -->
     <div class="card">
-      <div class="card-head"><h3>🔨 حماية حظر الأعضاء (Anti Ban)</h3><label class="switch"><input type="checkbox" id="prot_ban_on"><i></i></label></div>
+      <div class="card-head"><h3>🔨 حماية حظر الأعضاء</h3><label class="switch"><input type="checkbox" id="prot_ban_on"><i></i></label></div>
       <div class="field"><label>رتب الدعم المستثناة</label><select id="prot_ban_role"><option value="">اختر رتبة...</option></select></div>
-      <div class="field"><label>العقوبة</label><select id="prot_ban_punish"><option value="ban">حظر المخالف</option><option value="strip">سحب الرتب</option></select></div>
+      <div class="field"><label>العقوبة</label><select id="prot_ban_punish"><option value="ban">حظر</option><option value="strip">سحب الرتب</option></select></div>
     </div>
-
-    <!-- 4. حماية طرد الأعضاء -->
     <div class="card">
-      <div class="card-head"><h3>👢 حماية طرد الأعضاء (Anti Kick)</h3><label class="switch"><input type="checkbox" id="prot_kick_on"><i></i></label></div>
+      <div class="card-head"><h3>👢 حماية طرد الأعضاء</h3><label class="switch"><input type="checkbox" id="prot_kick_on"><i></i></label></div>
       <div class="field"><label>رتب الدعم المستثناة</label><select id="prot_kick_role"><option value="">اختر رتبة...</option></select></div>
-      <div class="field"><label>العقوبة</label><select id="prot_kick_punish"><option value="ban">حظر المخالف</option><option value="strip">سحب الرتب</option></select></div>
+      <div class="field"><label>العقوبة</label><select id="prot_kick_punish"><option value="ban">حظر</option><option value="strip">سحب الرتب</option></select></div>
     </div>
-
-    <!-- 5. حماية تغيير أسماء الشاتات -->
     <div class="card">
       <div class="card-head"><h3>✏️ حماية تغيير أسماء الشاتات</h3><label class="switch"><input type="checkbox" id="prot_channel_name_on"><i></i></label></div>
       <div class="field"><label>رتب الدعم المستثناة</label><select id="prot_channel_name_role"><option value="">اختر رتبة...</option></select></div>
-      <div class="field"><label>العقوبة</label><select id="prot_channel_name_punish"><option value="ban">حظر المخالف</option><option value="strip">سحب الرتب</option></select></div>
+      <div class="field"><label>العقوبة</label><select id="prot_channel_name_punish"><option value="ban">حظر</option><option value="strip">سحب الرتب</option></select></div>
     </div>
-
-    <!-- 6. حماية مسح الشاتات -->
     <div class="card">
-      <div class="card-head"><h3>🗑️ حماية مسح الشاتات (Anti Delete Channel)</h3><label class="switch"><input type="checkbox" id="prot_channel_del_on"><i></i></label></div>
+      <div class="card-head"><h3>🗑️ حماية مسح الشاتات</h3><label class="switch"><input type="checkbox" id="prot_channel_del_on"><i></i></label></div>
       <div class="field"><label>رتب الدعم المستثناة</label><select id="prot_channel_del_role"><option value="">اختر رتبة...</option></select></div>
-      <div class="field"><label>العقوبة</label><select id="prot_channel_del_punish"><option value="ban">حظر المخالف</option><option value="strip">سحب الرتب</option></select></div>
+      <div class="field"><label>العقوبة</label><select id="prot_channel_del_punish"><option value="ban">حظر</option><option value="strip">سحب الرتب</option></select></div>
     </div>
-
-    <!-- 7. حماية إضافة رتب -->
     <div class="card">
-      <div class="card-head"><h3>➕ حماية إضافة رتب خطيرة</h3><label class="switch"><input type="checkbox" id="prot_add_role_on"><i></i></label></div>
+      <div class="card-head"><h3>➕ حماية إضافة الرتب الخطيرة</h3><label class="switch"><input type="checkbox" id="prot_add_role_on"><i></i></label></div>
       <div class="field"><label>رتب الدعم المستثناة</label><select id="prot_add_role_role"><option value="">اختر رتبة...</option></select></div>
-      <div class="field"><label>العقوبة</label><select id="prot_add_role_punish"><option value="ban">حظر المخالف</option><option value="strip">سحب الرتب</option></select></div>
+      <div class="field"><label>العقوبة</label><select id="prot_add_role_punish"><option value="ban">حظر</option><option value="strip">سحب الرتب</option></select></div>
     </div>
-
-    <!-- 8. حماية تغيير معلومات السيرفر -->
     <div class="card">
-      <div class="card-head"><h3>🌐 حماية تغيير معلومات وسيرفر</h3><label class="switch"><input type="checkbox" id="prot_server_edit_on"><i></i></label></div>
+      <div class="card-head"><h3>🌐 حماية تغيير معلومات السيرفر</h3><label class="switch"><input type="checkbox" id="prot_server_edit_on"><i></i></label></div>
       <div class="field"><label>رتب الدعم المستثناة</label><select id="prot_server_edit_role"><option value="">اختر رتبة...</option></select></div>
-      <div class="field"><label>العقوبة</label><select id="prot_server_edit_punish"><option value="ban">حظر المخالف</option><option value="strip">سحب الرتب</option></select></div>
+      <div class="field"><label>العقوبة</label><select id="prot_server_edit_punish"><option value="ban">حظر</option><option value="strip">سحب الرتب</option></select></div>
     </div>
-
-    <button class="btn" data-save>💾 حفظ إعدادات الحماية كاملة</button>
+    <button class="btn" data-save>💾 حفظ إعدادات الحماية الكاملة</button>
   </section>
 
-  <!-- المستويات والأنظمة الأخرى -->
-  <section class="page" id="levels"><div class="card"><h3>📈 نظام المستويات</h3><label class="switch"><input type="checkbox" id="levelsToggle" checked><i></i></label><button class="btn" data-save style="margin-top:15px;">💾 حفظ</button></div></section>
-  <section class="page" id="present"><div class="card"><h3>📝 نظام التقديم</h3><label class="switch"><input type="checkbox" id="presentToggle" checked><i></i></label><button class="btn" data-save style="margin-top:15px;">💾 حفظ</button></div></section>
-  <section class="page" id="notify"><div class="card"><h3>🔔 نظام الإشعارات</h3><button class="btn" data-save>💾 حفظ</button></div></section>
-  <section class="page" id="music"><div class="card"><h3>🎵 نظام الموسيقى</h3><button class="btn" data-save>💾 حفظ</button></div></section>
-  <section class="page" id="games"><div class="card"><h3>🎮 نظام الألعاب</h3><button class="btn" data-save>💾 حفظ</button></div></section>
-  <section class="page" id="embeds"><div class="card"><h3>💬 رسائل مخصصة</h3><button class="btn" data-save>💾 حفظ</button></div></section>
-  <section class="page" id="gives"><div class="card"><h3>🎁 نظام السحوبات</h3><button class="btn" data-save>💾 حفظ</button></div></section>
+  <!-- السجلات واللوجات -->
+  <section class="page" id="logs">
+    <div class="card"><h3>📋 سجل اللوجات والأحداث</h3><p style="color:var(--mut);">جميع عمليات الحماية والإشراف تظهر هنا.</p></div>
+  </section>
 
+  <!-- عن البوت -->
   <section class="page" id="about">
     <div class="card center-card" style="text-align:center; padding:30px;">
-      <div style="font-size:50px; margin-bottom:10px;">🐺</div>
-      <h2>UNIBOT — ALPHA WOLF</h2>
-      <p style="color:var(--mut);">UniBot v3.1 — ALPHA EDITION</p>
+      <div style="font-size:50px; margin-bottom:10px;">💎</div>
+      <h2>UNIBOT — PRO EDITION</h2>
+      <p style="color:var(--mut);">النسخة الاحترافية لإدارة السيرفرات باحترافية تامة.</p>
     </div>
   </section>
 
-  <footer>🐺 UniBot © 2030 — القطيع يتبع الألفا</footer>
+  <footer>UniBot © 2030 — جميع الحقوق محفوظة</footer>
 </main>
 
-<div class="toast" id="toast">✅ تم الحفظ</div>
+<div class="toast" id="toast">✅ تم الحفظ بنجاح</div>
 <script src="script.js"></script>
 </body>
 </html>
