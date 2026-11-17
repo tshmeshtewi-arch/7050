@@ -1,3 +1,6 @@
+/* ============================================================
+   UniBot v3.2 — PRO SCRIPT & DISCORD INTEGRATION
+============================================================ */
 'use strict';
 
 const $  = (s, p = document) => p.querySelector(s);
@@ -158,8 +161,13 @@ async function loadUserGuilds() {
     if (r.status === 401) { localStorage.removeItem('unibot-session'); return; }
     const data = await r.json();
     
+    // عرض صورة البروفايل الشخصية واسم المستخدم في زر ديسكورد
     if (loginBtn && data.user) {
-      loginBtn.innerHTML = `👤 ${data.user.username} (خروج)`;
+      const avatarUrl = data.user.avatar 
+        ? `https://cdn.discordapp.com/avatars/${data.user.id}/${data.user.avatar}.png` 
+        : `https://cdn.discordapp.com/embed/avatars/0.png`;
+
+      loginBtn.innerHTML = `<img src="${avatarUrl}" style="width:24px; height:24px; border-radius:50%; vertical-align:middle; margin-left:6px;"> 👤 ${data.user.username} (خروج)`;
       loginBtn.onclick = () => { localStorage.clear(); location.reload(); };
     }
 
@@ -167,7 +175,7 @@ async function loadUserGuilds() {
     const select = document.getElementById('guildSelect');
     if (box && select && data.guilds) {
       box.style.display = 'block';
-      select.innerHTML = `<option value="">اختر السيرفر للتحكم...</option>` + data.guilds.map(g => `<option value="${g.id}">${g.name}</option>`).join('');
+      select.innerHTML = `<option value="">اختر السيرفر للتحكم...</option>` + data.guilds.map(g => `<option value="${g.id}">🛡️ ${g.name}</option>`).join('');
 
       if (currentGuildId && data.guilds.some(g => g.id === currentGuildId)) {
         select.value = currentGuildId;
@@ -188,15 +196,20 @@ async function loadGuildRealData(guildId) {
   const session = localStorage.getItem('unibot-session');
   if (!session || !guildId) return;
 
-  toast('🔄 جاري تحميل بيانات السيرفر...');
+  toast('🔄 جاري تحميل بيانات السيرفر والمحفظة...');
   try {
     const r = await fetch(`${API_URL}/api/guild/${guildId}/data`, { headers: { 'x-session': session } });
     const data = await r.json();
 
+    // تحديث رصيد العملة Ly في المحفظة
+    if (data.wallet) {
+      const walletEl = $('#userWalletLy');
+      if (walletEl) walletEl.textContent = `${data.wallet.balance} Ly`;
+    }
+
     const chanHtml = data.channels.map(c => `<option value="${c.id}">${c.name}</option>`).join('');
     const roleHtml = data.roles.map(r => `<option value="${r.id}">@${r.name}</option>`).join('');
 
-    // تعبئة القنوات والرتب في كل Select بالموقع
     $$('select').forEach(sel => {
       if (sel.id === 'guildSelect') return;
       const curVal = sel.value;
@@ -208,7 +221,6 @@ async function loadGuildRealData(guildId) {
       if (curVal) sel.value = curVal;
     });
 
-    // استرجاع الإعدادات المحفوظة
     if (data.settings) {
       Object.keys(data.settings).forEach(sysKey => {
         const sysData = data.settings[sysKey];
