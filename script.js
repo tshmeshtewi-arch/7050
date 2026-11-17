@@ -3,7 +3,7 @@
 const $ = (s, p = document) => p.querySelector(s);
 const $$ = (s, p = document) => [...p.querySelectorAll(s)];
 
-const API_URL = "https://ejhyovem0d.apps.bot-hosting.cloud"; // ضع رابط استضافتك هنا
+const API_URL = "https://ejhyovem0d.apps.bot-hosting.cloud";
 const CLIENT_ID = "1523042577924886749"; 
 const REDIRECT_URI = window.location.origin + window.location.pathname;
 
@@ -21,6 +21,20 @@ function toast(msg) {
   setTimeout(() => t.classList.remove('show'), 2400);
 }
 
+// تشغيل القائمة الجانبية (زر الثلاث شرطات Burger Menu) بشكل صحيح 100%
+const burger = $('#burger');
+const sidebar = $('#sidebar');
+const overlay = $('#overlay');
+
+function setNav(open) {
+  document.body.classList.toggle('nav-open', open);
+  if (burger) burger.classList.toggle('open', open);
+  if (overlay) overlay.classList.toggle('on', open);
+}
+
+if (burger) burger.addEventListener('click', () => setNav(!document.body.classList.contains('nav-open')));
+if (overlay) overlay.addEventListener('click', () => setNav(false));
+
 const links = $$('.nav a');
 const crumb = $('#crumb');
 
@@ -31,6 +45,7 @@ function goTo(page) {
   if (active && crumb) crumb.textContent = active.textContent.trim();
   window.scrollTo({ top: 0, behavior: 'smooth' });
   localStorage.setItem('unibot-page', page);
+  if (innerWidth <= 900) setNav(false);
 }
 
 links.forEach(a => a.addEventListener('click', e => {
@@ -80,7 +95,7 @@ async function loadUserGuilds() {
     if (r.status === 401) { localStorage.removeItem('unibot-session'); return; }
     const data = await r.json();
     
-    // جلب وعرض صورة بروفايل ديسكورد الشخصية واسم المستخدم مثل ProBot
+    // عرض صورة البروفايل الشخصية لديسكورد مثل ProBot
     if (loginBtn && data.user) {
       const avatarUrl = data.user.avatar 
         ? `https://cdn.discordapp.com/avatars/${data.user.id}/${data.user.avatar}.png` 
