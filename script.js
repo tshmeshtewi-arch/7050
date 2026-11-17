@@ -1,6 +1,3 @@
-/* ============================================================
-   UniBot v3.1 — ALPHA CORE & LIVE API INTEGRATION
-============================================================ */
 'use strict';
 
 const $  = (s, p = document) => p.querySelector(s);
@@ -12,12 +9,10 @@ const REDIRECT_URI = window.location.origin + window.location.pathname;
 
 let currentGuildId = localStorage.getItem('unibot-selected-guild') || null;
 
-/* ---------- شاشة التحميل ---------- */
 window.addEventListener('load', () => {
   setTimeout(() => { const l = $('#loader'); if (l) l.classList.add('done'); }, 1200);
 });
 
-/* ---------- توست الإشعارات ---------- */
 let toastTimer;
 function toast(msg) {
   const t = $('#toast');
@@ -28,7 +23,6 @@ function toast(msg) {
   toastTimer = setTimeout(() => t.classList.remove('show'), 2400);
 }
 
-/* ---------- نظام تبديل اللغات (AR / EN) ---------- */
 let currentLang = localStorage.getItem('unibot-lang') || 'ar';
 function setLanguage(lang) {
   currentLang = lang;
@@ -45,36 +39,26 @@ function setLanguage(lang) {
     }
   });
 }
-
-$$('.lang-btn').forEach(btn => {
-  btn.addEventListener('click', () => setLanguage(btn.dataset.lang));
-});
+$$('.lang-btn').forEach(btn => btn.addEventListener('click', () => setLanguage(btn.dataset.lang)));
 setLanguage(currentLang);
 
-/* ---------- البحث السريع في القائمة ---------- */
 const searchInput = $('#search');
 if (searchInput) {
   searchInput.addEventListener('input', (e) => {
     const q = e.target.value.toLowerCase().trim();
     $$('.nav a').forEach(a => {
-      const text = a.textContent.toLowerCase();
-      a.style.display = text.includes(q) ? 'flex' : 'none';
+      a.style.display = a.textContent.toLowerCase().includes(q) ? 'flex' : 'none';
     });
   });
 }
 
-/* ---------- الساعة الحية ---------- */
 function updateClock() {
   const clock = $('#clock');
-  if (clock) {
-    const now = new Date();
-    clock.textContent = now.toTimeString().split(' ')[0];
-  }
+  if (clock) clock.textContent = new Date().toTimeString().split(' ')[0];
 }
 setInterval(updateClock, 1000);
 updateClock();
 
-/* ---------- التنقل بين الأقسام ---------- */
 const links = $$('.nav a');
 const crumb = $('#crumb');
 
@@ -84,8 +68,7 @@ function goTo(page) {
   const active = links.find(l => l.dataset.page === page);
   if (active && crumb) {
     const sp = active.querySelector('span');
-    const txt = sp ? sp.getAttribute(`data-${currentLang}`) || sp.textContent : active.textContent.trim();
-    crumb.textContent = txt;
+    crumb.textContent = sp ? sp.getAttribute(`data-${currentLang}`) || sp.textContent : active.textContent.trim();
   }
   window.scrollTo({ top: 0, behavior: 'smooth' });
   localStorage.setItem('unibot-page', page);
@@ -97,7 +80,6 @@ links.forEach(a => a.addEventListener('click', e => {
   goTo(a.dataset.page);
 }));
 
-/* ---------- القائمة المنسدلة (البرغر) ---------- */
 const burger  = $('#burger');
 const sidebar = $('#sidebar');
 const overlay = $('#overlay');
@@ -107,35 +89,35 @@ function setNav(open) {
   if (burger) burger.classList.toggle('open', open);
   if (overlay) overlay.classList.toggle('on', open);
 }
-
-if (burger) {
-  burger.addEventListener('click', (e) => {
-    e.stopPropagation();
-    setNav(!document.body.classList.contains('nav-open'));
-  });
-}
+if (burger) burger.addEventListener('click', () => setNav(!document.body.classList.contains('nav-open')));
 if (overlay) overlay.addEventListener('click', () => setNav(false));
 
-/* ---------- جلب الإحصائيات الحية من البوت ---------- */
 async function loadLiveStats() {
   try {
     const res = await fetch(`${API_URL}/api/stats`);
     const data = await res.json();
     const srvEl = document.querySelector('.stat-card.v .s-num');
     if (srvEl && data.servers !== undefined) srvEl.textContent = data.servers;
-  } catch (e) {
-    console.warn("تعذر جلب إحصائيات البوت الحية");
-  }
+
+    const pingEl = $('#pingVal');
+    if (pingEl && data.ping !== undefined) pingEl.textContent = `${data.ping}ms`;
+
+    const upEl = $('#uptime');
+    if (data.uptime && upEl) {
+      const d = Math.floor(data.uptime / 86400);
+      const h = Math.floor((data.uptime % 86400) / 3600);
+      const m = Math.floor((data.uptime % 3600) / 60);
+      upEl.textContent = `${d}ي ${h}س ${m}د`;
+    }
+  } catch (e) {}
 }
 loadLiveStats();
 setInterval(loadLiveStats, 15000);
 
-/* ---------- تسجيل الدخول OAuth2 ---------- */
 const loginBtn = document.getElementById('discordLoginBtn');
 if (loginBtn) {
   loginBtn.addEventListener('click', () => {
-    const authUrl = `https://discord.com/api/oauth2/authorize?client_id=${CLIENT_ID}&redirect_uri=${encodeURIComponent(REDIRECT_URI)}&response_type=code&scope=identify%20guilds`;
-    window.location.href = authUrl;
+    window.location.href = `https://discord.com/api/oauth2/authorize?client_id=${CLIENT_ID}&redirect_uri=${encodeURIComponent(REDIRECT_URI)}&response_type=code&scope=identify%20guilds`;
   });
 }
 
@@ -159,7 +141,7 @@ async function handleAuthCallback() {
       } else {
         toast(`❌ فشل تسجيل الدخول`);
       }
-    } catch (e) {
+    } catch {
       toast('❌ خطأ في الاتصال بالبوت');
     }
   } else if (localStorage.getItem('unibot-session')) {
@@ -167,37 +149,25 @@ async function handleAuthCallback() {
   }
 }
 
-/* ---------- جلب سيرفرات المستخدم ---------- */
 async function loadUserGuilds() {
   const session = localStorage.getItem('unibot-session');
   if (!session) return;
 
   try {
-    const r = await fetch(`${API_URL}/api/my-guilds`, {
-      headers: { 'x-session': session }
-    });
-    if (r.status === 401) {
-      localStorage.removeItem('unibot-session');
-      return;
-    }
+    const r = await fetch(`${API_URL}/api/my-guilds`, { headers: { 'x-session': session } });
+    if (r.status === 401) { localStorage.removeItem('unibot-session'); return; }
     const data = await r.json();
     
     if (loginBtn && data.user) {
-      loginBtn.innerHTML = `👤 ${data.user.username} (تسجيل خروج)`;
-      loginBtn.onclick = () => {
-        localStorage.removeItem('unibot-session');
-        localStorage.removeItem('unibot-selected-guild');
-        location.reload();
-      };
+      loginBtn.innerHTML = `👤 ${data.user.username} (خروج)`;
+      loginBtn.onclick = () => { localStorage.clear(); location.reload(); };
     }
 
     const box = document.getElementById('guildSelectorBox');
     const select = document.getElementById('guildSelect');
     if (box && select && data.guilds) {
       box.style.display = 'block';
-      select.innerHTML = data.guilds.length 
-        ? `<option value="">اختر السيرفر للتحكم...</option>` + data.guilds.map(g => `<option value="${g.id}">${g.name}</option>`).join('')
-        : '<option value="">البوت غير موجود في سيرفراتك</option>';
+      select.innerHTML = `<option value="">اختر السيرفر للتحكم...</option>` + data.guilds.map(g => `<option value="${g.id}">${g.name}</option>`).join('');
 
       if (currentGuildId && data.guilds.some(g => g.id === currentGuildId)) {
         select.value = currentGuildId;
@@ -211,60 +181,55 @@ async function loadUserGuilds() {
 
       if (currentGuildId) loadGuildRealData(currentGuildId);
     }
-  } catch (e) {
-    console.error(e);
-  }
+  } catch (e) {}
 }
 
-/* ---------- جلب بيانات الرومات والرتب الحقيقية وإعدادات السيرفر ---------- */
 async function loadGuildRealData(guildId) {
   const session = localStorage.getItem('unibot-session');
   if (!session || !guildId) return;
 
   toast('🔄 جاري تحميل بيانات السيرفر...');
   try {
-    const r = await fetch(`${API_URL}/api/guild/${guildId}/data`, {
-      headers: { 'x-session': session }
-    });
+    const r = await fetch(`${API_URL}/api/guild/${guildId}/data`, { headers: { 'x-session': session } });
     const data = await r.json();
 
-    // تعبئة قنوات النصوص
     const chanHtml = data.channels.map(c => `<option value="${c.id}">${c.name}</option>`).join('');
-    const welcomeChannel = document.getElementById('welcomeChannel');
-    if (welcomeChannel) welcomeChannel.innerHTML = `<option value="">اختر القناة...</option>` + chanHtml;
-
-    // تعبئة رتب الأعضاء
     const roleHtml = data.roles.map(r => `<option value="${r.id}">@${r.name}</option>`).join('');
-    const joinRole = document.getElementById('joinRole');
-    if (joinRole) joinRole.innerHTML = `<option value="">اختر الرتبة...</option>` + roleHtml;
 
-    // استرجاع الإعدادات المحفوظة إن وجدت
+    // تعبئة القنوات والرتب في كل Select بالموقع
+    $$('select').forEach(sel => {
+      if (sel.id === 'guildSelect') return;
+      const curVal = sel.value;
+      if (sel.id.includes('Channel') || sel.id.includes('Room') || sel.id.includes('Category')) {
+        sel.innerHTML = `<option value="">اختر القناة...</option>` + chanHtml;
+      } else if (sel.id.includes('Role') || sel.id.includes('role')) {
+        sel.innerHTML = `<option value="">اختر الرتبة...</option>` + roleHtml;
+      }
+      if (curVal) sel.value = curVal;
+    });
+
+    // استرجاع الإعدادات المحفوظة
     if (data.settings) {
-      if (data.settings.welcome) {
-        if (welcomeChannel && data.settings.welcome.welcomeChannel) welcomeChannel.value = data.settings.welcome.welcomeChannel;
-        const wmsg = document.getElementById('wmsg');
-        if (wmsg && data.settings.welcome.wmsg) wmsg.value = data.settings.welcome.wmsg;
-        const wToggle = document.getElementById('welcomeToggle');
-        if (wToggle) wToggle.checked = data.settings.welcome.welcomeToggle !== false;
-      }
-      if (data.settings.autorank) {
-        if (joinRole && data.settings.autorank.joinRole) joinRole.value = data.settings.autorank.joinRole;
-        const aToggle = document.getElementById('autorankToggle');
-        if (aToggle) aToggle.checked = data.settings.autorank.autorankToggle !== false;
-      }
-      if (data.settings.settings && data.settings.settings.prefixInput) {
-        const pInput = document.getElementById('prefixInput');
-        if (pInput) pInput.value = data.settings.settings.prefixInput;
-      }
+      Object.keys(data.settings).forEach(sysKey => {
+        const sysData = data.settings[sysKey];
+        if (sysData && typeof sysData === 'object') {
+          Object.keys(sysData).forEach(fieldKey => {
+            const el = document.getElementById(fieldKey);
+            if (el) {
+              if (el.type === 'checkbox') el.checked = sysData[fieldKey];
+              else el.value = sysData[fieldKey];
+            }
+          });
+        }
+      });
     }
 
-    toast('✅ تم تحميل بيانات السيرفر بنجاح!');
+    toast('✅ تم التحميل بنجاح!');
   } catch (e) {
     toast('⚠️ تعذر جلب تفاصيل السيرفر');
   }
 }
 
-/* ---------- حفظ الإعدادات لكل قسم ---------- */
 document.querySelectorAll('[data-save]').forEach(btn => {
   btn.addEventListener('click', async () => {
     const session = localStorage.getItem('unibot-session');
@@ -276,9 +241,10 @@ document.querySelectorAll('[data-save]').forEach(btn => {
     const activePage = document.querySelector('.page.on')?.id || 'settings';
     const payload = { updatedAt: Date.now() };
 
-    document.querySelectorAll(`#${activePage} input, #${activePage} select, #${activePage} textarea`).forEach((el, idx) => {
-      const key = el.id || el.dataset.k || `field_${idx}`;
-      payload[key] = el.type === 'checkbox' ? el.checked : el.value;
+    document.querySelectorAll(`#${activePage} input, #${activePage} select, #${activePage} textarea`).forEach((el) => {
+      if (el.id) {
+        payload[el.id] = el.type === 'checkbox' ? el.checked : el.value;
+      }
     });
 
     try {
@@ -288,7 +254,7 @@ document.querySelectorAll('[data-save]').forEach(btn => {
         body: JSON.stringify(payload)
       });
       const result = await res.json();
-      if (result.ok) toast('💾 تم الحفظ في قاعدة بيانات البوت بنجاح!');
+      if (result.ok) toast('💾 تم الحفظ بنجاح في قاعدة البيانات!');
       else toast('❌ فشل الحفظ');
     } catch {
       toast('❌ خطأ في الاتصال بالبوت');
