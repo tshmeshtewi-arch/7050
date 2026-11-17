@@ -1,26 +1,24 @@
 'use strict';
 
-const $  = (s, p = document) => p.querySelector(s);
+const $ = (s, p = document) => p.querySelector(s);
 const $$ = (s, p = document) => [...p.querySelectorAll(s)];
 
-const API_URL = "https://ejhyovem0d.apps.bot-hosting.cloud";
+const API_URL = "https://ejhyovem0d.apps.bot-hosting.cloud"; // ضع رابط استضافتك هنا
 const CLIENT_ID = "1523042577924886749"; 
 const REDIRECT_URI = window.location.origin + window.location.pathname;
 
 let currentGuildId = localStorage.getItem('unibot-selected-guild') || null;
 
 window.addEventListener('load', () => {
-  setTimeout(() => { const l = $('#loader'); if (l) l.classList.add('done'); }, 1200);
+  setTimeout(() => { const l = $('#loader'); if (l) l.classList.add('done'); }, 1000);
 });
 
-let toastTimer;
 function toast(msg) {
   const t = $('#toast');
   if (!t) return;
   t.textContent = msg;
   t.classList.add('show');
-  clearTimeout(toastTimer);
-  toastTimer = setTimeout(() => t.classList.remove('show'), 2400);
+  setTimeout(() => t.classList.remove('show'), 2400);
 }
 
 const links = $$('.nav a');
@@ -33,45 +31,12 @@ function goTo(page) {
   if (active && crumb) crumb.textContent = active.textContent.trim();
   window.scrollTo({ top: 0, behavior: 'smooth' });
   localStorage.setItem('unibot-page', page);
-  if (innerWidth <= 900) setNav(false);
 }
 
 links.forEach(a => a.addEventListener('click', e => {
   e.preventDefault();
   goTo(a.dataset.page);
 }));
-
-const burger  = $('#burger');
-const sidebar = $('#sidebar');
-const overlay = $('#overlay');
-
-function setNav(open) {
-  document.body.classList.toggle('nav-open', open);
-  if (burger) burger.classList.toggle('open', open);
-  if (overlay) overlay.classList.toggle('on', open);
-}
-if (burger) burger.addEventListener('click', () => setNav(!document.body.classList.contains('nav-open')));
-if (overlay) overlay.addEventListener('click', () => setNav(false));
-
-// أزرار الإضافة التفاعلية للردود والإيمبدات
-const addAutoReplyBtn = $('#addAutoReplyBtn');
-if (addAutoReplyBtn) {
-  addAutoReplyBtn.addEventListener('click', () => {
-    const container = $('#autoReplyContainer');
-    if (container) {
-      const div = document.createElement('div');
-      div.className = 'field';
-      div.style.position = 'relative';
-      div.innerHTML = `
-        <button type="button" style="position:absolute; left:0; top:0; background:none; border:none; color:var(--r); font-weight:bold; cursor:pointer;" onclick="this.parentElement.remove()">✕ إزالة</button>
-        <label>كلمة جديدة</label><input placeholder="الكلمة...">
-        <label style="margin-top:6px;">الرد</label><textarea placeholder="الرد..."></textarea>
-      `;
-      container.appendChild(div);
-      toast('➕ تمت إضافة حقل رد جديد');
-    }
-  });
-}
 
 const loginBtn = document.getElementById('discordLoginBtn');
 if (loginBtn) {
@@ -97,8 +62,6 @@ async function handleAuthCallback() {
         localStorage.setItem('unibot-session', data.token);
         toast(`✅ أهلاً بك ${data.user.username}!`);
         loadUserGuilds();
-      } else {
-        toast(`❌ فشل تسجيل الدخول`);
       }
     } catch {
       toast('❌ خطأ في الاتصال بالبوت');
@@ -117,6 +80,7 @@ async function loadUserGuilds() {
     if (r.status === 401) { localStorage.removeItem('unibot-session'); return; }
     const data = await r.json();
     
+    // جلب وعرض صورة بروفايل ديسكورد الشخصية واسم المستخدم مثل ProBot
     if (loginBtn && data.user) {
       const avatarUrl = data.user.avatar 
         ? `https://cdn.discordapp.com/avatars/${data.user.id}/${data.user.avatar}.png` 
@@ -189,7 +153,6 @@ async function loadGuildRealData(guildId) {
         }
       });
     }
-
     toast('✅ تم التحميل بنجاح!');
   } catch (e) {
     toast('⚠️ تعذر جلب تفاصيل السيرفر');
@@ -208,9 +171,7 @@ document.querySelectorAll('[data-save]').forEach(btn => {
     const payload = { updatedAt: Date.now() };
 
     document.querySelectorAll(`#${activePage} input, #${activePage} select, #${activePage} textarea`).forEach((el) => {
-      if (el.id) {
-        payload[el.id] = el.type === 'checkbox' ? el.checked : el.value;
-      }
+      if (el.id) payload[el.id] = el.type === 'checkbox' ? el.checked : el.value;
     });
 
     try {
@@ -220,10 +181,10 @@ document.querySelectorAll('[data-save]').forEach(btn => {
         body: JSON.stringify(payload)
       });
       const result = await res.json();
-      if (result.ok) toast('💾 تم الحفظ بنجاح في قاعدة البيانات!');
+      if (result.ok) toast('💾 تم الحفظ بنجاح!');
       else toast('❌ فشل الحفظ');
     } catch {
-      toast('❌ خطأ في الاتصال بالبوت');
+      toast('❌ خطأ في الاتصال');
     }
   });
 });
