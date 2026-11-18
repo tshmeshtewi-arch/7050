@@ -29,6 +29,8 @@ body {
   color: var(--txt);
   min-height: 100vh;
   direction: rtl;
+  /* ══ إصلاح التخطيط: الجانب والمحتوى جنب بعض ══ */
+  display: flex;
 }
 
 a { color: var(--accent); text-decoration: none; }
@@ -66,7 +68,6 @@ a { color: var(--accent); text-decoration: none; }
 .burger.open span:nth-child(3) { transform: translateY(-6px) rotate(-45deg); }
 .overlay { position: fixed; inset: 0; background: rgba(0,0,0,.6); z-index: 1000; opacity: 0; pointer-events: none; transition: .3s; }
 .overlay.on { opacity: 1; pointer-events: auto; }
-body.nav-open .sidebar { transform: translateX(0); }
 
 /* ─── الجانب ─── */
 .sidebar {
@@ -276,9 +277,14 @@ footer { text-align: center; color: var(--mut); font-size: .75em; padding: 20px 
 
 /* ─── الموبايل ─── */
 @media (max-width: 900px) {
+  body { display: block; }
   .burger { display: flex; }
-  .sidebar { position: fixed; top: 0; right: 0; height: 100vh; transform: translateX(100%); transition: .3s; }
+  .sidebar {
+    position: fixed; top: 0; right: 0; height: 100vh;
+    transform: translateX(100%); transition: .3s;
+  }
+  body.nav-open .sidebar { transform: translateX(0); }
   body.nav-open .overlay { opacity: 1; pointer-events: auto; }
-  main#main { padding: 14px; }
+  main#main { padding: 14px; width: 100%; }
   .stat-grid { grid-template-columns: repeat(2, 1fr); }
-                               }
+   }
