@@ -144,7 +144,7 @@ async function loadUserGuilds() {
   } catch (e) {}
 }
 
-// ── تتبّع القائمة المنسدلة المفتوحة (يعمل على الكمبيوتر والهاتف) ──
+// ── تتبّع القائمة المنسدلة المفتوحة + حماية اللمس للموبايل ──
 let activeSelectElement = null;
 
 document.addEventListener('focusin', (e) => {
@@ -157,6 +157,19 @@ document.addEventListener('focusout', (e) => {
       if (document.activeElement?.tagName !== 'SELECT') activeSelectElement = null;
     }, 200);
   }
+});
+
+// منع تسرب أحداث اللمس والنقر من الـ Select لعناصر الخلفية والأوفرلاي
+document.addEventListener('DOMContentLoaded', () => {
+  document.querySelectorAll('select').forEach(sel => {
+    sel.addEventListener('touchstart', (e) => {
+      e.stopPropagation();
+    }, { passive: true });
+
+    sel.addEventListener('click', (e) => {
+      e.stopPropagation();
+    });
+  });
 });
 
 // ── تعبئة القوائم بدون إغلاق القائمة المفتوحة ──
