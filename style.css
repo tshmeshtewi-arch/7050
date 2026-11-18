@@ -224,6 +224,19 @@ body {
 /* ─── التذييل ─── */
 footer { text-align: center; color: var(--mut); font-size: .75em; margin-top: 40px; }
 
+/* ─── أداء الجوال: إخفاء الكرات المضيئة الثقيلة ─── */
+@media (max-width: 900px) {
+  .bg-orbs { display: none; }
+  .orb { animation: none; }
+  * { -webkit-tap-highlight-color: transparent; }
+}
+
+/* ─── إلغاء التأثيرات على أجهزة اللمس ─── */
+@media (hover: none) {
+  .btn:hover { filter: none; transform: none; }
+  .stat-card:hover { transform: none; }
+}
+
 /* ─── استجابة الموبايل ─── */
 @media (max-width: 900px) {
   .burger { display: flex; }
@@ -231,4 +244,4 @@ footer { text-align: center; color: var(--mut); font-size: .75em; margin-top: 40
   body.nav-open .sidebar { transform: translateX(0); }
   #main { margin-right: 0; padding: 70px 16px 40px; }
   .top h1 { font-size: 1.2em; }
-}
+   }
