@@ -133,7 +133,6 @@ async function loadUserGuilds() {
         data.guilds.map(g => `<option value="${g.id}">🛡️ ${g.name}</option>`).join('');
       if (currentGuildId && data.guilds.some(g => g.id === currentGuildId)) select.value = currentGuildId;
 
-      // onchange (وليس addEventListener) حتى لا يتكرر مع كل استدعاء
       select.onchange = () => {
         currentGuildId = select.value;
         localStorage.setItem('unibot-selected-guild', currentGuildId);
@@ -144,7 +143,7 @@ async function loadUserGuilds() {
   } catch (e) {}
 }
 
-// ── تتبّع القائمة المنسدلة المفتوحة + حماية اللمس للموبايل ──
+// ── تتبّع القائمة المنسدلة المفتوحة + الحل الجذري للتفاعل على الموبايل ──
 let activeSelectElement = null;
 
 document.addEventListener('focusin', (e) => {
@@ -159,16 +158,13 @@ document.addEventListener('focusout', (e) => {
   }
 });
 
-// منع تسرب أحداث اللمس والنقر من الـ Select لعناصر الخلفية والأوفرلاي
+// ── الحل النهائي لاستجابة القوائم المنسدلة ومنع تفاعل الخلفية ──
 document.addEventListener('DOMContentLoaded', () => {
   document.querySelectorAll('select').forEach(sel => {
-    sel.addEventListener('touchstart', (e) => {
-      e.stopPropagation();
-    }, { passive: true });
-
-    sel.addEventListener('click', (e) => {
-      e.stopPropagation();
-    });
+    sel.addEventListener('mousedown', (e) => e.stopPropagation());
+    sel.addEventListener('touchstart', (e) => e.stopPropagation(), { passive: true });
+    sel.addEventListener('click', (e) => e.stopPropagation());
+    sel.addEventListener('change', (e) => e.stopPropagation());
   });
 });
 
@@ -212,18 +208,15 @@ async function loadGuildRealData(guildId) {
   }
   const data = await dataRes.value.json();
 
-  // المحفظة
   if (data.wallet) {
     const el = $('#userWalletLy');
     if (el) el.textContent = `${data.wallet.balance} Ly`;
   }
 
-  // القوائم
   const chanHtml = data.channels.map(c => `<option value="${c.id}">${c.name}</option>`).join('');
   const roleHtml = data.roles.map(rr => `<option value="${rr.id}">@${rr.name}</option>`).join('');
   populateSelects(chanHtml, roleHtml);
 
-  // تعبئة الحقول المحفوظة
   if (data.settings) {
     Object.entries(data.settings).forEach(([sysKey, sysData]) => {
       if (sysData && typeof sysData === 'object') {
@@ -238,10 +231,8 @@ async function loadGuildRealData(guildId) {
     });
   }
 
-  // الردود التلقائية المحفوظة
   renderAutoReplies((data.settings.autoreply && data.settings.autoreply.replies) || []);
 
-  // الأعضاء (للبرودكاست)
   if (membersRes.status === 'fulfilled' && membersRes.value.ok) {
     try {
       const members = await membersRes.value.json();
@@ -323,7 +314,6 @@ document.querySelectorAll('[data-save]').forEach(btn => {
 
     const activePage = document.querySelector('.page.on')?.id || 'settings';
 
-    // زر البرودكاست: إرسال فعلي وليس حفظ
     if (activePage === 'broadcasts') {
       const type = $('#bcType')?.value || 'embed';
       const target = $('#bcTarget')?.value || 'all';
@@ -350,7 +340,6 @@ document.querySelectorAll('[data-save]').forEach(btn => {
       payload[el.id] = el.type === 'checkbox' ? el.checked : el.value;
     });
 
-    // الردود التلقائية: جمع الصفوف
     if (activePage === 'autoreply') {
       const rows = [];
       $$('#autoReplyContainer .ar-row').forEach(row => {
