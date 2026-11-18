@@ -13,9 +13,7 @@
 <body>
 
 <div class="bg-orbs" aria-hidden="true">
-  <span class="orb o1"></span>
-  <span class="orb o2"></span>
-  <span class="orb o3"></span>
+  <span class="orb o1"></span><span class="orb o2"></span><span class="orb o3"></span>
 </div>
 
 <div id="loader" aria-hidden="true">
@@ -24,55 +22,56 @@
   <p class="l-txt">جاري تحميل أنظمة UniBot 2030...</p>
 </div>
 
-<button class="burger" id="burger" aria-label="القائمة">
-  <span></span><span></span><span></span>
-</button>
+<button class="burger" id="burger" aria-label="القائمة"><span></span><span></span><span></span></button>
 <div class="overlay" id="overlay"></div>
 
 <aside class="sidebar" id="sidebar">
   <div class="side-head">
     <div class="wolf-logo">🐺</div>
-    <div class="side-title">
-      <b>UniBot</b>
-      <small>FUTURE PRO v2030</small>
-    </div>
+    <div class="side-title"><b>UniBot</b><small>FUTURE PRO v2030</small></div>
+  </div>
+
+  <!-- البروفايل (زي ProBot) -->
+  <div class="profile-block" id="profileBlock" style="display:none;">
+    <img id="userAvatar" src="https://cdn.discordapp.com/embed/avatars/0.png" alt="avatar">
+    <div class="p-info"><b id="userName">...</b><small id="loginState">متصل</small></div>
+    <button class="btn" id="logoutBtn" title="خروج">⏻</button>
+  </div>
+
+  <!-- سيرفرات المستخدم -->
+  <div class="guilds-block" id="guildsBlock" style="display:none;">
+    <p class="nav-cap">سيرفراتك</p>
+    <div class="guild-icons" id="guildIcons"></div>
+    <p class="guild-hint" id="guildHint">اختر سيرفر لعرض إعداداته 👆</p>
   </div>
 
   <div class="side-server" style="padding:12px;">
     <button id="discordLoginBtn" class="btn" style="width:100%; font-size:0.85em; margin-bottom:10px;">🔑 تسجيل الدخول بديسكورد</button>
-    <div id="guildSelectorBox" style="display:none;">
-      <select id="guildSelect" style="width:100%; padding:10px; border-radius:12px; background:#0a0a12; color:#fff; border:1px solid var(--primary); font-family:inherit; font-weight:bold;">
-        <option value="">اختر السيرفر للتحكم...</option>
-      </select>
-    </div>
-    <a href="https://discord.com/api/oauth2/authorize?client_id=1523042577924886749&permissions=8&scope=bot%20applications.commands" target="_blank" class="btn ghost" style="text-align:center; text-decoration:none; margin-top:8px; display:block; font-size:0.8em;">
-      🎮 أضف البوت لسيرفرك
-    </a>
+    <a href="https://discord.com/api/oauth2/authorize?client_id=1523042577924886749&permissions=8&scope=bot%20applications.commands" target="_blank" class="btn ghost" style="text-align:center; text-decoration:none; margin-top:8px; display:block; font-size:0.8em;">🎮 أضف البوت لسيرفرك</a>
   </div>
 
   <nav class="nav" id="nav">
     <p class="nav-cap">عام</p>
-    <a href="#" data-page="overview" class="active"><i>📊</i><span>نظرة عامة & المحفظة (Ly)</span></a>
+    <a href="#" data-page="overview" class="active"><i>📊</i><span>نظرة عامة & المحفظة</span></a>
     <a href="#" data-page="wallet-logs"><i>📋</i><span>سجل تحويلات العملة</span></a>
-    <a href="#" data-page="settings"><i>⚙️</i><span>إعدادات السيرفر والبوت</span></a>
 
-    <p class="nav-cap">قائمة الخصائص</p>
+    <p class="nav-cap">إعدادات البروفايل</p>
+    <a href="#" data-page="profile-settings"><i>🌐</i><span>الإعدادات العامة (اللغة)</span></a>
+
+    <p class="nav-cap">إعدادات السيرفر</p>
+    <a href="#" data-page="settings"><i>⚙️</i><span>إعدادات السيرفر والبوت</span></a>
     <a href="#" data-page="welcome"><i>🎉</i><span>الترحيب & المغادرة</span></a>
     <a href="#" data-page="autoreply"><i>🤖</i><span>الرد التلقائي</span></a>
     <a href="#" data-page="autorank"><i>🏆</i><span>الرولات التلقائية</span></a>
-    <a href="#" data-page="embeds"><i>💬</i><span>رسائل الإيمبد والألوان & التفاعل</span></a>
-    <a href="#" data-page="tickets"><i>🎫</i><span>نظام التذاكر (زر / منيو)</span></a>
-    <a href="#" data-page="levels"><i>📈</i><span>نظام المستويات & XP</span></a>
-    <a href="#" data-page="present"><i>📝</i><span>نظام التقديم (كامل من الموقع)</span></a>
-    <a href="#" data-page="games"><i>🎮</i><span>ألعاب البوت (جميع الأوامر)</span></a>
+    <a href="#" data-page="embeds"><i>💬</i><span>رسائل الإيمبد</span></a>
+    <a href="#" data-page="tickets"><i>🎫</i><span>نظام التذاكر</span></a>
+    <a href="#" data-page="levels"><i>📈</i><span>المستويات & XP</span></a>
+    <a href="#" data-page="present"><i>📝</i><span>نظام التقديم</span></a>
     <a href="#" data-page="broadcasts"><i>📢</i><span>البثوث والبرودكاست</span></a>
-
-    <p class="nav-cap">الإشراف والحماية</p>
-    <a href="#" data-page="protect"><i>🛡️</i><span>حماية السيرفر المتقدمة</span></a>
-    <a href="#" data-page="logs"><i>📋</i><span>سجل اللوجات</span></a>
+    <a href="#" data-page="protect"><i>🛡️</i><span>حماية السيرفر</span></a>
 
     <p class="nav-cap">أخرى</p>
-    <a href="#" data-page="about"><i>💎</i><span>عن UniBot & البريميوم</span></a>
+    <a href="#" data-page="about"><i>💎</i><span>عن UniBot</span></a>
   </nav>
 
   <div class="side-foot">
@@ -87,10 +86,9 @@
       <h1>لوحة تحكم <em>UniBot</em></h1>
       <p class="crumb" id="crumb">نظرة عامة & المحفظة</p>
     </div>
-    <div class="clock" id="clock" style="font-family:'Orbitron',sans-serif; color:var(--secondary); font-weight:bold;">00:00:00</div>
+    <div class="clock" id="clock">00:00:00</div>
   </header>
 
-  <!-- نظرة عامة & المحفظة -->
   <section class="page on" id="overview">
     <div class="stat-grid">
       <div class="stat-card v"><span class="s-ico">💰</span><b class="s-num" id="userWalletLy">0 Ly</b><span class="s-lbl">رصيد محفظتك</span></div>
@@ -98,25 +96,32 @@
       <div class="stat-card r"><span class="s-ico">⚡</span><b class="s-num" id="statPing">79ms</b><span class="s-lbl">تأخير البوت</span></div>
       <div class="stat-card v"><span class="s-ico">⏱️</span><b class="s-num" id="overviewUptime">0ي 0س</b><span class="s-lbl">مدة التشغيل</span></div>
     </div>
+    <div class="card"><h3>💼 معلومات المحفظة</h3><p style="color:var(--mut); margin-top:8px;">اختر سيرفراً من الجانب لعرض رصيدك وسجل التحويلات داخل ذلك السيرفر.</p></div>
+  </section>
+
+  <!-- سجل التحويلات (حقيقي) -->
+  <section class="page" id="wallet-logs">
+    <div class="card"><h3>📋 سجل تحويلات العملة (Ly)</h3><div id="walletLogsList" style="margin-top:10px;"><p style="color:var(--mut);">اختر سيرفراً لعرض السجل.</p></div></div>
+  </section>
+
+  <!-- الإعدادات العامة للبروفايل -->
+  <section class="page" id="profile-settings">
     <div class="card">
-      <h3>💼 معلومات المحفظة وعملة Ly</h3>
-      <p style="color:var(--mut); margin-top:8px;">تابع رصيدك من عملة Ly وسجل التحويلات.</p>
+      <h3>🌐 الإعدادات العامة</h3>
+      <div class="field"><label>لغة البوت (Bot Language)</label>
+        <select id="langSelect"><option value="ar">العربية 🇸🇦</option><option value="en">English 🇬🇧</option></select>
+      </div>
+      <p style="color:var(--mut); font-size:.8em;">لغة البوت تتحكم بكل رسائله في السيرفر المحدد (الترحيب، الاقتصاد، التذاكر...).</p>
+      <button class="btn" id="saveLangBtn">💾 حفظ اللغة</button>
     </div>
   </section>
 
-  <!-- سجل التحويلات -->
-  <section class="page" id="wallet-logs">
-    <div class="card"><h3>📋 سجل تحويلات العملة (Ly)</h3><p style="color:var(--mut);">لا توجد تحويلات سابقة.</p></div>
-  </section>
-
-  <!-- إعدادات البوت والسيرفر -->
+  <!-- إعدادات السيرفر والبوت -->
   <section class="page" id="settings">
-    <div class="card"><h3>⚙️ إعدادات السيرفر والبوت</h3><div class="field"><label>بادئة الأوامر (Prefix)</label><input id="prefixInput" value="!"></div><button class="btn" data-save>💾 حفظ</button></div>
-  </section>
-
-  <!-- الأوامر الشاملة -->
-  <section class="page" id="commands-list">
-    <div class="card"><h3>📜 الأوامر الشاملة (/help)</h3><p style="color:var(--mut);">قائمة الأوامر الكاملة مصنفة حسب الأقسام — استخدم الأمر /help داخل ديسكورد لعرض القائمة بالأزرار التفاعلية.</p></div>
+    <div class="card"><h3>⚙️ إعدادات السيرفر والبوت</h3>
+      <div class="field"><label>بادئة الأوامر (Prefix)</label><input id="prefixInput" value="!"></div>
+      <button class="btn" data-save>💾 حفظ</button>
+    </div>
   </section>
 
   <!-- الترحيب -->
@@ -132,12 +137,9 @@
   <!-- الرد التلقائي -->
   <section class="page" id="autoreply">
     <div class="card">
-      <div class="card-head">
-        <h3>🤖 الرد التلقائي</h3>
-        <button class="btn" id="addAutoReplyBtn">+ إضافة رد تلقائي</button>
-      </div>
+      <div class="card-head"><h3>🤖 الرد التلقائي</h3><button class="btn" id="addAutoReplyBtn">+ إضافة رد</button></div>
       <div id="autoReplyContainer"></div>
-      <button class="btn" data-save style="margin-top:15px;">💾 حفظ الردود التلقائية</button>
+      <button class="btn" data-save style="margin-top:15px;">💾 حفظ الردود</button>
     </div>
   </section>
 
@@ -150,23 +152,22 @@
     </div>
   </section>
 
-  <!-- رسائل الإيمبد والألوان -->
+  <!-- الإيمبدات (متعدد + إرسال) -->
   <section class="page" id="embeds">
     <div class="card">
-      <div class="card-head">
-        <h3>💬 رسائل الإيمبد والألوان & التفاعل</h3>
-        <button class="btn" id="addNewEmbedBtn">+ إضافة إيمبد جديد</button>
-      </div>
+      <div class="card-head"><h3>💬 رسائل الإيمبد</h3><button class="btn" id="addNewEmbedBtn">+ إضافة إيمبد جديد</button></div>
+      <p style="color:var(--mut); font-size:.78em;">💡 املأ الإيمبد الحالي واضغط "💾 حفظ الإيمبد" — سيُحفظ في القائمة، ثم اضغط "+ إضافة" لإنشاء إيمبد جديد.</p>
       <div class="field"><label>عنوان الإيمبد</label><input id="embedTitle" placeholder="عنوان الرسالة"></div>
       <div class="field"><label>محتوى الإيمبد</label><textarea id="embedDesc" placeholder="نص الوصف..."></textarea></div>
-      <div class="field"><label>لون الإيمبد (Hex Color)</label><input type="color" id="embedColor" value="#ef4444" style="height:40px; padding:2px;"></div>
-      <div class="field"><label>إيموجي التفاعل</label><input id="embedEmoji" placeholder="مثلا: ⭐"></div>
-      <div class="field"><label>رتبة التفاعل</label><select id="embedRole"><option value="">اختر الرتبة...</option></select></div>
-      <button class="btn" data-save>💾 حفظ الإيمبد</button>
+      <div class="field"><label>لون الإيمبد</label><input type="color" id="embedColor" value="#ef4444" style="height:40px; padding:2px;"></div>
+      <div class="field"><label>الشات الذي يُرسل فيه الإيمبد</label><select id="embedChannel"><option value="">اختر الشات...</option></select></div>
+      <div id="embedsList"></div>
+      <button class="btn" id="sendEmbedBtn" style="margin-top:10px;">📤 إرسال الإيمبد للشات</button>
+      <button class="btn" data-save style="margin-top:10px;">💾 حفظ الإيمبد (للقائمة)</button>
     </div>
   </section>
 
-  <!-- نظام التذاكر -->
+  <!-- التذاكر -->
   <section class="page" id="tickets">
     <div class="card">
       <div class="card-head"><h3>🎫 نظام التذاكر</h3><label class="switch"><input type="checkbox" id="ticketToggle" checked><i></i></label></div>
@@ -177,7 +178,6 @@
       <div class="field"><label>رسالة الترحيب داخل التذكرة</label><input id="ticketWelcomeMsg" value="مرحباً بك، سيتم خدمتك قريباً."></div>
       <div class="field"><label>كاتيجوري التذاكر</label><select id="ticketCategory"><option value="">اختر الكاتيجوري...</option></select></div>
       <div class="field"><label>رتبة الدعم الفني</label><select id="ticketSupportRole"><option value="">اختر رتبة الدعم...</option></select></div>
-      <div class="field"><label>روم اللوجات</label><select id="ticketLogChannel"><option value="">اختر شات اللوج...</option></select></div>
       <button class="btn" id="sendTicketPanelBtn" style="margin-bottom:10px;">📨 إرسال بانل التذاكر</button>
       <button class="btn" data-save>💾 حفظ التذاكر</button>
     </div>
@@ -186,26 +186,30 @@
   <!-- المستويات -->
   <section class="page" id="levels">
     <div class="card">
-      <div class="card-head"><h3>📈 نظام المستويات & XP</h3><label class="switch"><input type="checkbox" id="levelsToggle" checked><i></i></label></div>
-      <div class="field"><label>روم إرسال رسائل صعود المستوى</label><select id="levelUpChannel"><option value="">اختر روم الإشعارات...</option></select></div>
-      <button class="btn" data-save>💾 حفظ المستويات</button>
+      <div class="card-head"><h3>📈 المستويات & XP</h3><label class="switch"><input type="checkbox" id="levelsToggle" checked><i></i></label></div>
+      <div class="field"><label>روم رسائل صعود المستوى</label><select id="levelUpChannel"><option value="">اختر روم الإشعارات...</option></select></div>
+      <button class="btn" data-save>💾 حفظ</button>
     </div>
   </section>
 
-  <!-- نظام التقديم -->
+  <!-- التقديم (كامل) -->
   <section class="page" id="present">
     <div class="card">
       <div class="card-head"><h3>📝 نظام التقديم الكامل</h3><label class="switch"><input type="checkbox" id="presentToggle" checked><i></i></label></div>
+      <div class="field"><label>شات إرسال بانل التقديم</label><select id="applyPanelChannel"><option value="">اختر الشات...</option></select></div>
+      <div class="field"><label>عنوان بانل التقديم</label><input id="applyPanelTitle" value="📝 نظام التقديم"></div>
+      <div class="field"><label>رسالة بانل التقديم</label><textarea id="applyPanelDesc">اضغط الزر أدناه لتقديم طلبك للانضمام للإشراف.</textarea></div>
+      <div class="field"><label>نص زر التقديم</label><input id="applyPanelButtonText" value="📝 تقديم"></div>
+      <div class="field"><label>رسالة الترحيب بعد فتح تذكرة التقديم</label><input id="applyTicketWelcomeMsg" value="مرحباً بك، اكتب تقديمك هنا."></div>
       <div class="field"><label>روم وصول التقديمات</label><select id="applyReceiveChannel"><option value="">اختر الروم...</option></select></div>
-      <div class="field"><label>روم نتائج القبول والرفض</label><select id="applyResultChannel"><option value="">اختر روم النتائج...</option></select></div>
-      <div class="field"><label>رتبة الإدارة</label><select id="applyAdminRole"><option value="">اختر رتبة الأدمن...</option></select></div>
+      <div class="field"><label>رتبة الإدارة (تستطيع القبول/الرفض)</label><select id="applyAdminRole"><option value="">اختر رتبة الأدمن...</option></select></div>
+      <div class="field"><label>رتبة القبول</label><select id="applyAcceptRole"><option value="">اختر رتبة...</option></select></div>
+      <div class="field"><label>رسالة القبول/الرفض توصل في الخاص؟</label>
+        <select id="applyDmNotify"><option value="on">نعم، أرسل في الخاص</option><option value="off">لا، بدون خاص</option></select>
+      </div>
+      <button class="btn" id="sendApplyPanelBtn" style="margin-bottom:10px;">📨 إرسال بانل التقديم</button>
       <button class="btn" data-save>💾 حفظ إعدادات التقديم</button>
     </div>
-  </section>
-
-  <!-- الألعاب -->
-  <section class="page" id="games">
-    <div class="card"><h3>🎮 ألعاب البوت الشاملة</h3><p style="color:var(--mut);">ألعاب الحجر ورق مقص، تخمين الرقم، و XO — استخدم أوامر الألعاب داخل ديسكورد من قسم Games.</p></div>
   </section>
 
   <!-- البرودكاست -->
@@ -220,7 +224,7 @@
     </div>
   </section>
 
-  <!-- الحماية المتقدمة -->
+  <!-- الحماية -->
   <section class="page" id="protect">
     <div class="card"><h3>🛡️ حماية السيرفر المتقدمة</h3><div class="field"><label>روم تنبيهات الحماية</label><select id="protectLogRoom"><option value="">اختر روم التنبيهات...</option></select></div></div>
     <div class="card"><div class="card-head"><h3>🤖 حماية دخول البوتات</h3><label class="switch"><input type="checkbox" id="prot_bots_on"><i></i></label></div><div class="field"><label>رتب الدعم المستثناة</label><select id="prot_bots_role"><option value="">اختر رتبة...</option></select></div><div class="field"><label>العقوبة</label><select id="prot_bots_punish"><option value="ban">حظر</option><option value="strip">سحب الرتب</option></select></div></div>
@@ -234,7 +238,6 @@
     <button class="btn" data-save>💾 حفظ إعدادات الحماية</button>
   </section>
 
-  <section class="page" id="logs"><div class="card"><h3>📋 سجل اللوجات والأحداث</h3><p style="color:var(--mut);">سجل الأحداث يُعرض داخل روم التنبيهات في ديسكورد — اربط روم اللوجات من إعدادات الحماية.</p></div></section>
   <section class="page" id="about"><div class="card center-card" style="text-align:center;"><h2>UNIBOT — PRO EDITION 2030</h2><p style="color:var(--mut);">🐺 قوة • سرعة • هيمنة</p></div></section>
 
   <footer>UniBot © 2030 — جميع الحقوق محفوظة 🐺</footer>
@@ -243,4 +246,4 @@
 <div class="toast" id="toast">✅ تم الحفظ</div>
 <script src="script.js"></script>
 </body>
-</html>
+                                                            </html>
