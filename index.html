@@ -56,7 +56,6 @@
     <a href="#" data-page="settings"><i>⚙️</i><span>إعدادات السيرفر والبوت</span></a>
 
     <p class="nav-cap">قائمة الخصائص</p>
-    <a href="#" data-page="commands-list"><i>📜</i><span>الأوامر الشاملة (/help)</span></a>
     <a href="#" data-page="welcome"><i>🎉</i><span>الترحيب & المغادرة</span></a>
     <a href="#" data-page="autoreply"><i>🤖</i><span>الرد التلقائي</span></a>
     <a href="#" data-page="autorank"><i>🏆</i><span>الرولات التلقائية</span></a>
@@ -116,7 +115,7 @@
 
   <!-- الأوامر الشاملة -->
   <section class="page" id="commands-list">
-    <div class="card"><h3>📜 الأوامر الشاملة (/help)</h3><p style="color:var(--mut);">قائمة الأوامر المتاحة للاستخدام في ديسكورد.</p></div>
+    <div class="card"><h3>📜 الأوامر الشاملة (/help)</h3><p style="color:var(--mut);">قائمة الأوامر المتاحة للاستخدام في ديسكورد — استخدم الأمر /help داخل ديسكورد لعرض القائمة الكاملة المصنفة حسب الأقسام.</p></div>
   </section>
 
   <!-- الترحيب -->
@@ -136,10 +135,7 @@
         <h3>🤖 الرد التلقائي</h3>
         <button class="btn" id="addAutoReplyBtn">+ إضافة رد تلقائي</button>
       </div>
-      <div id="autoReplyContainer">
-        <div class="field"><label>الكلمة أو الجملة المطلوبة</label><input id="autoTrigger" placeholder="مثلا: السلام عليكم"></div>
-        <div class="field"><label>الرد التلقائي للبوت</label><textarea id="autoResponse" placeholder="مثلا: وعليكم السلام"></textarea></div>
-      </div>
+      <div id="autoReplyContainer"></div>
       <button class="btn" data-save style="margin-top:15px;">💾 حفظ الردود التلقائية</button>
     </div>
   </section>
@@ -181,6 +177,7 @@
       <div class="field"><label>كاتيجوري التذاكر</label><select id="ticketCategory"><option value="">اختر الكاتيجوري...</option></select></div>
       <div class="field"><label>رتبة الدعم الفني</label><select id="ticketSupportRole"><option value="">اختر رتبة الدعم...</option></select></div>
       <div class="field"><label>روم اللوجات</label><select id="ticketLogChannel"><option value="">اختر شات اللوج...</option></select></div>
+      <button class="btn" id="sendTicketPanelBtn" style="margin-bottom:10px;">📨 إرسال بانل التذاكر</button>
       <button class="btn" data-save>💾 حفظ التذاكر</button>
     </div>
   </section>
@@ -207,7 +204,7 @@
 
   <!-- الألعاب -->
   <section class="page" id="games">
-    <div class="card"><h3>🎮 ألعاب البوت الشاملة</h3><p style="color:var(--mut);">ألعاب الحجر الورق مقص، تخمين الرقم، والكامب.</p></div>
+    <div class="card"><h3>🎮 ألعاب البوت الشاملة</h3><p style="color:var(--mut);">ألعاب الحجر ورق مقص، تخمين الرقم، و XO — استخدم أوامر الألعاب داخل ديسكورد من قسم Games.</p></div>
   </section>
 
   <!-- البرودكاست -->
@@ -216,6 +213,7 @@
       <h3>📢 البرودكاست والبثوث</h3>
       <div class="field"><label>نوع الرسالة</label><select id="bcType"><option value="embed">إيمبد</option><option value="normal">عادية</option></select></div>
       <div class="field"><label>نطاق الإرسال</label><select id="bcTarget"><option value="all">للجميع</option><option value="one">شخص واحد</option></select></div>
+      <div class="field" id="bcMemberField" style="display:none;"><label>اختر الشخص</label><select id="bcMember"><option value="">اختر الشخص...</option></select></div>
       <div class="field"><label>محتوى البرودكاست</label><textarea id="bcContent" placeholder="اكتب رسالتك..."></textarea></div>
       <button class="btn" data-save>📢 إرسال البرودكاست</button>
     </div>
@@ -235,8 +233,8 @@
     <button class="btn" data-save>💾 حفظ إعدادات الحماية</button>
   </section>
 
-  <section class="page" id="logs"><div class="card"><h3>📋 سجل اللوجات والأحداث</h3></div></section>
-  <section class="page" id="about"><div class="card center-card" style="text-align:center;"><h2>UNIBOT — PRO EDITION 2030</h2></div></section>
+  <section class="page" id="logs"><div class="card"><h3>📋 سجل اللوجات والأحداث</h3><p style="color:var(--mut);">سجل الأحداث يُعرض داخل روم التنبيهات في ديسكورد — اربط روم اللوجات من إعدادات الحماية.</p></div></section>
+  <section class="page" id="about"><div class="card center-card" style="text-align:center;"><h2>UNIBOT — PRO EDITION 2030</h2><p style="color:var(--mut);">🐺 قوة • سرعة • هيمنة</p></div></section>
 
   <footer>UniBot © 2030 — جميع الحقوق محفوظة 🐺</footer>
 </main>
@@ -244,4 +242,4 @@
 <div class="toast" id="toast">✅ تم الحفظ</div>
 <script src="script.js"></script>
 </body>
-</html>
+                                                                                                         </html>
