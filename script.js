@@ -44,6 +44,14 @@ function goTo(page) {
 }
 links.forEach(a => a.addEventListener('click', e => { e.preventDefault(); goTo(a.dataset.page); }));
 
+// الساعة
+function tickClock() {
+  const c = $('#clock');
+  if (c) c.textContent = new Date().toLocaleTimeString('en-GB');
+}
+tickClock();
+setInterval(tickClock, 1000);
+
 // تسجيل الدخول
 const loginBtn = document.getElementById('discordLoginBtn');
 if (loginBtn) {
@@ -104,7 +112,7 @@ async function loadUserGuilds() {
         data.guilds.map(g => `<option value="${g.id}">🛡️ ${g.name}</option>`).join('');
       if (currentGuildId && data.guilds.some(g => g.id === currentGuildId)) select.value = currentGuildId;
 
-      // ⚠️ نستخدم onchange مرة واحدة (بدون listener مكرر)
+      // onchange (وليس addEventListener) حتى لا يتكرر
       select.onchange = () => {
         currentGuildId = select.value;
         localStorage.setItem('unibot-selected-guild', currentGuildId);
@@ -116,6 +124,29 @@ async function loadUserGuilds() {
 }
 
 let guildMembersCache = [];
+
+// ── تعبئة القوائم بدون انغلاق القائمة المفتوحة ──
+function populateSelects(chanHtml, roleHtml) {
+  $$('select').forEach(sel => {
+    if (sel.id === 'guildSelect') return;
+    // لا تعيد بناء القائمة وهي مفتوحة (سبب مشكلة "الشاشة تسكر")
+    if (document.activeElement === sel) return;
+
+    const isChan = /channel|room|category|receive|result/i.test(sel.id);
+    const isRole = /role/i.test(sel.id);
+    if (!isChan && !isRole) return;
+
+    const html = isChan
+      ? `<option value="">اختر القناة...</option>` + chanHtml
+      : `<option value="">اختر الرتبة...</option>` + roleHtml;
+
+    if (sel.innerHTML === html) return; // لا تغيير = لا إعادة بناء
+
+    const cur = sel.value;
+    sel.innerHTML = html;
+    if (cur && [...sel.options].some(o => o.value === cur)) sel.value = cur;
+  });
+}
 
 async function loadGuildRealData(guildId) {
   const session = localStorage.getItem('unibot-session');
@@ -133,17 +164,7 @@ async function loadGuildRealData(guildId) {
 
     const chanHtml = data.channels.map(c => `<option value="${c.id}">${c.name}</option>`).join('');
     const roleHtml = data.roles.map(rr => `<option value="${rr.id}">@${rr.name}</option>`).join('');
-
-    $$('select').forEach(sel => {
-      if (sel.id === 'guildSelect') return;
-      const curVal = sel.value;
-      if (sel.id.includes('Channel') || sel.id.includes('Room') || sel.id.includes('room') || sel.id.includes('Category') || sel.id.includes('category') || sel.id.includes('channel')) {
-        sel.innerHTML = `<option value="">اختر القناة...</option>` + chanHtml;
-      } else if (sel.id.includes('Role') || sel.id.includes('role')) {
-        sel.innerHTML = `<option value="">اختر الرتبة...</option>` + roleHtml;
-      }
-      if (curVal) sel.value = curVal;
-    });
+    populateSelects(chanHtml, roleHtml);
 
     // تعبئة الحقول المحفوظة
     if (data.settings) {
@@ -165,11 +186,13 @@ async function loadGuildRealData(guildId) {
 
     // الأعضاء للبرودكاست
     const mr = await fetch(`${API_URL}/api/guild/${guildId}/members`, { headers: { 'x-session': session } });
-    guildMembersCache = await mr.json();
-    const memberSel = $('#bcMember');
-    if (memberSel) {
-      memberSel.innerHTML = `<option value="">اختر الشخص...</option>` +
-        guildMembersCache.map(m => `<option value="${m.id}">${m.name}</option>`).join('');
+    if (mr.ok) {
+      guildMembersCache = await mr.json();
+      const memberSel = $('#bcMember');
+      if (memberSel) {
+        memberSel.innerHTML = `<option value="">اختر الشخص...</option>` +
+          guildMembersCache.map(m => `<option value="${m.id}">${m.name}</option>`).join('');
+      }
     }
 
     toast('✅ تم التحميل بنجاح!');
@@ -178,7 +201,7 @@ async function loadGuildRealData(guildId) {
   }
 }
 
-// ====== الردود التلقائية: إضافة + حذف ======
+// ── الردود التلقائية: إضافة + حذف ──
 let autoReplyRows = [];
 function renderAutoReplies(list) {
   autoReplyRows = list.map(r => ({ ...r }));
@@ -188,11 +211,10 @@ function renderAutoReplies(list) {
   autoReplyRows.forEach((r, i) => {
     const div = document.createElement('div');
     div.className = 'ar-row';
-    div.style.cssText = 'display:flex;gap:8px;align-items:center;margin-bottom:8px;flex-wrap:wrap;';
     div.innerHTML = `
-      <input class="ar-trigger" value="${(r.trigger || '').replace(/"/g, '&quot;')}" placeholder="الكلمة" style="flex:1;min-width:120px;">
-      <input class="ar-response" value="${(r.response || '').replace(/"/g, '&quot;')}" placeholder="الرد" style="flex:2;min-width:160px;">
-      <button class="btn ar-del" data-i="${i}" style="padding:6px 12px;">🗑️</button>`;
+      <input class="ar-trigger" value="${(r.trigger || '').replace(/"/g, '&quot;')}" placeholder="الكلمة أو الجملة" style="flex:1;min-width:120px;">
+      <input class="ar-response" value="${(r.response || '').replace(/"/g, '&quot;')}" placeholder="الرد التلقائي" style="flex:2;min-width:160px;">
+      <button class="btn ar-del" data-i="${i}" title="حذف الرد">🗑️</button>`;
     box.appendChild(div);
   });
   box.querySelectorAll('.ar-del').forEach(b => b.addEventListener('click', () => {
@@ -207,14 +229,14 @@ if (addAutoReplyBtn) addAutoReplyBtn.addEventListener('click', () => {
   renderAutoReplies(autoReplyRows);
 });
 
-// ====== البرودكاست: إظهار اختيار الشخص عند "شخص واحد" ======
+// ── البرودكاست: إظهار اختيار الشخص عند "شخص واحد" ──
 const bcTarget = $('#bcTarget');
 if (bcTarget) bcTarget.addEventListener('change', () => {
   const memberField = $('#bcMemberField');
   if (memberField) memberField.style.display = bcTarget.value === 'one' ? 'block' : 'none';
 });
 
-// ====== الإحصائيات الحية ======
+// ── الإحصائيات الحية ──
 function fmtUptime(s) {
   const d = Math.floor(s / 86400), h = Math.floor(s % 86400 / 3600), m = Math.floor(s % 3600 / 60);
   return `${d}ي ${h}س ${m}د`;
@@ -233,7 +255,7 @@ async function refreshStats() {
 refreshStats();
 setInterval(refreshStats, 10000);
 
-// ====== الحفظ ======
+// ── الحفظ والإرسال ──
 document.querySelectorAll('[data-save]').forEach(btn => {
   btn.addEventListener('click', async () => {
     const session = localStorage.getItem('unibot-session');
@@ -241,13 +263,14 @@ document.querySelectorAll('[data-save]').forEach(btn => {
 
     const activePage = document.querySelector('.page.on')?.id || 'settings';
 
-    // زر البرودكاست يرسل، مو يحفظ
+    // زر البرودكاست: إرسال فعلي وليس حفظ
     if (activePage === 'broadcasts') {
       const type = $('#bcType')?.value || 'embed';
       const target = $('#bcTarget')?.value || 'all';
       const content = $('#bcContent')?.value || '';
       const userId = $('#bcMember')?.value || null;
       if (target === 'one' && !userId) { toast('⚠️ اختر الشخص أولاً!'); return; }
+      if (!content.trim()) { toast('⚠️ اكتب محتوى الرسالة!'); return; }
       try {
         const res = await fetch(`${API_URL}/api/broadcast/${currentGuildId}`, {
           method: 'POST',
@@ -263,12 +286,11 @@ document.querySelectorAll('[data-save]').forEach(btn => {
 
     const payload = {};
     document.querySelectorAll(`#${activePage} input, #${activePage} select, #${activePage} textarea`).forEach(el => {
-      if (!el.id) return;
-      if (el.id === 'guildSelect') return;
+      if (!el.id || el.id === 'guildSelect') return;
       payload[el.id] = el.type === 'checkbox' ? el.checked : el.value;
     });
 
-    // الردود التلقائية: نجمع الصفوف
+    // الردود التلقائية: جمع الصفوف
     if (activePage === 'autoreply') {
       const rows = [];
       $$('#autoReplyContainer .ar-row').forEach(row => {
@@ -293,6 +315,25 @@ document.querySelectorAll('[data-save]').forEach(btn => {
     }
   });
 });
+
+// زر بانل التذاكر
+const sendTicketPanelBtn = $('#sendTicketPanelBtn');
+if (sendTicketPanelBtn) {
+  sendTicketPanelBtn.addEventListener('click', async () => {
+    const session = localStorage.getItem('unibot-session');
+    if (!session || !currentGuildId) { toast('⚠️ سجل الدخول واختر سيرفراً أولاً!'); return; }
+    try {
+      const res = await fetch(`${API_URL}/api/ticket-panel/${currentGuildId}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'x-session': session },
+        body: '{}'
+      });
+      const result = await res.json();
+      if (result.ok) toast('📨 تم إرسال بانل التذاكر!');
+      else toast('❌ حدد شات إرسال البانل أولاً واحفظ');
+    } catch { toast('❌ خطأ في الاتصال'); }
+  });
+}
 
 const savedPage = localStorage.getItem('unibot-page');
 if (savedPage && $('#' + savedPage)) goTo(savedPage);
