@@ -243,7 +243,6 @@ async function loadGuildRealData(guildId) {
         });
       }
     });
-    // خاصة: applyDmNotify قيمة نصية
     const dmSel = $('#applyDmNotify');
     if (dmSel && data.settings.present) dmSel.value = data.settings.present.applyDmNotify || 'off';
   }
@@ -287,7 +286,6 @@ function renderEmbedsList(list) {
 
 const addNewEmbedBtn = $('#addNewEmbedBtn');
 if (addNewEmbedBtn) addNewEmbedBtn.addEventListener('click', () => {
-  // حفظ الحالي أولاً ثم تفريغ الحقول لإيمبد جديد
   const cur = {
     title: $('#embedTitle')?.value || '',
     desc: $('#embedDesc')?.value || '',
@@ -406,7 +404,6 @@ document.querySelectorAll('[data-save]').forEach(btn => {
       return;
     }
 
-    // الإيمبدات: زر الحفظ يضيف الإيمبد الحالي للقائمة ثم يحفظ الكل
     if (activePage === 'embeds') {
       const cur = {
         title: $('#embedTitle')?.value || '',
@@ -459,12 +456,10 @@ document.querySelectorAll('[data-save]').forEach(btn => {
   });
 });
 
-// زر اللغة (إعدادات البروفايل العامة)
 const saveLangBtn = $('#saveLangBtn');
 if (saveLangBtn) saveLangBtn.addEventListener('click', async () => {
   if (!currentSession || !currentGuildId) { toast('⚠️ اختر سيرفراً أولاً — اللغة تُحفظ لكل سيرفر'); return; }
   try {
-    // نجلب الإعدادات الحالية ونحدّث اللغة فقط
     const r = await fetch(`${API_URL}/api/guild/${currentGuildId}/data`, { headers: { 'x-session': currentSession } });
     const data = await r.json();
     const settings = { ...(data.settings?.settings || {}), lang: $('#langSelect')?.value || 'ar' };
@@ -479,7 +474,6 @@ if (saveLangBtn) saveLangBtn.addEventListener('click', async () => {
   } catch { toast('❌ خطأ في الاتصال'); }
 });
 
-// بانل التذاكر
 const sendTicketPanelBtn = $('#sendTicketPanelBtn');
 if (sendTicketPanelBtn) sendTicketPanelBtn.addEventListener('click', async () => {
   if (!currentSession || !currentGuildId) { toast('⚠️ سجل الدخول واختر سيرفراً!'); return; }
@@ -495,7 +489,6 @@ if (sendTicketPanelBtn) sendTicketPanelBtn.addEventListener('click', async () =>
   } catch { toast('❌ خطأ في الاتصال'); }
 });
 
-// بانل التقديم
 const sendApplyPanelBtn = $('#sendApplyPanelBtn');
 if (sendApplyPanelBtn) sendApplyPanelBtn.addEventListener('click', async () => {
   if (!currentSession || !currentGuildId) { toast('⚠️ سجل الدخول واختر سيرفراً!'); return; }
@@ -511,7 +504,11 @@ if (sendApplyPanelBtn) sendApplyPanelBtn.addEventListener('click', async () => {
   } catch { toast('❌ خطأ في الاتصال'); }
 });
 
-// استعادة الصفحة + بدء التشغيل
+// ═══ استعادة الصفحة + بدء التشغيل ═══
+$('#profileBlock')?.addEventListener('click', (e) => {
+  if (e.target.id !== 'logoutBtn') goTo('profile-settings');
+});
+
 const savedPage = localStorage.getItem('unibot-page');
 if (savedPage && $('#' + savedPage)) goTo(savedPage);
 
