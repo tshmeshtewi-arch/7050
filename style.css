@@ -29,6 +29,11 @@ body {
   overflow-x: hidden;
 }
 
+/* ─── منع تحرك الصفحة الخلفية عند فتح القائمة ─── */
+body.nav-open {
+  overflow: hidden;
+}
+
 /* ─── خلفية متحركة ─── */
 .bg-orbs {
   position: fixed; inset: 0; z-index: 0; pointer-events: none; overflow: hidden;
@@ -79,12 +84,12 @@ body {
 .overlay { position: fixed; inset: 0; background: rgba(0,0,0,.6); z-index: 850; opacity: 0; pointer-events: none; transition: .3s; }
 .overlay.on { opacity: 1; pointer-events: auto; }
 
-/* ─── القائمة الجانبية ─── */
+/* ─── القائمة الجانبية (معدلة لتكون فوق الأوفرلاي) ─── */
 .sidebar {
   position: fixed; top: 0; right: 0; bottom: 0; width: 265px;
   background: var(--panel);
   border-left: 1px solid var(--border);
-  display: flex; flex-direction: column; z-index: 800;
+  display: flex; flex-direction: column; z-index: 880;
 }
 .side-head { display: flex; align-items: center; gap: 12px; padding: 18px 16px; border-bottom: 1px solid var(--border); }
 .wolf-logo { font-size: 2em; color: var(--primary); text-shadow: 0 0 18px var(--primary-glow); }
@@ -244,4 +249,4 @@ footer { text-align: center; color: var(--mut); font-size: .75em; margin-top: 40
   body.nav-open .sidebar { transform: translateX(0); }
   #main { margin-right: 0; padding: 70px 16px 40px; }
   .top h1 { font-size: 1.2em; }
-   }
+}
