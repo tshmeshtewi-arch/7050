@@ -58,7 +58,7 @@ setInterval(tickClock, 1000);
 const loginBtn = document.getElementById('discordLoginBtn');
 if (loginBtn) {
   loginBtn.addEventListener('click', () => {
-    if (currentSession) return; // البروفايل يتكفل بالخروج
+    if (currentSession) return;
     window.location.href = `https://discord.com/api/oauth2/authorize?client_id=${CLIENT_ID}&redirect_uri=${encodeURIComponent(REDIRECT_URI)}&response_type=code&scope=identify%20guilds`;
   });
 }
@@ -95,7 +95,7 @@ async function handleAuthCallback() {
   }
 }
 
-// تحميل البروفايل + السيرفرات (تصميم ProBot)
+// تحميل البروفايل + السيرفرات
 async function loadUserGuilds() {
   if (!currentSession) return;
   try {
@@ -107,7 +107,6 @@ async function loadUserGuilds() {
     }
     const data = await r.json();
 
-    // البروفايل فوق
     const profileBlock = $('#profileBlock');
     if (profileBlock && data.user) {
       profileBlock.style.display = 'flex';
@@ -119,7 +118,6 @@ async function loadUserGuilds() {
       loginBtn.style.display = 'none';
     }
 
-    // سيرفرات بالجانب
     const guildsBlock = $('#guildsBlock');
     const icons = $('#guildIcons');
     if (guildsBlock && icons && data.guilds) {
@@ -146,7 +144,6 @@ async function loadUserGuilds() {
         });
         icons.appendChild(div);
       });
-      // استعادة السيرفر المحفوظ
       const saved = localStorage.getItem('unibot-selected-guild');
       const savedIcon = icons.querySelector(`[data-gid="${saved}"]`);
       if (savedIcon) savedIcon.click();
@@ -205,6 +202,140 @@ function renderWalletLogs(logs) {
   }).join('');
 }
 
+// ═══ أسئلة وصورة التقديم ═══
+let applyQuestionsList = ['اسمك وعمرك؟', 'كم ساعات تفاعلك؟', 'لماذا تريد الانضمام؟'];
+let uploadedApplyImageData = '';
+
+function updateApplyImagePreview(src) {
+  const box = $('#applyImagePreviewBox');
+  const img = $('#applyImagePreview');
+  if (!box || !img) return;
+  if (src) {
+    img.src = src;
+    box.style.display = 'flex';
+  } else {
+    img.src = '';
+    box.style.display = 'none';
+  }
+}
+
+function renderApplyQuestions(list) {
+  applyQuestionsList = (Array.isArray(list) ? list : [])
+    .map(item => typeof item === 'string' ? item : (item?.label || item?.question || ''))
+    .slice(0, 5);
+  if (!applyQuestionsList.length) applyQuestionsList = [''];
+
+  const box = $('#applyQuestionsContainer');
+  if (!box) return;
+  box.innerHTML = '';
+
+  applyQuestionsList.forEach((q, i) => {
+    const row = document.createElement('div');
+    row.className = 'ar-row';
+    row.innerHTML = `
+      <input type="text" class="apply-q-input" value="${String(q).replace(/"/g, '&quot;')}" placeholder="اكتب السؤال رقم ${i + 1}..." style="flex:1;min-width:160px;">
+      <button type="button" class="btn ghost ar-del apply-q-del" data-qi="${i}" title="حذف السؤال">🗑️</button>
+    `;
+    box.appendChild(row);
+  });
+
+  box.querySelectorAll('.apply-q-input').forEach((inp, idx) => {
+    inp.addEventListener('input', () => {
+      applyQuestionsList[idx] = inp.value;
+    });
+  });
+
+  box.querySelectorAll('.apply-q-del').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const idx = +btn.dataset.qi;
+      if (applyQuestionsList.length <= 1) {
+        applyQuestionsList = [''];
+      } else {
+        applyQuestionsList.splice(idx, 1);
+      }
+      renderApplyQuestions(applyQuestionsList);
+    });
+  });
+}
+
+const addApplyQuestionBtn = $('#addApplyQuestionBtn');
+if (addApplyQuestionBtn) {
+  addApplyQuestionBtn.addEventListener('click', () => {
+    syncApplyQuestionsFromInputs();
+    if (applyQuestionsList.length >= 5) {
+      toast('⚠️ الحد الأقصى لأسئلة النموذج في ديسكورد هو 5 أسئلة');
+      return;
+    }
+    applyQuestionsList.push('');
+    renderApplyQuestions(applyQuestionsList);
+  });
+}
+
+function syncApplyQuestionsFromInputs() {
+  const inputs = $$('#applyQuestionsContainer .apply-q-input');
+  applyQuestionsList = inputs
+    .map(i => i.value.trim())
+    .filter(Boolean)
+    .slice(0, 5);
+  return applyQuestionsList;
+}
+
+const applyImageFile = $('#applyImageFile');
+if (applyImageFile) {
+  applyImageFile.addEventListener('change', () => {
+    const file = applyImageFile.files?.[0];
+    if (!file) return;
+    if (!file.type.startsWith('image/')) {
+      toast('⚠️ يرجى اختيار صورة صالحة');
+      return;
+    }
+    if (file.size > 2 * 1024 * 1024) {
+      toast('⚠️ حجم الصورة كبير (يفضل أقل من 2MB)');
+      return;
+    }
+    const reader = new FileReader();
+    reader.onload = () => {
+      uploadedApplyImageData = String(reader.result || '');
+      if ($('#applyImageUrl')) $('#applyImageUrl').value = '';
+      updateApplyImagePreview(uploadedApplyImageData);
+      toast('🖼️ تم تحميل الصورة — اضغط حفظ إعدادات التقديم');
+    };
+    reader.readAsDataURL(file);
+  });
+}
+
+const applyImageUrlInput = $('#applyImageUrl');
+if (applyImageUrlInput) {
+  applyImageUrlInput.addEventListener('input', () => {
+    const val = applyImageUrlInput.value.trim();
+    if (val) {
+      uploadedApplyImageData = '';
+      if ($('#applyImageFile')) $('#applyImageFile').value = '';
+      updateApplyImagePreview(val);
+    } else if (!uploadedApplyImageData) {
+      updateApplyImagePreview('');
+    }
+  });
+}
+
+const clearApplyImageBtn = $('#clearApplyImageBtn');
+if (clearApplyImageBtn) {
+  clearApplyImageBtn.addEventListener('click', () => {
+    uploadedApplyImageData = '';
+    if ($('#applyImageFile')) $('#applyImageFile').value = '';
+    if ($('#applyImageUrl')) $('#applyImageUrl').value = '';
+    updateApplyImagePreview('');
+    toast('🗑️ تم إزالة الصورة');
+  });
+}
+
+function getApplyImageValue() {
+  const urlVal = $('#applyImageUrl')?.value.trim() || '';
+  return urlVal || uploadedApplyImageData || '';
+}
+
+renderApplyQuestions(applyQuestionsList);
+
 // بيانات السيرفر
 async function loadGuildRealData(guildId) {
   if (!currentSession || !guildId) return;
@@ -238,13 +369,27 @@ async function loadGuildRealData(guildId) {
           const el = document.getElementById(fieldKey);
           if (el) {
             if (el.type === 'checkbox') el.checked = !!val;
-            else el.value = val;
+            else if (val !== undefined && val !== null) el.value = val;
           }
         });
       }
     });
     const dmSel = $('#applyDmNotify');
     if (dmSel && data.settings.present) dmSel.value = data.settings.present.applyDmNotify || 'off';
+
+    const presentCfg = data.settings.present || {};
+    if (Array.isArray(presentCfg.applyQuestions) && presentCfg.applyQuestions.length) {
+      renderApplyQuestions(presentCfg.applyQuestions);
+    } else {
+      renderApplyQuestions(['اسمك وعمرك؟', 'كم ساعات تفاعلك؟', 'لماذا تريد الانضمام؟']);
+    }
+
+    const savedImg = presentCfg.applyImageUrl || presentCfg.applyImage || '';
+    uploadedApplyImageData = savedImg.startsWith('data:image/') ? savedImg : '';
+    if ($('#applyImageUrl')) {
+      $('#applyImageUrl').value = savedImg.startsWith('data:image/') ? '' : savedImg;
+    }
+    updateApplyImagePreview(savedImg);
   }
 
   renderEmbedsList((data.settings.embeds && data.settings.embeds.list) || []);
@@ -429,9 +574,15 @@ document.querySelectorAll('[data-save]').forEach(btn => {
 
     const payload = {};
     document.querySelectorAll(`#${activePage} input, #${activePage} select, #${activePage} textarea`).forEach(el => {
-      if (!el.id) return;
+      if (!el.id || el.type === 'file') return;
       payload[el.id] = el.type === 'checkbox' ? el.checked : el.value;
     });
+
+    if (activePage === 'present') {
+      payload.applyQuestions = syncApplyQuestionsFromInputs();
+      payload.applyImage = getApplyImageValue();
+      payload.applyImageUrl = $('#applyImageUrl')?.value.trim() || '';
+    }
 
     if (activePage === 'autoreply') {
       const rows = [];
