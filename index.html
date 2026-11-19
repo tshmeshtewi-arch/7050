@@ -167,7 +167,7 @@
     </div>
   </section>
 
-  <!-- التذاكر -->
+  <!-- التذاكر (رابط صورة للبانل + رابط صورة للترحيب) -->
   <section class="page" id="tickets">
     <div class="card">
       <div class="card-head"><h3>🎫 نظام التذاكر</h3><label class="switch"><input type="checkbox" id="ticketToggle" checked><i></i></label></div>
@@ -175,7 +175,9 @@
       <div class="field"><label>شات إرسال البانل</label><select id="ticketPanelChannel"><option value="">اختر الشات...</option></select></div>
       <div class="field"><label>عنوان رسالة التذكرة</label><input id="ticketEmbedTitle" value="🎫 نظام التذاكر والدعم الفني"></div>
       <div class="field"><label>محتوى رسالة التذكرة</label><textarea id="ticketEmbedDesc">اضغط أدناه أو اختر من القائمة لفتح تذكرة.</textarea></div>
+      <div class="field"><label>رابط صورة إيمبد البانل (اختياري)</label><input type="text" id="ticketEmbedImage" placeholder="https://example.com/ticket-panel.png"></div>
       <div class="field"><label>رسالة الترحيب داخل التذكرة</label><input id="ticketWelcomeMsg" value="مرحباً بك، سيتم خدمتك قريباً."></div>
+      <div class="field"><label>رابط صورة إيمبد الترحيب عند فتح التذكرة (اختياري)</label><input type="text" id="ticketWelcomeImage" placeholder="https://example.com/ticket-welcome.png"></div>
       <div class="field"><label>كاتيجوري التذاكر</label><select id="ticketCategory"><option value="">اختر الكاتيجوري...</option></select></div>
       <div class="field"><label>رتبة الدعم الفني</label><select id="ticketSupportRole"><option value="">اختر رتبة الدعم...</option></select></div>
       <button class="btn" id="sendTicketPanelBtn" style="margin-bottom:10px;">📨 إرسال بانل التذاكر</button>
@@ -192,7 +194,7 @@
     </div>
   </section>
 
-  <!-- التقديم (نموذج + أسئلة + صورة بدون تذكرة) -->
+  <!-- التقديم (نموذج + أسئلة + رابط صورة فقط بدون رفع ملفات) -->
   <section class="page" id="present">
     <div class="card">
       <div class="card-head"><h3>📝 نظام التقديم</h3><label class="switch"><input type="checkbox" id="presentToggle" checked><i></i></label></div>
@@ -200,16 +202,7 @@
       <div class="field"><label>عنوان نموذج التقديم</label><input id="applyPanelTitle" value="📝 نظام التقديم"></div>
       <div class="field"><label>وصف النموذج</label><textarea id="applyPanelDesc" placeholder="تعليمات قصيرة أو مقدمة تظهر فوق أسئلة النموذج...">اضغط الزر أدناه لفتح نموذج التقديم وملء الأسئلة.</textarea></div>
       <div class="field"><label>نص زر التقديم</label><input id="applyPanelButtonText" value="📝 تقديم"></div>
-
-      <div class="field">
-        <label>صورة إيمبد التقديم (رابط صورة أو رفع من الجهاز)</label>
-        <input type="text" id="applyImageUrl" placeholder="https://example.com/image.png" style="margin-bottom:8px;">
-        <input type="file" id="applyImageFile" accept="image/*">
-        <div id="applyImagePreviewBox" style="display:none; margin-top:10px; align-items:center; gap:10px; flex-wrap:wrap;">
-          <img id="applyImagePreview" src="" alt="معاينة صورة التقديم" style="max-width:220px; max-height:130px; border-radius:10px; border:1px solid var(--border); object-fit:cover;">
-          <button type="button" class="btn ghost" id="clearApplyImageBtn" style="padding:6px 12px;">🗑️ إزالة الصورة</button>
-        </div>
-      </div>
+      <div class="field"><label>رابط صورة إيمبد التقديم (اختياري)</label><input type="text" id="applyImageUrl" placeholder="https://example.com/apply-banner.png"></div>
 
       <div class="card" style="background:var(--panel2); margin-top:12px;">
         <div class="card-head" style="margin-bottom:10px;">
