@@ -318,7 +318,18 @@
   <footer id="footerText">UniBot © 2030 — جميع الحقوق محفوظة 🐺</footer>
 </main>
 
-<div class="toast" id="toast">✅ تم الحفظ</div>
+<div id="toast">✅ تم الحفظ</div>
 <script src="script.js"></script>
+<script>
+  setTimeout(function () {
+    var l = document.getElementById('loader');
+    if (l) {
+      l.style.opacity = '0';
+      l.style.visibility = 'hidden';
+      l.style.pointerEvents = 'none';
+      l.style.display = 'none';
+    }
+  }, 1200);
+</script>
 </body>
 </html>
