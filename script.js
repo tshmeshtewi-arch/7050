@@ -9,6 +9,178 @@ const REDIRECT_URI = window.location.origin + window.location.pathname;
 
 let currentGuildId = null;
 let currentSession = null;
+let guildChannelsCache = [];
+let guildRolesCache = [];
+let commandsConfigCache = {};
+
+// ═══ ترجمة الموقع بالكامل (عربي / إنجليزي) ═══
+const SITE_I18N = {
+  ar: {
+    dir: 'rtl',
+    langAttr: 'ar',
+    loader: 'جاري تحميل أنظمة UniBot 2030...',
+    yourServers: 'سيرفراتك',
+    guildHint: 'اختر سيرفر لعرض إعداداته 👆',
+    loginBtn: '🔑 تسجيل الدخول بديسكورد',
+    inviteBtn: '🎮 أضف البوت لسيرفرك',
+    mainTitle: 'لوحة تحكم <em>UniBot</em>',
+    footer: 'UniBot © 2030 — جميع الحقوق محفوظة 🐺',
+    cap_general: 'عام',
+    nav_overview: 'نظرة عامة & المحفظة',
+    nav_wallet_logs: 'سجل تحويلات العملة',
+    cap_profile: 'إعدادات البروفايل',
+    nav_profile_settings: 'الإعدادات العامة (اللغة)',
+    cap_server: 'إعدادات السيرفر',
+    nav_settings: 'إعدادات السيرفر والبوت',
+    nav_public_commands: 'الأوامر العامة',
+    nav_mod_commands: 'الإشراف',
+    nav_welcome: 'الترحيب & المغادرة',
+    nav_autoreply: 'الرد التلقائي',
+    nav_autorank: 'الرولات التلقائية',
+    nav_embeds: 'رسائل الإيمبد',
+    nav_tickets: 'نظام التذاكر',
+    nav_levels: 'المستويات & XP',
+    nav_present: 'نظام التقديم',
+    nav_broadcasts: 'البثوث والبرودكاست',
+    nav_protect: 'حماية السيرفر',
+    cap_other: 'أخرى',
+    nav_about: 'عن UniBot',
+    lbl_uptime: 'التشغيل',
+    stat_wallet: 'رصيد محفظتك',
+    stat_level: 'مستواك الحالي',
+    stat_ping: 'تأخير البوت',
+    stat_uptime: 'مدة التشغيل',
+    wallet_info_title: '💼 معلومات المحفظة',
+    wallet_logs_title: '📋 سجل تحويلات العملة (Ly)',
+    general_settings_title: '🌐 الإعدادات العامة',
+    site_lang_label: 'لغة الموقع (Website Language)',
+    site_lang_hint: 'تغيير لغة الموقع يحوّل جميع النصوص والعناصر في لوحة التحكم بالكامل.',
+    bot_lang_label: 'لغة البوت (Bot Language)',
+    bot_lang_hint: 'لغة البوت تتحكم بكل رسائله في السيرفر المحدد بما في ذلك قائمة المساعدة وشرح الأوامر.',
+    server_bot_settings: '⚙️ إعدادات السيرفر والبوت',
+    prefix_label: 'بادئة الأوامر (Prefix)',
+    public_cmds_title: '🌐 الأوامر العامة',
+    public_cmds_desc: 'تحكم في أوامر البوت العامة واضغط "تعديل" على أي أمر لضبط الاختصارات والرومات والرتب وحذف الردود.',
+    mod_cmds_title: '🔨 الإشراف',
+    mod_cmds_desc: 'تحكم في أوامر المشرفين واضغط "تعديل" على أي أمر لضبط الصلاحيات وحذف الردود التلقائي.',
+    welcome_title: '🎉 الترحيب & المغادرة',
+    welcome_channel_lbl: 'قناة الترحيب',
+    welcome_dest_lbl: 'مكان إرسال رسالة الترحيب',
+    welcome_type_lbl: 'شكل رسالة الترحيب',
+    welcome_img_lbl: 'رابط صورة الترحيب (اختياري)',
+    welcome_msg_lbl: 'نص الرسالة',
+    autoreply_title: '🤖 الرد التلقائي',
+    autorank_title: '🏆 الرولات التلقائية',
+    join_role_lbl: 'رتبة الأعضاء الجدد',
+    embeds_title: '💬 رسائل الإيمبد',
+    tickets_title: '🎫 نظام التذاكر',
+    levels_title: '📈 المستويات & XP',
+    present_title: '📝 نظام التقديم',
+    broadcasts_title: '📢 البرودكاست والبثوث',
+    protect_title: '🛡️ حماية السيرفر المتقدمة'
+  },
+  en: {
+    dir: 'ltr',
+    langAttr: 'en',
+    loader: 'Loading UniBot 2030 systems...',
+    yourServers: 'Your Servers',
+    guildHint: 'Select a server to view its settings 👆',
+    loginBtn: '🔑 Login with Discord',
+    inviteBtn: '🎮 Invite Bot to Server',
+    mainTitle: '<em>UniBot</em> Dashboard',
+    footer: 'UniBot © 2030 — All Rights Reserved 🐺',
+    cap_general: 'General',
+    nav_overview: 'Overview & Wallet',
+    nav_wallet_logs: 'Currency Logs',
+    cap_profile: 'Profile Settings',
+    nav_profile_settings: 'General Settings (Language)',
+    cap_server: 'Server Settings',
+    nav_settings: 'Server & Bot Settings',
+    nav_public_commands: 'Public Commands',
+    nav_mod_commands: 'Moderation',
+    nav_welcome: 'Welcome & Leave',
+    nav_autoreply: 'Auto Reply',
+    nav_autorank: 'Auto Roles',
+    nav_embeds: 'Embed Messages',
+    nav_tickets: 'Ticket System',
+    nav_levels: 'Levels & XP',
+    nav_present: 'Applications',
+    nav_broadcasts: 'Broadcasts',
+    nav_protect: 'Server Protection',
+    cap_other: 'Other',
+    nav_about: 'About UniBot',
+    lbl_uptime: 'Uptime',
+    stat_wallet: 'Your Wallet Balance',
+    stat_level: 'Current Level',
+    stat_ping: 'Bot Latency',
+    stat_uptime: 'Uptime',
+    wallet_info_title: '💼 Wallet Information',
+    wallet_logs_title: '📋 Currency Transfer Logs (Ly)',
+    general_settings_title: '🌐 General Settings',
+    site_lang_label: 'Website Language',
+    site_lang_hint: 'Switching website language translates all dashboard labels and navigation immediately.',
+    bot_lang_label: 'Bot Language',
+    bot_lang_hint: 'Bot language controls all bot responses in the selected guild including the help menu and command descriptions.',
+    server_bot_settings: '⚙️ Server & Bot Settings',
+    prefix_label: 'Command Prefix',
+    public_cmds_title: '🌐 Public Commands',
+    public_cmds_desc: 'Manage public bot commands and click "Edit" on any command to configure aliases, channels, roles, and auto-delete.',
+    mod_cmds_title: '🔨 Moderation',
+    mod_cmds_desc: 'Manage moderation commands and click "Edit" on any command to configure permissions and auto-delete replies.',
+    welcome_title: '🎉 Welcome & Leave',
+    welcome_channel_lbl: 'Welcome Channel',
+    welcome_dest_lbl: 'Welcome Message Destination',
+    welcome_type_lbl: 'Welcome Message Format',
+    welcome_img_lbl: 'Welcome Image URL (Optional)',
+    welcome_msg_lbl: 'Welcome Message',
+    autoreply_title: '🤖 Auto Reply',
+    autorank_title: '🏆 Auto Roles',
+    join_role_lbl: 'Join Role',
+    embeds_title: '💬 Embed Messages',
+    tickets_title: '🎫 Ticket System',
+    levels_title: '📈 Levels & XP',
+    present_title: '📝 Application System',
+    broadcasts_title: '📢 Broadcasts',
+    protect_title: '🛡️ Advanced Server Protection'
+  }
+};
+
+function applyWebsiteLanguage(siteLang) {
+  const code = siteLang === 'en' ? 'en' : 'ar';
+  const dict = SITE_I18N[code];
+  document.documentElement.lang = dict.langAttr;
+  document.documentElement.dir = dict.dir;
+  document.body.dir = dict.dir;
+
+  if ($('#loaderText')) $('#loaderText').textContent = dict.loader;
+  if ($('#yourServersCap')) $('#yourServersCap').textContent = dict.yourServers;
+  if ($('#guildHint')) $('#guildHint').textContent = dict.guildHint;
+  if (loginBtn && !currentSession) loginBtn.textContent = dict.loginBtn;
+  if ($('#inviteBotLink')) $('#inviteBotLink').textContent = dict.inviteBtn;
+  if ($('#mainTitle')) $('#mainTitle').innerHTML = dict.mainTitle;
+  if ($('#footerText')) $('#footerText').textContent = dict.footer;
+
+  $$('[data-i18n]').forEach(el => {
+    const key = el.dataset.i18n;
+    if (dict[key] !== undefined) el.textContent = dict[key];
+  });
+
+  const sel = $('#siteLangSelect');
+  if (sel) sel.value = code;
+  localStorage.setItem('unibot-site-lang', code);
+  renderCommandLists();
+}
+
+const initialSiteLang = localStorage.getItem('unibot-site-lang') || 'ar';
+applyWebsiteLanguage(initialSiteLang);
+
+const siteLangSelect = $('#siteLangSelect');
+if (siteLangSelect) {
+  siteLangSelect.addEventListener('change', () => {
+    applyWebsiteLanguage(siteLangSelect.value);
+    toast(siteLangSelect.value === 'en' ? '🌐 Website switched to English' : '🌐 تم تحويل لغة الموقع إلى العربية');
+  });
+}
 
 window.addEventListener('load', () => {
   const l = $('#loader');
@@ -114,7 +286,7 @@ async function loadUserGuilds() {
         : `https://cdn.discordapp.com/embed/avatars/0.png`;
       $('#userAvatar').src = avatarUrl;
       $('#userName').textContent = data.user.username;
-      loginBtn.style.display = 'none';
+      if (loginBtn) loginBtn.style.display = 'none';
     }
 
     const guildsBlock = $('#guildsBlock');
@@ -137,7 +309,7 @@ async function loadUserGuilds() {
           div.classList.add('selected');
           currentGuildId = g.id;
           localStorage.setItem('unibot-selected-guild', g.id);
-          $('#guildHint').style.display = 'none';
+          if ($('#guildHint')) $('#guildHint').style.display = 'none';
           toast(`🛡️ تم اختيار: ${g.name}`);
           loadGuildRealData(g.id);
         });
@@ -166,7 +338,7 @@ document.addEventListener('focusout', (e) => {
 function populateSelects(chanHtml, roleHtml) {
   $$('select').forEach(sel => {
     if (sel === activeSelectElement || sel === document.activeElement) return;
-    if (sel.id === 'langSelect' || sel.id === 'bcTarget' || sel.id === 'bcType' || sel.id === 'applyDmNotify' || sel.id === 'ticketType') return;
+    if (['langSelect', 'siteLangSelect', 'bcTarget', 'bcType', 'applyDmNotify', 'ticketType', 'welcomeDestination', 'welcomeMessageType'].includes(sel.id)) return;
     const isChan = /channel|room|category|receive|result/i.test(sel.id);
     const isRole = /role/i.test(sel.id);
     if (!isChan && !isRole) return;
@@ -178,6 +350,217 @@ function populateSelects(chanHtml, roleHtml) {
     sel.innerHTML = html;
     if (cur && [...sel.options].some(o => o.value === cur)) sel.value = cur;
   });
+}
+
+// ═══ الأوامر العامة والإشراف ولوحة "تعديل" لكل أمر ═══
+const PUBLIC_CMDS = [
+  { key: 'help', name: 'help', arDesc: 'عرض قائمة المساعدة وشرح جميع أوامر البوت', enDesc: 'Show help menu and command explanations', defaultAliases: ['مساعدة', 'اوامر'] },
+  { key: 'server', name: 'server', arDesc: 'عرض معلومات السيرفر والمالك وتاريخ الإنشاء وأكثر عضو دعوات', enDesc: 'Show server info, owner, creation time, and top inviter', defaultAliases: ['سيرفر'] },
+  { key: 'balance', name: 'balance', arDesc: 'عرض رصيدك الحالي من عملة Ly', enDesc: 'Check your current Ly balance', defaultAliases: ['رصيدي', 'محفظة'] },
+  { key: 'transfer', name: 'transfer', arDesc: 'تحويل رصيد Ly من محفظتك إلى عضو آخر', enDesc: 'Transfer Ly balance to another member', defaultAliases: ['تحويل'] },
+  { key: 'ping', name: 'ping', arDesc: 'معرفة سرعة استجابة البوت الحالية', enDesc: 'Check current bot latency', defaultAliases: ['بنق'] }
+];
+
+const MOD_CMDS = [
+  { key: 'ban', name: 'ban', arDesc: 'حظر عضو من السيرفر أو فك الحظر عنه', enDesc: 'Ban or unban a member from the server', defaultAliases: ['حظر'] },
+  { key: 'kick', name: 'kick', arDesc: 'طرد عضو من السيرفر', enDesc: 'Kick a member from the server', defaultAliases: ['طرد'] },
+  { key: 'mute', name: 'mute', arDesc: 'إسكات عضو كتابياً أو فك الإسكات عنه', enDesc: 'Mute or unmute a member in text channels', defaultAliases: ['ميوت'] },
+  { key: 'timeout', name: 'timeout', arDesc: 'إعطاء تايم أوت مؤقت لعضو أو إزالته', enDesc: 'Timeout or remove timeout for a member', defaultAliases: ['تايم'] },
+  { key: 'clear', name: 'clear', arDesc: 'حذف عدد من الرسائل في الروم', enDesc: 'Bulk delete messages in a channel', defaultAliases: ['مسح'] },
+  { key: 'lock', name: 'lock', arDesc: 'قفل روم كتابي مؤقتاً', enDesc: 'Lock a text channel', defaultAliases: ['قفل'] },
+  { key: 'role', name: 'role', arDesc: 'إضافة أو إزالة رتبة لعضو', enDesc: 'Add or remove a role from a member', defaultAliases: ['رتبة'] }
+];
+
+let expandedCmdKey = null;
+
+function getCmdRuleState(cmdDef) {
+  const saved = commandsConfigCache[cmdDef.key] || {};
+  return {
+    enabled: saved.enabled !== undefined ? !!saved.enabled : true,
+    aliases: Array.isArray(saved.aliases) ? saved.aliases : [...cmdDef.defaultAliases],
+    enabledRoles: Array.isArray(saved.enabledRoles) ? saved.enabledRoles : [],
+    disabledRoles: Array.isArray(saved.disabledRoles) ? saved.disabledRoles : [],
+    enabledChannels: Array.isArray(saved.enabledChannels) ? saved.enabledChannels : [],
+    disabledChannels: Array.isArray(saved.disabledChannels) ? saved.disabledChannels : [],
+    deleteReplyOnUserDelete: saved.deleteReplyOnUserDelete !== undefined ? !!saved.deleteReplyOnUserDelete : true,
+    autoDeleteReplyAfter5s: !!saved.autoDeleteReplyAfter5s
+  };
+}
+
+function renderSingleCommandGroup(containerId, list) {
+  const container = $(containerId);
+  if (!container) return;
+  const siteLang = localStorage.getItem('unibot-site-lang') || 'ar';
+  const editLabel = siteLang === 'en' ? 'Edit' : 'تعديل';
+  const saveLabel = siteLang === 'en' ? 'Save Changes' : 'حفظ التغييرات';
+  const cancelLabel = siteLang === 'en' ? 'Cancel' : 'إلغاء';
+
+  container.innerHTML = '';
+
+  list.forEach(cmdDef => {
+    const rule = getCmdRuleState(cmdDef);
+    const isOpen = expandedCmdKey === cmdDef.key;
+    const desc = siteLang === 'en' ? cmdDef.enDesc : cmdDef.arDesc;
+
+    const itemWrap = document.createElement('div');
+    itemWrap.className = 'card';
+    itemWrap.style.cssText = 'background:var(--panel2); margin-bottom:10px; padding:14px;';
+
+    const roleOptionsHtml = (rid) =>
+      `<option value="">—</option>` +
+      guildRolesCache.map(r => `<option value="${r.id}" ${rid === r.id ? 'selected' : ''}>@${r.name}</option>`).join('');
+
+    const chanOptionsHtml = (cid) =>
+      `<option value="">—</option>` +
+      guildChannelsCache.filter(c => !c.name.startsWith('📁')).map(c => `<option value="${c.id}" ${cid === c.id ? 'selected' : ''}>${c.name}</option>`).join('');
+
+    itemWrap.innerHTML = `
+      <div style="display:flex; justify-content:space-between; align-items:center; gap:10px; flex-wrap:wrap;">
+        <div>
+          <b style="font-size:1em;">${cmdDef.name}/</b>
+          <p style="color:var(--mut); font-size:.82em; margin-top:3px;">${desc}</p>
+        </div>
+        <div style="display:flex; align-items:center; gap:10px;">
+          <button type="button" class="btn ghost cmd-edit-btn" data-cmd="${cmdDef.key}" style="padding:6px 14px; font-size:.82em;">${editLabel}</button>
+          <label class="switch">
+            <input type="checkbox" class="cmd-toggle-input" data-cmd="${cmdDef.key}" ${rule.enabled ? 'checked' : ''}>
+            <i></i>
+          </label>
+        </div>
+      </div>
+
+      ${isOpen ? `
+        <div class="cmd-editor-panel" style="margin-top:14px; padding-top:14px; border-top:1px solid var(--border);">
+          <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(210px,1fr)); gap:12px;">
+            <div class="field">
+              <label>الاختصارات (مفصولة بفاصلة)</label>
+              <input type="text" class="cmd-aliases-inp" value="${rule.aliases.join(', ')}" placeholder="مثال: مساعدة, اوامر">
+            </div>
+            <div class="field">
+              <label>الرتب المفعّلة</label>
+              <select class="cmd-en-role">${roleOptionsHtml(rule.enabledRoles[0] || '')}</select>
+            </div>
+            <div class="field">
+              <label>الرتب المعطّلة</label>
+              <select class="cmd-dis-role">${roleOptionsHtml(rule.disabledRoles[0] || '')}</select>
+            </div>
+            <div class="field">
+              <label>الرومات المفعّلة</label>
+              <select class="cmd-en-chan">${chanOptionsHtml(rule.enabledChannels[0] || '')}</select>
+            </div>
+            <div class="field">
+              <label>الرومات المعطّلة</label>
+              <select class="cmd-dis-chan">${chanOptionsHtml(rule.disabledChannels[0] || '')}</select>
+            </div>
+          </div>
+
+          <div style="margin-top:10px; display:flex; flex-direction:column; gap:10px;">
+            <div style="display:flex; justify-content:space-between; align-items:center; gap:10px;">
+              <span style="font-size:.85em;">حذف رد البوت تلقائياً عندما يتم حذف رسالة العضو</span>
+              <label class="switch">
+                <input type="checkbox" class="cmd-del-on-user-del" ${rule.deleteReplyOnUserDelete ? 'checked' : ''}>
+                <i></i>
+              </label>
+            </div>
+            <div style="display:flex; justify-content:space-between; align-items:center; gap:10px;">
+              <span style="font-size:.85em;">مسح تلقائي لرسالة الرد من البوت بعد 5 ثواني</span>
+              <label class="switch">
+                <input type="checkbox" class="cmd-del-5s" ${rule.autoDeleteReplyAfter5s ? 'checked' : ''}>
+                <i></i>
+              </label>
+            </div>
+          </div>
+
+          <div style="margin-top:14px; display:flex; gap:10px; flex-wrap:wrap;">
+            <button type="button" class="btn cmd-save-single-btn" data-cmd="${cmdDef.key}" style="padding:8px 16px;">💾 ${saveLabel}</button>
+            <button type="button" class="btn ghost cmd-cancel-single-btn" style="padding:8px 14px;">${cancelLabel}</button>
+          </div>
+        </div>
+      ` : ''}
+    `;
+
+    container.appendChild(itemWrap);
+  });
+
+  container.querySelectorAll('.cmd-edit-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const key = btn.dataset.cmd;
+      expandedCmdKey = expandedCmdKey === key ? null : key;
+      renderCommandLists();
+    });
+  });
+
+  container.querySelectorAll('.cmd-toggle-input').forEach(chk => {
+    chk.addEventListener('change', async () => {
+      const key = chk.dataset.cmd;
+      const prev = getCmdRuleState({ key, defaultAliases: [] });
+      commandsConfigCache[key] = { ...prev, enabled: chk.checked };
+      await persistSingleCommandRule(key);
+    });
+  });
+
+  container.querySelectorAll('.cmd-cancel-single-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      expandedCmdKey = null;
+      renderCommandLists();
+    });
+  });
+
+  container.querySelectorAll('.cmd-save-single-btn').forEach(btn => {
+    btn.addEventListener('click', async () => {
+      const key = btn.dataset.cmd;
+      const panel = btn.closest('.cmd-editor-panel');
+      if (!panel) return;
+      const aliasesRaw = panel.querySelector('.cmd-aliases-inp')?.value || '';
+      const aliases = aliasesRaw.split(',').map(s => s.trim()).filter(Boolean);
+      const enRole = panel.querySelector('.cmd-en-role')?.value || '';
+      const disRole = panel.querySelector('.cmd-dis-role')?.value || '';
+      const enChan = panel.querySelector('.cmd-en-chan')?.value || '';
+      const disChan = panel.querySelector('.cmd-dis-chan')?.value || '';
+      const delOnUserDel = !!panel.querySelector('.cmd-del-on-user-del')?.checked;
+      const del5s = !!panel.querySelector('.cmd-del-5s')?.checked;
+
+      const prev = getCmdRuleState({ key, defaultAliases: [] });
+      commandsConfigCache[key] = {
+        ...prev,
+        aliases,
+        enabledRoles: enRole ? [enRole] : [],
+        disabledRoles: disRole ? [disRole] : [],
+        enabledChannels: enChan ? [enChan] : [],
+        disabledChannels: disChan ? [disChan] : [],
+        deleteReplyOnUserDelete: delOnUserDel,
+        autoDeleteReplyAfter5s: del5s
+      };
+
+      await persistSingleCommandRule(key);
+      expandedCmdKey = null;
+      renderCommandLists();
+    });
+  });
+}
+
+async function persistSingleCommandRule(cmdKey) {
+  if (!currentSession || !currentGuildId) {
+    toast('⚠️ سجل الدخول واختر سيرفراً أولاً!');
+    return;
+  }
+  try {
+    const res = await fetch(`${API_URL}/api/settings/${currentGuildId}/commands`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'x-session': currentSession },
+      body: JSON.stringify({ [cmdKey]: commandsConfigCache[cmdKey] })
+    });
+    const result = await res.json();
+    if (result.ok) toast('💾 تم حفظ إعدادات الأمر!');
+    else toast('❌ فشل الحفظ');
+  } catch {
+    toast('❌ خطأ في الاتصال');
+  }
+}
+
+function renderCommandLists() {
+  renderSingleCommandGroup('#publicCommandsList', PUBLIC_CMDS);
+  renderSingleCommandGroup('#modCommandsList', MOD_CMDS);
 }
 
 // سجل التحويلات الحقيقي
@@ -289,8 +672,11 @@ async function loadGuildRealData(guildId) {
     renderWalletLogs(data.wallet.logs);
   }
 
-  const chanHtml = data.channels.map(c => `<option value="${c.id}">${c.name}</option>`).join('');
-  const roleHtml = data.roles.map(rr => `<option value="${rr.id}">@${rr.name}</option>`).join('');
+  guildChannelsCache = data.channels || [];
+  guildRolesCache = data.roles || [];
+
+  const chanHtml = guildChannelsCache.map(c => `<option value="${c.id}">${c.name}</option>`).join('');
+  const roleHtml = guildRolesCache.map(rr => `<option value="${rr.id}">@${rr.name}</option>`).join('');
   populateSelects(chanHtml, roleHtml);
 
   if (data.settings) {
@@ -305,6 +691,7 @@ async function loadGuildRealData(guildId) {
         });
       }
     });
+
     const dmSel = $('#applyDmNotify');
     if (dmSel && data.settings.present) dmSel.value = data.settings.present.applyDmNotify || 'off';
 
@@ -323,8 +710,16 @@ async function loadGuildRealData(guildId) {
     const ticketCfg = data.settings.tickets || {};
     if ($('#ticketEmbedImage')) $('#ticketEmbedImage').value = ticketCfg.ticketEmbedImage || '';
     if ($('#ticketWelcomeImage')) $('#ticketWelcomeImage').value = ticketCfg.ticketWelcomeImage || '';
+
+    const welcomeCfg = data.settings.welcome || {};
+    if ($('#welcomeDestination')) $('#welcomeDestination').value = welcomeCfg.welcomeDestination || 'channel';
+    if ($('#welcomeMessageType')) $('#welcomeMessageType').value = welcomeCfg.welcomeMessageType || 'normal';
+    if ($('#welcomeImage')) $('#welcomeImage').value = welcomeCfg.welcomeImage || '';
+
+    commandsConfigCache = data.settings.commands || {};
   }
 
+  renderCommandLists();
   renderEmbedsList((data.settings.embeds && data.settings.embeds.list) || []);
   renderAutoReplies((data.settings.autoreply && data.settings.autoreply.replies) || []);
 
@@ -522,6 +917,12 @@ document.querySelectorAll('[data-save]').forEach(btn => {
       payload.ticketWelcomeImage = ($('#ticketWelcomeImage')?.value || '').trim();
     }
 
+    if (activePage === 'welcome') {
+      payload.welcomeImage = ($('#welcomeImage')?.value || '').trim();
+      payload.welcomeDestination = $('#welcomeDestination')?.value || 'channel';
+      payload.welcomeMessageType = $('#welcomeMessageType')?.value || 'normal';
+    }
+
     if (activePage === 'autoreply') {
       const rows = [];
       $$('#autoReplyContainer .ar-row').forEach(row => {
@@ -547,7 +948,13 @@ document.querySelectorAll('[data-save]').forEach(btn => {
 
 const saveLangBtn = $('#saveLangBtn');
 if (saveLangBtn) saveLangBtn.addEventListener('click', async () => {
-  if (!currentSession || !currentGuildId) { toast('⚠️ اختر سيرفراً أولاً — اللغة تُحفظ لكل سيرفر'); return; }
+  const chosenSiteLang = $('#siteLangSelect')?.value || 'ar';
+  applyWebsiteLanguage(chosenSiteLang);
+
+  if (!currentSession || !currentGuildId) {
+    toast('🌐 تم حفظ لغة الموقع (اختر سيرفراً لحفظ لغة البوت)');
+    return;
+  }
   try {
     const r = await fetch(`${API_URL}/api/guild/${currentGuildId}/data`, { headers: { 'x-session': currentSession } });
     const data = await r.json();
@@ -558,7 +965,7 @@ if (saveLangBtn) saveLangBtn.addEventListener('click', async () => {
       body: JSON.stringify(settings)
     });
     const result = await res.json();
-    if (result.ok) toast('🌐 تم حفظ لغة البوت!');
+    if (result.ok) toast('🌐 تم حفظ لغة الموقع واللغة الخاصة بالبوت!');
     else toast('❌ فشل الحفظ');
   } catch { toast('❌ خطأ في الاتصال'); }
 });
