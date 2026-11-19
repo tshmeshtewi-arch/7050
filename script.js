@@ -22,15 +22,19 @@ function hideLoaderNow() {
   l.style.opacity = '0';
   l.style.pointerEvents = 'none';
   l.style.visibility = 'hidden';
-  setTimeout(() => {
-    if (l && l.parentNode) l.style.display = 'none';
-  }, 250);
+  l.style.display = 'none';
 }
 
-window.addEventListener('load', () => {
-  setTimeout(hideLoaderNow, 150);
-});
-setTimeout(hideLoaderNow, 1200);
+window.addEventListener('load', () => setTimeout(hideLoaderNow, 100));
+setTimeout(hideLoaderNow, 900);
+
+function toast(msg) {
+  const t = $('#toast');
+  if (!t) return;
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2400);
+}
 
 // ═══ ترجمة الموقع بالكامل (عربي / إنجليزي) ═══
 const SITE_I18N = {
@@ -187,29 +191,10 @@ function applyWebsiteLanguage(siteLang) {
   const sel = $('#siteLangSelect');
   if (sel) sel.value = code;
   localStorage.setItem('unibot-site-lang', code);
-  renderCommandLists();
+  if (typeof renderCommandLists === 'function') renderCommandLists();
 }
 
-const initialSiteLang = localStorage.getItem('unibot-site-lang') || 'ar';
-applyWebsiteLanguage(initialSiteLang);
-
-const siteLangSelect = $('#siteLangSelect');
-if (siteLangSelect) {
-  siteLangSelect.addEventListener('change', () => {
-    applyWebsiteLanguage(siteLangSelect.value);
-    toast(siteLangSelect.value === 'en' ? '🌐 Website switched to English' : '🌐 تم تحويل لغة الموقع إلى العربية');
-  });
-}
-
-function toast(msg) {
-  const t = $('#toast');
-  if (!t) return;
-  t.textContent = msg;
-  t.classList.add('show');
-  setTimeout(() => t.classList.remove('show'), 2400);
-}
-
-// القائمة الجانبية
+// القائمة الجانبية + التنقل
 const burger = $('#burger'), overlay = $('#overlay');
 function setNav(open) {
   document.body.classList.toggle('nav-open', open);
@@ -222,6 +207,7 @@ if (overlay) overlay.addEventListener('click', () => setNav(false));
 const links = $$('.nav a');
 const crumb = $('#crumb');
 function goTo(page) {
+  if (!page) return;
   links.forEach(l => l.classList.toggle('active', l.dataset.page === page));
   $$('.page').forEach(p => p.classList.toggle('on', p.id === page));
   const active = links.find(l => l.dataset.page === page);
@@ -230,7 +216,13 @@ function goTo(page) {
   localStorage.setItem('unibot-page', page);
   if (innerWidth <= 900) setNav(false);
 }
-links.forEach(a => a.addEventListener('click', e => { e.preventDefault(); goTo(a.dataset.page); }));
+links.forEach(a => a.addEventListener('click', e => {
+  e.preventDefault();
+  goTo(a.dataset.page);
+}));
+
+// زر اللوجو في الأعلى يرجع للرئيسية
+$('.side-head')?.addEventListener('click', () => goTo('overview'));
 
 function tickClock() {
   const c = $('#clock');
@@ -312,11 +304,7 @@ async function loadUserGuilds() {
         div.className = 'guild-icon';
         div.title = g.name;
         div.dataset.gid = g.id;
-        if (g.icon) {
-          div.innerHTML = `<img src="${g.icon}" alt="${g.name}">`;
-        } else {
-          div.innerHTML = `<span>${g.name.slice(0, 2)}</span>`;
-        }
+        div.innerHTML = g.icon ? `<img src="${g.icon}" alt="${g.name}">` : `<span>${g.name.slice(0, 2)}</span>`;
         div.addEventListener('click', () => {
           $$('.guild-icon').forEach(x => x.classList.remove('selected'));
           div.classList.add('selected');
@@ -335,7 +323,7 @@ async function loadUserGuilds() {
   } catch {}
 }
 
-// تتبّع القائمة المنسدلة المفتوحة
+// القوائم المنسدلة
 let activeSelectElement = null;
 document.addEventListener('focusin', (e) => {
   if (e.target.tagName === 'SELECT') activeSelectElement = e.target;
@@ -365,7 +353,7 @@ function populateSelects(chanHtml, roleHtml) {
   });
 }
 
-// ═══ الأوامر العامة والإشراف ولوحة "تعديل" لكل أمر ═══
+// الأوامر العامة والإشراف
 const PUBLIC_CMDS = [
   { key: 'help', name: 'help', arDesc: 'عرض قائمة المساعدة وشرح جميع أوامر البوت', enDesc: 'Show help menu and command explanations', defaultAliases: ['مساعدة', 'اوامر'] },
   { key: 'server', name: 'server', arDesc: 'عرض معلومات السيرفر والمالك وتاريخ الإنشاء وأكثر عضو دعوات', enDesc: 'Show server info, owner, creation time, and top inviter', defaultAliases: ['سيرفر'] },
@@ -430,7 +418,7 @@ function renderSingleCommandGroup(containerId, list) {
     itemWrap.innerHTML = `
       <div style="display:flex; justify-content:space-between; align-items:center; gap:10px; flex-wrap:wrap;">
         <div>
-          <b style="font-size:1em;">${cmdDef.name}/</b>
+          <b style="font-size:1em;">/${cmdDef.name}</b>
           <p style="color:var(--mut); font-size:.82em; margin-top:3px;">${desc}</p>
         </div>
         <div style="display:flex; align-items:center; gap:10px;">
@@ -447,7 +435,7 @@ function renderSingleCommandGroup(containerId, list) {
           <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(210px,1fr)); gap:12px;">
             <div class="field">
               <label>الاختصارات (مفصولة بفاصلة)</label>
-              <input type="text" class="cmd-aliases-inp" value="${rule.aliases.join(', ')}" placeholder="مثال: مساعدة, اوامر">
+              <input type="text" class="cmd-aliases-inp" value="${rule.aliases.join(', ')}">
             </div>
             <div class="field">
               <label>الرتب المفعّلة</label>
@@ -576,7 +564,7 @@ function renderCommandLists() {
   renderSingleCommandGroup('#modCommandsList', MOD_CMDS);
 }
 
-// سجل التحويلات الحقيقي
+// سجل التحويلات
 function renderWalletLogs(logs) {
   const box = $('#walletLogsList');
   if (!box) return;
@@ -589,15 +577,15 @@ function renderWalletLogs(logs) {
     const icon = l.type === 'add' ? '➕' : l.type === 'take' ? '➖' : '💸';
     const from = l.from === 'SYSTEM' ? 'النظام' : `<@${l.from}>`;
     const to = l.to === 'SYSTEM' ? 'النظام' : `<@${l.to}>`;
-    return `<div class="log-row" style="display:flex;justify-content:space-between;padding:10px;border-bottom:1px solid var(--border);font-size:.85em;">
+    return `<div class="log-row">
       <span>${icon} ${from} → ${to}</span>
-      <span style="color:var(--primary);font-weight:bold;">${l.amount} Ly</span>
-      <span style="color:var(--mut);">${d}</span>
+      <span>${l.amount} Ly</span>
+      <span>${d}</span>
     </div>`;
   }).join('');
 }
 
-// ═══ أسئلة التقديم ═══
+// أسئلة التقديم
 let applyQuestionsList = ['اسمك وعمرك؟', 'كم ساعات تفاعلك؟', 'لماذا تريد الانضمام؟'];
 
 function renderApplyQuestions(list) {
@@ -614,7 +602,7 @@ function renderApplyQuestions(list) {
     const row = document.createElement('div');
     row.className = 'ar-row';
     row.innerHTML = `
-      <input type="text" class="apply-q-input" value="${String(q).replace(/"/g, '&quot;')}" placeholder="اكتب السؤال رقم ${i + 1}..." style="flex:1;min-width:160px;">
+      <input type="text" class="apply-q-input" value="${String(q).replace(/"/g, '&quot;')}" placeholder="اكتب السؤال رقم ${i + 1}...">
       <button type="button" class="btn ghost ar-del apply-q-del" data-qi="${i}" title="حذف السؤال">🗑️</button>
     `;
     box.appendChild(row);
@@ -629,39 +617,28 @@ function renderApplyQuestions(list) {
   box.querySelectorAll('.apply-q-del').forEach(btn => {
     btn.addEventListener('click', () => {
       const idx = +btn.dataset.qi;
-      if (applyQuestionsList.length <= 1) {
-        applyQuestionsList = [''];
-      } else {
-        applyQuestionsList.splice(idx, 1);
-      }
+      if (applyQuestionsList.length <= 1) applyQuestionsList = [''];
+      else applyQuestionsList.splice(idx, 1);
       renderApplyQuestions(applyQuestionsList);
     });
   });
 }
 
-const addApplyQuestionBtn = $('#addApplyQuestionBtn');
-if (addApplyQuestionBtn) {
-  addApplyQuestionBtn.addEventListener('click', () => {
-    syncApplyQuestionsFromInputs();
-    if (applyQuestionsList.length >= 5) {
-      toast('⚠️ الحد الأقصى لأسئلة النموذج في ديسكورد هو 5 أسئلة');
-      return;
-    }
-    applyQuestionsList.push('');
-    renderApplyQuestions(applyQuestionsList);
-  });
-}
-
 function syncApplyQuestionsFromInputs() {
   const inputs = $$('#applyQuestionsContainer .apply-q-input');
-  applyQuestionsList = inputs
-    .map(i => i.value.trim())
-    .filter(Boolean)
-    .slice(0, 5);
+  applyQuestionsList = inputs.map(i => i.value.trim()).filter(Boolean).slice(0, 5);
   return applyQuestionsList;
 }
 
-renderApplyQuestions(applyQuestionsList);
+$('#addApplyQuestionBtn')?.addEventListener('click', () => {
+  syncApplyQuestionsFromInputs();
+  if (applyQuestionsList.length >= 5) {
+    toast('⚠️ الحد الأقصى لأسئلة النموذج في ديسكورد هو 5 أسئلة');
+    return;
+  }
+  applyQuestionsList.push('');
+  renderApplyQuestions(applyQuestionsList);
+});
 
 // بيانات السيرفر
 async function loadGuildRealData(guildId) {
@@ -693,7 +670,7 @@ async function loadGuildRealData(guildId) {
   populateSelects(chanHtml, roleHtml);
 
   if (data.settings) {
-    Object.entries(data.settings).forEach(([sysKey, sysData]) => {
+    Object.entries(data.settings).forEach(([, sysData]) => {
       if (sysData && typeof sysData === 'object') {
         Object.entries(sysData).forEach(([fieldKey, val]) => {
           const el = document.getElementById(fieldKey);
@@ -705,20 +682,14 @@ async function loadGuildRealData(guildId) {
       }
     });
 
-    const dmSel = $('#applyDmNotify');
-    if (dmSel && data.settings.present) dmSel.value = data.settings.present.applyDmNotify || 'off';
-
     const presentCfg = data.settings.present || {};
+    if ($('#applyDmNotify')) $('#applyDmNotify').value = presentCfg.applyDmNotify || 'off';
     if (Array.isArray(presentCfg.applyQuestions) && presentCfg.applyQuestions.length) {
       renderApplyQuestions(presentCfg.applyQuestions);
     } else {
       renderApplyQuestions(['اسمك وعمرك؟', 'كم ساعات تفاعلك؟', 'لماذا تريد الانضمام؟']);
     }
-
-    if ($('#applyImageUrl')) {
-      const savedUrl = presentCfg.applyImageUrl || presentCfg.applyImage || '';
-      $('#applyImageUrl').value = savedUrl.startsWith('data:image/') ? '' : savedUrl;
-    }
+    if ($('#applyImageUrl')) $('#applyImageUrl').value = presentCfg.applyImageUrl || presentCfg.applyImage || '';
 
     const ticketCfg = data.settings.tickets || {};
     if ($('#ticketEmbedImage')) $('#ticketEmbedImage').value = ticketCfg.ticketEmbedImage || '';
@@ -733,8 +704,8 @@ async function loadGuildRealData(guildId) {
   }
 
   renderCommandLists();
-  renderEmbedsList((data.settings.embeds && data.settings.embeds.list) || []);
-  renderAutoReplies((data.settings.autoreply && data.settings.autoreply.replies) || []);
+  renderEmbedsList((data.settings?.embeds?.list) || []);
+  renderAutoReplies((data.settings?.autoreply?.replies) || []);
 
   if (membersRes.status === 'fulfilled' && membersRes.value.ok) {
     try {
@@ -749,9 +720,8 @@ async function loadGuildRealData(guildId) {
   toast('✅ تم التحميل بنجاح!');
 }
 
-// ═══ الإيمبدات المتعددة ═══
+// الإيمبدات
 let embedsList = [];
-
 function renderEmbedsList(list) {
   embedsList = list.map(e => ({ ...e }));
   const box = $('#embedsList');
@@ -760,7 +730,7 @@ function renderEmbedsList(list) {
     ? `<p style="color:var(--mut);font-size:.8em;margin-top:10px;">الإيمبدات المحفوظة (${embedsList.length}):</p>` +
       embedsList.map((e, i) => `<div style="display:flex;justify-content:space-between;align-items:center;padding:8px 12px;border:1px solid var(--border);border-radius:10px;margin-top:6px;">
         <span>💬 <b>${(e.title || 'بدون عنوان').slice(0, 30)}</b></span>
-        <button class="btn ar-del" data-ei="${i}" title="حذف" style="padding:4px 10px;">🗑️</button>
+        <button type="button" class="btn ar-del" data-ei="${i}" title="حذف">🗑️</button>
       </div>`).join('')
     : '';
   box.querySelectorAll('.ar-del').forEach(b => b.addEventListener('click', () => {
@@ -770,8 +740,7 @@ function renderEmbedsList(list) {
   }));
 }
 
-const addNewEmbedBtn = $('#addNewEmbedBtn');
-if (addNewEmbedBtn) addNewEmbedBtn.addEventListener('click', () => {
+$('#addNewEmbedBtn')?.addEventListener('click', () => {
   const cur = {
     title: $('#embedTitle')?.value || '',
     desc: $('#embedDesc')?.value || '',
@@ -787,8 +756,7 @@ if (addNewEmbedBtn) addNewEmbedBtn.addEventListener('click', () => {
   renderEmbedsList(embedsList);
 });
 
-const sendEmbedBtn = $('#sendEmbedBtn');
-if (sendEmbedBtn) sendEmbedBtn.addEventListener('click', async () => {
+$('#sendEmbedBtn')?.addEventListener('click', async () => {
   if (!currentSession || !currentGuildId) { toast('⚠️ سجل الدخول واختر سيرفراً!'); return; }
   const channelId = $('#embedChannel')?.value;
   if (!channelId) { toast('⚠️ اختر الشات أولاً!'); return; }
@@ -809,7 +777,7 @@ if (sendEmbedBtn) sendEmbedBtn.addEventListener('click', async () => {
   } catch { toast('❌ خطأ في الاتصال'); }
 });
 
-// ═══ الردود التلقائية ═══
+// الردود التلقائية
 let autoReplyRows = [];
 function renderAutoReplies(list) {
   autoReplyRows = list.map(r => ({ ...r }));
@@ -820,9 +788,9 @@ function renderAutoReplies(list) {
     const div = document.createElement('div');
     div.className = 'ar-row';
     div.innerHTML = `
-      <input class="ar-trigger" value="${(r.trigger || '').replace(/"/g, '&quot;')}" placeholder="الكلمة أو الجملة" style="flex:1;min-width:120px;">
-      <input class="ar-response" value="${(r.response || '').replace(/"/g, '&quot;')}" placeholder="الرد التلقائي" style="flex:2;min-width:160px;">
-      <button class="btn ar-del" data-i="${i}" title="حذف الرد">🗑️</button>`;
+      <input class="ar-trigger" value="${(r.trigger || '').replace(/"/g, '&quot;')}" placeholder="الكلمة أو الجملة">
+      <input class="ar-response" value="${(r.response || '').replace(/"/g, '&quot;')}" placeholder="الرد التلقائي">
+      <button type="button" class="btn ar-del" data-i="${i}" title="حذف الرد">🗑️</button>`;
     box.appendChild(div);
   });
   box.querySelectorAll('.ar-del').forEach(b => b.addEventListener('click', () => {
@@ -831,20 +799,18 @@ function renderAutoReplies(list) {
     toast('🗑️ تم حذف الرد — اضغط حفظ لتأكيد الحذف');
   }));
 }
-const addAutoReplyBtn = $('#addAutoReplyBtn');
-if (addAutoReplyBtn) addAutoReplyBtn.addEventListener('click', () => {
+$('#addAutoReplyBtn')?.addEventListener('click', () => {
   autoReplyRows.push({ trigger: '', response: '' });
   renderAutoReplies(autoReplyRows);
 });
 
-// ═══ البرودكاست ═══
-const bcTarget = $('#bcTarget');
-if (bcTarget) bcTarget.addEventListener('change', () => {
+// البرودكاست
+$('#bcTarget')?.addEventListener('change', () => {
   const f = $('#bcMemberField');
-  if (f) f.style.display = bcTarget.value === 'one' ? 'block' : 'none';
+  if (f) f.style.display = $('#bcTarget').value === 'one' ? 'block' : 'none';
 });
 
-// ═══ الإحصائيات ═══
+// الإحصائيات
 function fmtUptime(s) {
   const d = Math.floor(s / 86400), h = Math.floor((s % 86400) / 3600), m = Math.floor((s % 3600) / 60);
   return `${d}ي ${h}س ${m}د`;
@@ -863,12 +829,12 @@ async function refreshStats() {
 refreshStats();
 setInterval(refreshStats, 10000);
 
-// ═══ الحفظ ═══
-document.querySelectorAll('[data-save]').forEach(btn => {
+// الحفظ
+$$('[data-save]').forEach(btn => {
   btn.addEventListener('click', async () => {
     if (!currentSession || !currentGuildId) { toast('⚠️ سجل الدخول واختر سيرفراً أولاً!'); return; }
 
-    const activePage = document.querySelector('.page.on')?.id || 'settings';
+    const activePage = $('.page.on')?.id || 'settings';
 
     if (activePage === 'broadcasts') {
       const type = $('#bcType')?.value || 'embed';
@@ -914,7 +880,7 @@ document.querySelectorAll('[data-save]').forEach(btn => {
     }
 
     const payload = {};
-    document.querySelectorAll(`#${activePage} input, #${activePage} select, #${activePage} textarea`).forEach(el => {
+    $$(`#${activePage} input, #${activePage} select, #${activePage} textarea`).forEach(el => {
       if (!el.id) return;
       payload[el.id] = el.type === 'checkbox' ? el.checked : el.value;
     });
@@ -959,8 +925,7 @@ document.querySelectorAll('[data-save]').forEach(btn => {
   });
 });
 
-const saveLangBtn = $('#saveLangBtn');
-if (saveLangBtn) saveLangBtn.addEventListener('click', async () => {
+$('#saveLangBtn')?.addEventListener('click', async () => {
   const chosenSiteLang = $('#siteLangSelect')?.value || 'ar';
   applyWebsiteLanguage(chosenSiteLang);
 
@@ -983,8 +948,12 @@ if (saveLangBtn) saveLangBtn.addEventListener('click', async () => {
   } catch { toast('❌ خطأ في الاتصال'); }
 });
 
-const sendTicketPanelBtn = $('#sendTicketPanelBtn');
-if (sendTicketPanelBtn) sendTicketPanelBtn.addEventListener('click', async () => {
+$('#siteLangSelect')?.addEventListener('change', () => {
+  applyWebsiteLanguage($('#siteLangSelect').value);
+  toast($('#siteLangSelect').value === 'en' ? '🌐 Website switched to English' : '🌐 تم تحويل لغة الموقع إلى العربية');
+});
+
+$('#sendTicketPanelBtn')?.addEventListener('click', async () => {
   if (!currentSession || !currentGuildId) { toast('⚠️ سجل الدخول واختر سيرفراً!'); return; }
   try {
     const res = await fetch(`${API_URL}/api/ticket-panel/${currentGuildId}`, {
@@ -998,8 +967,7 @@ if (sendTicketPanelBtn) sendTicketPanelBtn.addEventListener('click', async () =>
   } catch { toast('❌ خطأ في الاتصال'); }
 });
 
-const sendApplyPanelBtn = $('#sendApplyPanelBtn');
-if (sendApplyPanelBtn) sendApplyPanelBtn.addEventListener('click', async () => {
+$('#sendApplyPanelBtn')?.addEventListener('click', async () => {
   if (!currentSession || !currentGuildId) { toast('⚠️ سجل الدخول واختر سيرفراً!'); return; }
   try {
     const res = await fetch(`${API_URL}/api/apply-panel/${currentGuildId}`, {
@@ -1013,10 +981,13 @@ if (sendApplyPanelBtn) sendApplyPanelBtn.addEventListener('click', async () => {
   } catch { toast('❌ خطأ في الاتصال'); }
 });
 
-// ═══ استعادة الصفحة + بدء التشغيل ═══
+// بدء التشغيل
 $('#profileBlock')?.addEventListener('click', (e) => {
   if (e.target.id !== 'logoutBtn') goTo('profile-settings');
 });
+
+applyWebsiteLanguage(localStorage.getItem('unibot-site-lang') || 'ar');
+renderApplyQuestions(applyQuestionsList);
 
 const savedPage = localStorage.getItem('unibot-page');
 if (savedPage && $('#' + savedPage)) goTo(savedPage);
