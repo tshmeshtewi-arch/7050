@@ -192,21 +192,42 @@
     </div>
   </section>
 
-  <!-- التقديم (كامل) -->
+  <!-- التقديم (نموذج + أسئلة + صورة بدون تذكرة) -->
   <section class="page" id="present">
     <div class="card">
-      <div class="card-head"><h3>📝 نظام التقديم الكامل</h3><label class="switch"><input type="checkbox" id="presentToggle" checked><i></i></label></div>
+      <div class="card-head"><h3>📝 نظام التقديم</h3><label class="switch"><input type="checkbox" id="presentToggle" checked><i></i></label></div>
       <div class="field"><label>شات إرسال بانل التقديم</label><select id="applyPanelChannel"><option value="">اختر الشات...</option></select></div>
-      <div class="field"><label>عنوان بانل التقديم</label><input id="applyPanelTitle" value="📝 نظام التقديم"></div>
-      <div class="field"><label>رسالة بانل التقديم</label><textarea id="applyPanelDesc">اضغط الزر أدناه لتقديم طلبك للانضمام للإشراف.</textarea></div>
+      <div class="field"><label>عنوان نموذج التقديم</label><input id="applyPanelTitle" value="📝 نظام التقديم"></div>
+      <div class="field"><label>وصف النموذج</label><textarea id="applyPanelDesc" placeholder="تعليمات قصيرة أو مقدمة تظهر فوق أسئلة النموذج...">اضغط الزر أدناه لفتح نموذج التقديم وملء الأسئلة.</textarea></div>
       <div class="field"><label>نص زر التقديم</label><input id="applyPanelButtonText" value="📝 تقديم"></div>
-      <div class="field"><label>رسالة الترحيب بعد فتح تذكرة التقديم</label><input id="applyTicketWelcomeMsg" value="مرحباً بك، اكتب تقديمك هنا."></div>
-      <div class="field"><label>روم وصول التقديمات</label><select id="applyReceiveChannel"><option value="">اختر الروم...</option></select></div>
+
+      <div class="field">
+        <label>صورة إيمبد التقديم (رابط صورة أو رفع من الجهاز)</label>
+        <input type="text" id="applyImageUrl" placeholder="https://example.com/image.png" style="margin-bottom:8px;">
+        <input type="file" id="applyImageFile" accept="image/*">
+        <div id="applyImagePreviewBox" style="display:none; margin-top:10px; align-items:center; gap:10px; flex-wrap:wrap;">
+          <img id="applyImagePreview" src="" alt="معاينة صورة التقديم" style="max-width:220px; max-height:130px; border-radius:10px; border:1px solid var(--border); object-fit:cover;">
+          <button type="button" class="btn ghost" id="clearApplyImageBtn" style="padding:6px 12px;">🗑️ إزالة الصورة</button>
+        </div>
+      </div>
+
+      <div class="card" style="background:var(--panel2); margin-top:12px;">
+        <div class="card-head" style="margin-bottom:10px;">
+          <h3 style="margin-bottom:0;">❓ أسئلة نموذج التقديم</h3>
+          <button type="button" class="btn" id="addApplyQuestionBtn">+ إضافة سؤال</button>
+        </div>
+        <div id="applyQuestionsContainer"></div>
+      </div>
+
+      <div class="field"><label>روم وصول التقديمات (السجلات)</label><select id="applyReceiveChannel"><option value="">اختر الروم...</option></select></div>
       <div class="field"><label>رتبة الإدارة (تستطيع القبول/الرفض)</label><select id="applyAdminRole"><option value="">اختر رتبة الأدمن...</option></select></div>
       <div class="field"><label>رتبة القبول</label><select id="applyAcceptRole"><option value="">اختر رتبة...</option></select></div>
       <div class="field"><label>رسالة القبول/الرفض توصل في الخاص؟</label>
         <select id="applyDmNotify"><option value="on">نعم، أرسل في الخاص</option><option value="off">لا، بدون خاص</option></select>
       </div>
+      <div class="field"><label>رسالة القبول في الخاص (اختياري)</label><input id="applyAcceptDmText" placeholder="مبروك! تم قبول تقديمك..."></div>
+      <div class="field"><label>رسالة الرفض في الخاص (اختياري)</label><input id="applyRejectDmText" placeholder="نعتذر، تم رفض تقديمك..."></div>
+
       <button class="btn" id="sendApplyPanelBtn" style="margin-bottom:10px;">📨 إرسال بانل التقديم</button>
       <button class="btn" data-save>💾 حفظ إعدادات التقديم</button>
     </div>
