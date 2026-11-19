@@ -9,7 +9,6 @@ const REDIRECT_URI = window.location.origin + window.location.pathname;
 
 let currentGuildId = null;
 let currentSession = null;
-let guildMembersCache = [];
 
 window.addEventListener('load', () => {
   const l = $('#loader');
@@ -202,22 +201,8 @@ function renderWalletLogs(logs) {
   }).join('');
 }
 
-// ═══ أسئلة وصورة التقديم ═══
+// ═══ أسئلة التقديم ═══
 let applyQuestionsList = ['اسمك وعمرك؟', 'كم ساعات تفاعلك؟', 'لماذا تريد الانضمام؟'];
-let uploadedApplyImageData = '';
-
-function updateApplyImagePreview(src) {
-  const box = $('#applyImagePreviewBox');
-  const img = $('#applyImagePreview');
-  if (!box || !img) return;
-  if (src) {
-    img.src = src;
-    box.style.display = 'flex';
-  } else {
-    img.src = '';
-    box.style.display = 'none';
-  }
-}
 
 function renderApplyQuestions(list) {
   applyQuestionsList = (Array.isArray(list) ? list : [])
@@ -280,60 +265,6 @@ function syncApplyQuestionsFromInputs() {
   return applyQuestionsList;
 }
 
-const applyImageFile = $('#applyImageFile');
-if (applyImageFile) {
-  applyImageFile.addEventListener('change', () => {
-    const file = applyImageFile.files?.[0];
-    if (!file) return;
-    if (!file.type.startsWith('image/')) {
-      toast('⚠️ يرجى اختيار صورة صالحة');
-      return;
-    }
-    if (file.size > 2 * 1024 * 1024) {
-      toast('⚠️ حجم الصورة كبير (يفضل أقل من 2MB)');
-      return;
-    }
-    const reader = new FileReader();
-    reader.onload = () => {
-      uploadedApplyImageData = String(reader.result || '');
-      if ($('#applyImageUrl')) $('#applyImageUrl').value = '';
-      updateApplyImagePreview(uploadedApplyImageData);
-      toast('🖼️ تم تحميل الصورة — اضغط حفظ إعدادات التقديم');
-    };
-    reader.readAsDataURL(file);
-  });
-}
-
-const applyImageUrlInput = $('#applyImageUrl');
-if (applyImageUrlInput) {
-  applyImageUrlInput.addEventListener('input', () => {
-    const val = applyImageUrlInput.value.trim();
-    if (val) {
-      uploadedApplyImageData = '';
-      if ($('#applyImageFile')) $('#applyImageFile').value = '';
-      updateApplyImagePreview(val);
-    } else if (!uploadedApplyImageData) {
-      updateApplyImagePreview('');
-    }
-  });
-}
-
-const clearApplyImageBtn = $('#clearApplyImageBtn');
-if (clearApplyImageBtn) {
-  clearApplyImageBtn.addEventListener('click', () => {
-    uploadedApplyImageData = '';
-    if ($('#applyImageFile')) $('#applyImageFile').value = '';
-    if ($('#applyImageUrl')) $('#applyImageUrl').value = '';
-    updateApplyImagePreview('');
-    toast('🗑️ تم إزالة الصورة');
-  });
-}
-
-function getApplyImageValue() {
-  const urlVal = $('#applyImageUrl')?.value.trim() || '';
-  return urlVal || uploadedApplyImageData || '';
-}
-
 renderApplyQuestions(applyQuestionsList);
 
 // بيانات السيرفر
@@ -384,12 +315,14 @@ async function loadGuildRealData(guildId) {
       renderApplyQuestions(['اسمك وعمرك؟', 'كم ساعات تفاعلك؟', 'لماذا تريد الانضمام؟']);
     }
 
-    const savedImg = presentCfg.applyImageUrl || presentCfg.applyImage || '';
-    uploadedApplyImageData = savedImg.startsWith('data:image/') ? savedImg : '';
     if ($('#applyImageUrl')) {
-      $('#applyImageUrl').value = savedImg.startsWith('data:image/') ? '' : savedImg;
+      const savedUrl = presentCfg.applyImageUrl || presentCfg.applyImage || '';
+      $('#applyImageUrl').value = savedUrl.startsWith('data:image/') ? '' : savedUrl;
     }
-    updateApplyImagePreview(savedImg);
+
+    const ticketCfg = data.settings.tickets || {};
+    if ($('#ticketEmbedImage')) $('#ticketEmbedImage').value = ticketCfg.ticketEmbedImage || '';
+    if ($('#ticketWelcomeImage')) $('#ticketWelcomeImage').value = ticketCfg.ticketWelcomeImage || '';
   }
 
   renderEmbedsList((data.settings.embeds && data.settings.embeds.list) || []);
@@ -574,14 +507,19 @@ document.querySelectorAll('[data-save]').forEach(btn => {
 
     const payload = {};
     document.querySelectorAll(`#${activePage} input, #${activePage} select, #${activePage} textarea`).forEach(el => {
-      if (!el.id || el.type === 'file') return;
+      if (!el.id) return;
       payload[el.id] = el.type === 'checkbox' ? el.checked : el.value;
     });
 
     if (activePage === 'present') {
       payload.applyQuestions = syncApplyQuestionsFromInputs();
-      payload.applyImage = getApplyImageValue();
-      payload.applyImageUrl = $('#applyImageUrl')?.value.trim() || '';
+      payload.applyImageUrl = ($('#applyImageUrl')?.value || '').trim();
+      payload.applyImage = payload.applyImageUrl;
+    }
+
+    if (activePage === 'tickets') {
+      payload.ticketEmbedImage = ($('#ticketEmbedImage')?.value || '').trim();
+      payload.ticketWelcomeImage = ($('#ticketWelcomeImage')?.value || '').trim();
     }
 
     if (activePage === 'autoreply') {
