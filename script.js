@@ -13,6 +13,25 @@ let guildChannelsCache = [];
 let guildRolesCache = [];
 let commandsConfigCache = {};
 
+const loginBtn = document.getElementById('discordLoginBtn');
+
+function hideLoaderNow() {
+  const l = $('#loader');
+  if (!l) return;
+  l.classList.add('done');
+  l.style.opacity = '0';
+  l.style.pointerEvents = 'none';
+  l.style.visibility = 'hidden';
+  setTimeout(() => {
+    if (l && l.parentNode) l.style.display = 'none';
+  }, 250);
+}
+
+window.addEventListener('load', () => {
+  setTimeout(hideLoaderNow, 150);
+});
+setTimeout(hideLoaderNow, 1200);
+
 // ═══ ترجمة الموقع بالكامل (عربي / إنجليزي) ═══
 const SITE_I18N = {
   ar: {
@@ -182,11 +201,6 @@ if (siteLangSelect) {
   });
 }
 
-window.addEventListener('load', () => {
-  const l = $('#loader');
-  if (l) setTimeout(() => l.classList.add('done'), 200);
-});
-
 function toast(msg) {
   const t = $('#toast');
   if (!t) return;
@@ -226,7 +240,6 @@ tickClock();
 setInterval(tickClock, 1000);
 
 // تسجيل الدخول
-const loginBtn = document.getElementById('discordLoginBtn');
 if (loginBtn) {
   loginBtn.addEventListener('click', () => {
     if (currentSession) return;
