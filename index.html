@@ -59,7 +59,6 @@
     <a href="#" data-page="profile-settings"><i>🌐</i><span data-i18n="nav_profile_settings">الإعدادات العامة (اللغة)</span></a>
 
     <p class="nav-cap" data-i18n="cap_server">إعدادات السيرفر</p>
-    <a href="#" data-page="settings"><i>⚙️</i><span data-i18n="nav_settings">إعدادات السيرفر والبوت</span></a>
     <a href="#" data-page="public-commands"><i>🌐</i><span data-i18n="nav_public_commands">الأوامر العامة</span></a>
     <a href="#" data-page="mod-commands"><i>🔨</i><span data-i18n="nav_mod_commands">الإشراف</span></a>
     <a href="#" data-page="welcome"><i>🎉</i><span data-i18n="nav_welcome">الترحيب & المغادرة</span></a>
@@ -133,14 +132,6 @@
     </div>
   </section>
 
-  <!-- إعدادات السيرفر والبوت -->
-  <section class="page" id="settings">
-    <div class="card"><h3 data-i18n="server_bot_settings">⚙️ إعدادات السيرفر والبوت</h3>
-      <div class="field"><label data-i18n="prefix_label">بادئة الأوامر (Prefix)</label><input id="prefixInput" value="!"></div>
-      <button type="button" class="btn" data-save>💾 حفظ</button>
-    </div>
-  </section>
-
   <!-- الأوامر العامة -->
   <section class="page" id="public-commands">
     <div class="card">
@@ -185,10 +176,23 @@
       <div class="field"><label data-i18n="welcome_img_lbl">رابط صورة الترحيب (اختياري)</label><input type="text" id="welcomeImage" placeholder="https://example.com/welcome.png"></div>
       <div class="field">
         <label data-i18n="welcome_msg_lbl">نص الرسالة</label>
-        <textarea id="wmsg">أهلاً بك [user] في [server] — أنت العضو رقم [memberCount]، دعوتك بواسطة [inviter] (مجموع دعواتك: [invites])</textarea>
-        <div style="margin-top:8px; font-size:.78em; color:var(--mut); line-height:1.7;">
-          <b>المتغيرات المتاحة:</b><br>
-          <code>[user]</code> منشن العضو • <code>[userName]</code> اسم العضو بدون منشن • <code>[memberCount]</code> عدد الأعضاء • <code>[server]</code> اسم السيرفر • <code>[inviter]</code> منشن الداعي • <code>[inviterName]</code> اسم الداعي بدون منشن • <code>[invites]</code> عدد دعوات العضو
+        <textarea id="wmsg" placeholder="اكتب نص رسالة الترحيب هنا..."></textarea>
+        <div style="margin-top:10px; font-size:.8em; color:var(--mut); line-height:1.4;">
+          <b>المتغيرات المتاحة:</b><br><br>
+          <code>[user]</code><br>
+          منشن العضو<br><br>
+          <code>[userName]</code><br>
+          اسم العضو بدون منشن<br><br>
+          <code>[memberCount]</code><br>
+          عدد الأعضاء<br><br>
+          <code>[server]</code><br>
+          اسم السيرفر<br><br>
+          <code>[inviter]</code><br>
+          منشن الداعي<br><br>
+          <code>[inviterName]</code><br>
+          اسم الداعي بدون منشن<br><br>
+          <code>[invites]</code><br>
+          عدد دعوات العضو
         </div>
       </div>
       <button type="button" class="btn" data-save>💾 حفظ</button>
@@ -294,6 +298,7 @@
       <div class="field"><label>نوع الرسالة</label><select id="bcType"><option value="embed">إيمبد</option><option value="normal">عادية</option></select></div>
       <div class="field"><label>نطاق الإرسال</label><select id="bcTarget"><option value="all">للجميع</option><option value="one">شخص واحد</option></select></div>
       <div class="field" id="bcMemberField" style="display:none;"><label>اختر الشخص</label><select id="bcMember"><option value="">اختر الشخص...</option></select></div>
+      <div class="field"><label>رابط صورة البرودكاست (اختياري)</label><input type="text" id="bcImageUrl" placeholder="https://example.com/broadcast.png"></div>
       <div class="field"><label>محتوى البرودكاست</label><textarea id="bcContent" placeholder="اكتب رسالتك..."></textarea></div>
       <button type="button" class="btn" data-save>📢 إرسال البرودكاست</button>
     </div>
