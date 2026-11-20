@@ -54,7 +54,6 @@ const SITE_I18N = {
     cap_profile: 'إعدادات البروفايل',
     nav_profile_settings: 'الإعدادات العامة (اللغة)',
     cap_server: 'إعدادات السيرفر',
-    nav_settings: 'إعدادات السيرفر والبوت',
     nav_public_commands: 'الأوامر العامة',
     nav_mod_commands: 'الإشراف',
     nav_welcome: 'الترحيب & المغادرة',
@@ -80,8 +79,6 @@ const SITE_I18N = {
     site_lang_hint: 'تغيير لغة الموقع يحوّل جميع النصوص والعناصر في لوحة التحكم بالكامل.',
     bot_lang_label: 'لغة البوت (Bot Language)',
     bot_lang_hint: 'لغة البوت تتحكم بكل رسائله في السيرفر المحدد بما في ذلك قائمة المساعدة وشرح الأوامر.',
-    server_bot_settings: '⚙️ إعدادات السيرفر والبوت',
-    prefix_label: 'بادئة الأوامر (Prefix)',
     public_cmds_title: '🌐 الأوامر العامة',
     public_cmds_desc: 'تحكم في أوامر البوت العامة واضغط "تعديل" على أي أمر لضبط الاختصارات والرومات والرتب وحذف الردود.',
     mod_cmds_title: '🔨 الإشراف',
@@ -118,7 +115,6 @@ const SITE_I18N = {
     cap_profile: 'Profile Settings',
     nav_profile_settings: 'General Settings (Language)',
     cap_server: 'Server Settings',
-    nav_settings: 'Server & Bot Settings',
     nav_public_commands: 'Public Commands',
     nav_mod_commands: 'Moderation',
     nav_welcome: 'Welcome & Leave',
@@ -144,8 +140,6 @@ const SITE_I18N = {
     site_lang_hint: 'Switching website language translates all dashboard labels and navigation immediately.',
     bot_lang_label: 'Bot Language',
     bot_lang_hint: 'Bot language controls all bot responses in the selected guild including the help menu and command descriptions.',
-    server_bot_settings: '⚙️ Server & Bot Settings',
-    prefix_label: 'Command Prefix',
     public_cmds_title: '🌐 Public Commands',
     public_cmds_desc: 'Manage public bot commands and click "Edit" on any command to configure aliases, channels, roles, and auto-delete.',
     mod_cmds_title: '🔨 Moderation',
@@ -207,7 +201,7 @@ if (overlay) overlay.addEventListener('click', () => setNav(false));
 const links = $$('.nav a');
 const crumb = $('#crumb');
 function goTo(page) {
-  if (!page) return;
+  if (!page || page === 'settings') page = 'overview';
   links.forEach(l => l.classList.toggle('active', l.dataset.page === page));
   $$('.page').forEach(p => p.classList.toggle('on', p.id === page));
   const active = links.find(l => l.dataset.page === page);
@@ -221,8 +215,7 @@ links.forEach(a => a.addEventListener('click', e => {
   goTo(a.dataset.page);
 }));
 
-// زر اللوجو في الأعلى يرجع للرئيسية
-$('.side-head')?.addEventListener('click', () => goTo('overview'));
+$('#brandHeader')?.addEventListener('click', () => goTo('overview'));
 
 function tickClock() {
   const c = $('#clock');
@@ -357,8 +350,8 @@ function populateSelects(chanHtml, roleHtml) {
 const PUBLIC_CMDS = [
   { key: 'help', name: 'help', arDesc: 'عرض قائمة المساعدة وشرح جميع أوامر البوت', enDesc: 'Show help menu and command explanations', defaultAliases: ['مساعدة', 'اوامر'] },
   { key: 'server', name: 'server', arDesc: 'عرض معلومات السيرفر والمالك وتاريخ الإنشاء وأكثر عضو دعوات', enDesc: 'Show server info, owner, creation time, and top inviter', defaultAliases: ['سيرفر'] },
-  { key: 'balance', name: 'balance', arDesc: 'عرض رصيدك الحالي من عملة Ly', enDesc: 'Check your current Ly balance', defaultAliases: ['رصيدي', 'محفظة'] },
-  { key: 'transfer', name: 'transfer', arDesc: 'تحويل رصيد Ly من محفظتك إلى عضو آخر', enDesc: 'Transfer Ly balance to another member', defaultAliases: ['تحويل'] },
+  { key: 'balance', name: 'balance', arDesc: 'عرض رصيدك أو رصيد أي عضو آخر بعمل منشن مع الأمر', enDesc: 'Check your balance or mention a member to check theirs', defaultAliases: ['رصيدي', 'محفظة'] },
+  { key: 'transfer', name: 'transfer', arDesc: 'تحويل رصيد Ly لعضو أو عبر ID في أي سيرفر (يبدأ من 0.25)', enDesc: 'Transfer Ly to a member or user ID across guilds (from 0.25)', defaultAliases: ['تحويل'] },
   { key: 'ping', name: 'ping', arDesc: 'معرفة سرعة استجابة البوت الحالية', enDesc: 'Check current bot latency', defaultAliases: ['بنق'] }
 ];
 
@@ -699,6 +692,7 @@ async function loadGuildRealData(guildId) {
     if ($('#welcomeDestination')) $('#welcomeDestination').value = welcomeCfg.welcomeDestination || 'channel';
     if ($('#welcomeMessageType')) $('#welcomeMessageType').value = welcomeCfg.welcomeMessageType || 'normal';
     if ($('#welcomeImage')) $('#welcomeImage').value = welcomeCfg.welcomeImage || '';
+    if ($('#wmsg')) $('#wmsg').value = welcomeCfg.wmsg !== undefined ? welcomeCfg.wmsg : '';
 
     commandsConfigCache = data.settings.commands || {};
   }
@@ -834,20 +828,21 @@ $$('[data-save]').forEach(btn => {
   btn.addEventListener('click', async () => {
     if (!currentSession || !currentGuildId) { toast('⚠️ سجل الدخول واختر سيرفراً أولاً!'); return; }
 
-    const activePage = $('.page.on')?.id || 'settings';
+    const activePage = $('.page.on')?.id || 'overview';
 
     if (activePage === 'broadcasts') {
       const type = $('#bcType')?.value || 'embed';
       const target = $('#bcTarget')?.value || 'all';
       const content = $('#bcContent')?.value || '';
       const userId = $('#bcMember')?.value || null;
+      const imageUrl = ($('#bcImageUrl')?.value || '').trim();
       if (target === 'one' && !userId) { toast('⚠️ اختر الشخص أولاً!'); return; }
-      if (!content.trim()) { toast('⚠️ اكتب محتوى الرسالة!'); return; }
+      if (!content.trim() && !imageUrl) { toast('⚠️ اكتب محتوى الرسالة أو ضع رابط صورة!'); return; }
       try {
         const res = await fetch(`${API_URL}/api/broadcast/${currentGuildId}`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json', 'x-session': currentSession },
-          body: JSON.stringify({ type, target, content, userId })
+          body: JSON.stringify({ type, target, content, userId, imageUrl })
         });
         const result = await res.json();
         if (result.ok) toast(`📢 تم الإرسال إلى ${result.sent} عضو!`);
@@ -900,6 +895,7 @@ $$('[data-save]').forEach(btn => {
       payload.welcomeImage = ($('#welcomeImage')?.value || '').trim();
       payload.welcomeDestination = $('#welcomeDestination')?.value || 'channel';
       payload.welcomeMessageType = $('#welcomeMessageType')?.value || 'normal';
+      payload.wmsg = $('#wmsg')?.value ?? '';
     }
 
     if (activePage === 'autoreply') {
@@ -990,6 +986,6 @@ applyWebsiteLanguage(localStorage.getItem('unibot-site-lang') || 'ar');
 renderApplyQuestions(applyQuestionsList);
 
 const savedPage = localStorage.getItem('unibot-page');
-if (savedPage && $('#' + savedPage)) goTo(savedPage);
+if (savedPage && $('#' + savedPage) && savedPage !== 'settings') goTo(savedPage);
 
 handleAuthCallback();
